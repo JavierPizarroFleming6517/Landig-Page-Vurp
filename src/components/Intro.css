@@ -1,0 +1,61 @@
+html.is-intro,
+html.is-intro body {
+  overflow: hidden;
+}
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: var(--vurp-grafito);
+  cursor: pointer;
+}
+
+.intro__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.intro__logo {
+  --logo-height: clamp(52px, 9vw, 104px);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--logo-height) * 0.16);
+  height: var(--logo-height);
+}
+
+.intro__symbol {
+  height: 100%;
+  width: auto;
+  overflow: visible;
+}
+
+.intro__wordmark {
+  height: 94%;
+  width: auto;
+}
+
+.intro__tagline {
+  color: var(--vurp-lila-claro);
+  white-space: nowrap;
+}
+
+.intro__tagline::before {
+  display: none;
+}
+
+.intro__progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--vurp-berenjena-claro), var(--vurp-lila-claro));
+  transform-origin: left center;
+}
