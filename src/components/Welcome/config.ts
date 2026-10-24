@@ -68,16 +68,18 @@ export const CAMERA = {
 } as const;
 
 export interface OrbitConfig {
-  /** Radio de la órbita en unidades de mundo (radio del planeta = 1). */
+  /** Radio de la órbita en unidades de mundo (radio del planeta = 1). El layout lo ajusta si no cabe. */
   radius: number;
   /** Inclinación de la órbita (rad): el tramo trasero sube en pantalla y el delantero baja. */
   tilt: number;
   /** Desplazamiento vertical del centro de la órbita (unidades de mundo). */
   offsetY: number;
+  /** Giro de la órbita en el plano de la pantalla (rad). Con roll ≠ 0 los extremos quedan en diagonal. */
+  roll?: number;
 }
 
 export interface LayoutPreset {
-  /** Radio del planeta en px = min(ancho × planetVw, alto × planetVh). */
+  /** Radio base del planeta en px = min(ancho × planetVw, alto × planetVh); luego se multiplica por PLANET_SCALE. */
   planetVw: number;
   planetVh: number;
   /** Centro vertical del planeta como fracción del alto del stage. */
@@ -98,16 +100,28 @@ export interface LayoutPreset {
 
 export const BREAKPOINT = 900;
 
+/** Proporción ancho/alto del símbolo oficial (viewBox de simbolo-oscuro.svg). */
+export const LOGO_ASPECT = 239 / 171;
+
+/**
+ * Factor de tamaño del planeta respecto del radio base. El layout prueba primero `preferred` y, si con él
+ * el logo no puede cambiar de capa fuera del disco sin salirse de la pantalla, baja a `min`.
+ */
+export const PLANET_SCALE = { preferred: 1.3, min: 1.25 } as const;
+
+/** Márgenes (px) del layout: separación mínima entre el logo y el disco al cambiar de capa, y respecto de los bordes. */
+export const LAYOUT_MARGIN = { disc: 8, edge: 8 } as const;
+
 export const LAYOUT: Record<"wide" | "compact", LayoutPreset> = {
   wide: {
     planetVw: 0.15,
     planetVh: 0.24,
-    centerY: 0.5,
-    logoSize: 0.5,
-    textVw: 0.3,
-    textMaxPx: 420,
+    centerY: 0.46,
+    logoSize: 0.4,
+    textVw: 0.26,
+    textMaxPx: 360,
     logoOrbit: { radius: 1.55, tilt: 0.85, offsetY: 0 },
-    textOrbit: { radius: 2.1, tilt: 0.56, offsetY: 0 },
+    textOrbit: { radius: 1.78, tilt: 0.6, offsetY: 0 },
     logoDepthGain: 2.5,
     textDepthGain: 0.3,
     logoBackOpacity: 0.55,
@@ -116,13 +130,128 @@ export const LAYOUT: Record<"wide" | "compact", LayoutPreset> = {
     planetVw: 0.25,
     planetVh: 0.2,
     centerY: 0.4,
-    logoSize: 0.55,
+    logoSize: 0.44,
     textVw: 0.82,
     textMaxPx: 360,
-    logoOrbit: { radius: 1.4, tilt: 0.85, offsetY: 0 },
+    // En móvil no hay ancho para dar la vuelta por los costados: la órbita va en diagonal.
+    logoOrbit: { radius: 1.46, tilt: 0.85, offsetY: 0, roll: 0.75 },
     textOrbit: { radius: 0.12, tilt: 0.4, offsetY: -2.1 },
     logoDepthGain: 2.5,
     textDepthGain: 0.3,
     logoBackOpacity: 0.55,
   },
 };
+
+/** Paleta oficial (manual de marca · 03). Sobre Grafito se usan los tonos "claros". */
+export const COLORS = {
+  grafito: "#25232B",
+  berenjena: "#55236F",
+  berenjenaClaro: "#9D5FC1",
+  orquidea: "#8B46AB",
+  orquideaClaro: "#B484D2",
+  lila: "#C9A7E4",
+  lilaClaro: "#E4D5F2",
+  marfil: "#FAF7F2",
+  /** Derivado de Grafito, más profundo, para el cuerpo del planeta. */
+  planetCore: "#141218",
+} as const;
+
+/** Planeta 3D (radio = 1 unidad de mundo). */
+export const PLANET = {
+  /** Orientación inicial (grados): punto que queda de frente en la escena 1 y giro del eje en pantalla. */
+  facing: { lat: -18, lon: -60, roll: 12 },
+  /** Rotación propia (rad/s, desde que aparece el planeta) y giro extra a lo largo de todo el recorrido (rad). */
+  spinSpeed: 0.03,
+  scrollTurn: 0.6,
+  /** La esfera oclusora es apenas menor que los puntos para que no parpadeen con ella. */
+  occluderRadius: 0.985,
+  /** Continentes como nube de puntos (máscara Natural Earth 110m). Cantidad de puntos de tierra por tier. */
+  continents: {
+    points: { wide: 9000, compact: 4000 },
+    radius: 1.003,
+    /** Tamaño del punto (px CSS) y fracción de puntos con núcleo Marfil. */
+    size: { wide: 2.4, compact: 2.2 },
+    ivoryShare: 0.06,
+  },
+  /** Arcos entre ciudades: elevación máxima (para los más largos), opacidad base y pulsos de luz. */
+  arcs: {
+    lift: 0.22,
+    alpha: 0.22,
+    pulseSpeed: 0.16,
+    pulseShare: 0.6,
+  },
+  citySize: 7,
+  /** Líneas orbitales finas alrededor del planeta: radio, inclinación y giro (rad). Sin anillos. */
+  orbitLines: {
+    alpha: 0.09,
+    lines: [
+      { radius: 1.16, tiltX: 0.35, tiltZ: 0.4 },
+      { radius: 1.24, tiltX: -0.5, tiltZ: -0.55 },
+      { radius: 1.32, tiltX: 0.75, tiltZ: -0.12 },
+    ],
+  },
+  atmosphereRadius: 1.14,
+  atmosphereAlpha: 0.38,
+  /** Tope de devicePixelRatio para el canvas WebGL. */
+  dprCap: { wide: 2, compact: 1.5 },
+} as const;
+
+/** Ciudades reales (lat, lon) y sus conexiones. Coquimbo es la base de Vurp. */
+export const NETWORK = {
+  cities: {
+    coquimbo: [-29.95, -71.34],
+    santiago: [-33.45, -70.67],
+    lima: [-12.05, -77.04],
+    bogota: [4.71, -74.07],
+    panama: [8.98, -79.52],
+    mexico: [19.43, -99.13],
+    saoPaulo: [-23.55, -46.63],
+    buenosAires: [-34.6, -58.38],
+    montevideo: [-34.9, -56.16],
+    miami: [25.76, -80.19],
+    nuevaYork: [40.71, -74.01],
+    sanFrancisco: [37.77, -122.42],
+    madrid: [40.42, -3.7],
+    londres: [51.51, -0.13],
+    ciudadDelCabo: [-33.92, 18.42],
+    dubai: [25.2, 55.27],
+    singapur: [1.35, 103.82],
+    tokio: [35.68, 139.69],
+    sidney: [-33.87, 151.21],
+  },
+  links: [
+    ["coquimbo", "santiago"],
+    ["coquimbo", "lima"],
+    ["coquimbo", "saoPaulo"],
+    ["coquimbo", "buenosAires"],
+    ["coquimbo", "bogota"],
+    ["coquimbo", "mexico"],
+    ["coquimbo", "miami"],
+    ["santiago", "buenosAires"],
+    ["santiago", "madrid"],
+    ["santiago", "sidney"],
+    ["lima", "bogota"],
+    ["bogota", "panama"],
+    ["panama", "mexico"],
+    ["mexico", "sanFrancisco"],
+    ["miami", "nuevaYork"],
+    ["nuevaYork", "londres"],
+    ["saoPaulo", "montevideo"],
+    ["saoPaulo", "madrid"],
+    ["saoPaulo", "ciudadDelCabo"],
+    ["buenosAires", "montevideo"],
+    ["madrid", "londres"],
+    ["londres", "dubai"],
+    ["dubai", "singapur"],
+    ["singapur", "tokio"],
+    ["singapur", "sidney"],
+    ["sanFrancisco", "tokio"],
+  ],
+} as const;
+
+/** Fondo: estrellas pintadas una sola vez por resize. */
+export const STARS = {
+  /** Estrellas por px² del stage. */
+  density: 1 / 9000,
+  maxCount: 220,
+} as const;

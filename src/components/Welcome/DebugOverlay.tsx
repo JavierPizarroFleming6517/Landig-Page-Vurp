@@ -4,7 +4,7 @@ import { sceneAt, type WelcomePose } from "./timeline";
 import type { TimelineFrame } from "./useScrollTimeline";
 
 export interface DebugHandle {
-  update: (frame: TimelineFrame, pose: WelcomePose) => void;
+  update: (frame: TimelineFrame, pose: WelcomePose, extra: readonly string[]) => void;
 }
 
 const pct = (value: number) => `${(value * 100).toFixed(1).padStart(5, " ")} %`;
@@ -19,7 +19,7 @@ export function DebugOverlay({ handleRef }: { handleRef: RefObject<DebugHandle |
     let since = performance.now();
     let fps = 0;
     handleRef.current = {
-      update: (frame, pose) => {
+      update: (frame, pose, extra) => {
         frames += 1;
         const elapsed = frame.now - since;
         if (elapsed >= 500) {
@@ -34,6 +34,7 @@ export function DebugOverlay({ handleRef }: { handleRef: RefObject<DebugHandle |
             `scroll    ${pct(frame.target)}`,
             `escena    ${sceneAt(frame.progress).label}`,
             `fps       ${fps}`,
+            ...extra,
             `entrada   ${pct(frame.enter)}`,
             `logo      ${pose.logo.front ? "delante" : "detrás"}`,
             `mensajes  ${pose.messages.map((value) => value.toFixed(2)).join(" · ")}`,

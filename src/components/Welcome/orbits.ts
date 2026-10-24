@@ -15,14 +15,16 @@ export interface Projected {
 }
 
 /**
- * Punto de una órbita circular inclinada. θ = 0 queda a la derecha y θ = π a la izquierda;
+ * Punto de una órbita circular inclinada. θ = 0 queda a la derecha y θ = π a la izquierda (girados por `roll`);
  * con sen θ > 0 el punto está delante del planeta (y más abajo en pantalla), con sen θ < 0, detrás (y más arriba).
  */
-export function orbitPoint({ radius, tilt, offsetY }: OrbitConfig, theta: number): Vec3 {
+export function orbitPoint({ radius, tilt, offsetY, roll = 0 }: OrbitConfig, theta: number): Vec3 {
   const s = Math.sin(theta);
+  const x = radius * Math.cos(theta);
+  const y = offsetY - radius * s * Math.sin(tilt);
   return {
-    x: radius * Math.cos(theta),
-    y: offsetY - radius * s * Math.sin(tilt),
+    x: x * Math.cos(roll) - y * Math.sin(roll),
+    y: x * Math.sin(roll) + y * Math.cos(roll),
     z: radius * s * Math.cos(tilt),
   };
 }

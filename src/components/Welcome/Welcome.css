@@ -10,6 +10,7 @@
   --cy: 50%;
   --planet-r: 160px;
   --logo-h: 80px;
+  --logo-w: 112px;
   --text-w: 420px;
   position: sticky;
   top: 0;
@@ -25,13 +26,48 @@
 }
 
 /* Orden de capas: fondo 0 · logo detrás 1 · planeta 2 · logo delante y texto 3 · destello y revelación 4 · debug 5 */
+/* Fondo: Grafito con viñeta, un halo berenjena detrás del planeta, estrellas y una grilla de piso muy tenue. */
 .welcome__backdrop {
   inset: 0;
   z-index: 0;
   opacity: 0;
-  background: radial-gradient(ellipse 80% 70% at 50% 45%, var(--vurp-grafito) 0%, #1c1a21 70%, #151319 100%);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at var(--cx) var(--cy), rgba(85, 35, 111, 0.3), transparent calc(var(--planet-r) * 3)),
+    radial-gradient(ellipse 85% 75% at 50% 45%, var(--vurp-grafito) 0%, #1c1a21 70%, #151319 100%);
 }
 
+.welcome__stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.welcome__floor {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: -10%;
+  height: 55%;
+  background-image:
+    linear-gradient(rgba(201, 167, 228, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 167, 228, 0.07) 1px, transparent 1px);
+  background-size: 64px 64px;
+  transform: perspective(420px) rotateX(68deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+}
+
+.welcome__canvas {
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+/* Planeta CSS: se ve mientras carga three y queda como respaldo si WebGL no está disponible. */
 .welcome__planet {
   left: var(--cx);
   top: var(--cy);
@@ -40,11 +76,14 @@
   height: calc(var(--planet-r) * 2);
   border-radius: 50%;
   opacity: 0;
-  /* Placeholder de la Fase 1: disco opaco que tapa lo que pasa por detrás. */
-  background: radial-gradient(circle at 35% 30%, #3a3442, #1b1920 70%);
+  background: radial-gradient(circle at 50% 50%, #141218 62%, #2c1838 100%);
   border: 1px solid rgba(228, 213, 242, 0.35);
   box-shadow: 0 0 calc(var(--glow, 0) * 90px) calc(var(--glow, 0) * 16px) rgba(180, 132, 210, calc(var(--glow, 0) * 0.7));
   transform: translate(-50%, -50%) scale(calc(1 + var(--shatter, 0) * 0.25));
+}
+
+.welcome__stage[data-webgl="ready"] .welcome__planet {
+  visibility: hidden;
 }
 
 .welcome__logo {
@@ -53,7 +92,7 @@
   z-index: 3;
   display: grid;
   place-items: center;
-  width: calc(var(--logo-h) * 1.4);
+  width: var(--logo-w);
   height: var(--logo-h);
   opacity: 0;
   border-radius: 10px;

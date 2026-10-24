@@ -53,17 +53,17 @@ export function poseAt(progress: number, enter: number, layout: StageLayout): We
   // Logo: de derecha a izquierda por el arco trasero y, en el impacto, en espiral hacia el frente del planeta.
   const dive = easeInCubic(clamp01((p - TIMELINE.dive.start) / (TIMELINE.dive.end - TIMELINE.dive.start)));
   const logoOrbit = {
-    radius: lerp(preset.logoOrbit.radius, 1.02, dive),
-    tilt: preset.logoOrbit.tilt,
-    offsetY: lerp(preset.logoOrbit.offsetY, 0, dive),
+    ...layout.logoOrbit,
+    radius: lerp(layout.logoOrbit.radius, 1.02, dive),
+    offsetY: lerp(layout.logoOrbit.offsetY, 0, dive),
   };
   const logoPoint = orbitPoint(logoOrbit, -Math.PI * t - (Math.PI / 2) * dive);
   const logoProj = project(logoPoint, layout);
-  const deepest = preset.logoOrbit.radius * Math.cos(preset.logoOrbit.tilt);
+  const deepest = layout.logoOrbit.radius * Math.cos(layout.logoOrbit.tilt);
   const depth = clamp01(-logoPoint.z / deepest);
 
   // Texto: de izquierda a derecha por el arco delantero, siempre delante del planeta.
-  const textPoint = orbitPoint(preset.textOrbit, Math.PI - Math.PI * t);
+  const textPoint = orbitPoint(layout.textOrbit, Math.PI - Math.PI * t);
   const textProj = project(textPoint, layout);
 
   const [a0, a1, a2] = TIMELINE.messageAnchors;

@@ -4,6 +4,8 @@ import { DebugOverlay, type DebugHandle } from "./DebugOverlay";
 import { computeLayout, type StageLayout } from "./layout";
 import { Messages } from "./Messages";
 import { OrbitLogo } from "./OrbitLogo";
+import type { SceneController } from "./scene/createScene";
+import { paintStars } from "./starfield";
 import { poseAt, type OrbiterPose } from "./timeline";
 import { useScrollTimeline, type TimelineFrame } from "./useScrollTimeline";
 import "./Welcome.css";
@@ -22,6 +24,9 @@ export function Welcome({ started }: WelcomeProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
+  const starsRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sceneRef = useRef<SceneController | null>(null);
   const planetRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
@@ -44,7 +49,10 @@ export function Welcome({ started }: WelcomeProps) {
       stage.style.setProperty("--cy", `${layout.cy}px`);
       stage.style.setProperty("--planet-r", `${layout.planetPx}px`);
       stage.style.setProperty("--logo-h", `${layout.logoPx}px`);
+      stage.style.setProperty("--logo-w", `${layout.logoWidth}px`);
       stage.style.setProperty("--text-w", `${layout.textWidth}px`);
+      if (starsRef.current) paintStars(starsRef.current, layout.width, layout.height);
+      sceneRef.current?.setLayout(layout);
     };
     const observer = new ResizeObserver(measure);
     observer.observe(stage);
@@ -52,11 +60,42 @@ export function Welcome({ started }: WelcomeProps) {
     return () => observer.disconnect();
   }, []);
 
+  // La escena WebGL vive en un chunk aparte: se descarga y compila mientras el splash está visible.
+  useEffect(() => {
+    const stage = stageRef.current;
+    const canvas = canvasRef.current;
+    if (!stage || !canvas) return;
+    let cancelled = false;
+    stage.dataset.webgl = "loading";
+    import("./scene/createScene")
+      .then(({ createScene }) => {
+        const layout = layoutRef.current;
+        if (cancelled || !layout) return;
+        sceneRef.current = createScene(canvas, layout);
+        stage.dataset.webgl = "ready";
+      })
+      .catch((error: unknown) => {
+        console.error(error);
+        if (!cancelled) stage.dataset.webgl = "off";
+      });
+    return () => {
+      cancelled = true;
+      sceneRef.current?.dispose();
+      sceneRef.current = null;
+    };
+  }, []);
+
   const onFrame = useCallback((frame: TimelineFrame) => {
     const layout = layoutRef.current;
     if (!layout) return;
     const pose = poseAt(frame.progress, frame.enter, layout);
-    debugRef.current?.update(frame, pose);
+    const scene = sceneRef.current;
+    scene?.render({ time: frame.now / 1000, progress: frame.progress, opacity: pose.planet.opacity, glow: pose.planet.glow });
+    debugRef.current?.update(frame, pose, [
+      `webgl     ${stageRef.current?.dataset.webgl ?? "-"} · dpr ${scene?.pixelRatio() ?? "-"}`,
+      `planeta   ×${layout.planetScale.toFixed(2)} · ${Math.round(layout.planetPx)} px`,
+      `capa      ${layout.fits ? "ok" : "no cabe"} · ${Math.round(layout.logoClearance)} px del disco`,
+    ]);
 
     const last = lastRef.current;
     if (last.progress === frame.progress && last.enter === frame.enter && last.layout === layout) return;
@@ -110,9 +149,13 @@ export function Welcome({ started }: WelcomeProps) {
       aria-label="Introducción de Vurp"
     >
       <div ref={stageRef} className="welcome__stage">
-        <div ref={backdropRef} className="welcome__backdrop" aria-hidden="true" />
+        <div ref={backdropRef} className="welcome__backdrop" aria-hidden="true">
+          <canvas ref={starsRef} className="welcome__stars" />
+          <div className="welcome__floor" />
+        </div>
         <OrbitLogo logoRef={logoRef} />
         <div ref={planetRef} className="welcome__planet" aria-hidden="true" />
+        <canvas ref={canvasRef} className="welcome__canvas" aria-hidden="true" />
         <div ref={waveRef} className="welcome__wave" aria-hidden="true" />
         <Messages lines={welcomeLines} containerRef={messagesRef} lineRefs={lineRefs} />
         <div ref={flashRef} className="welcome__flash" aria-hidden="true" />
