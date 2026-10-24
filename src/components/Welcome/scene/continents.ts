@@ -86,15 +86,15 @@ function blurCoverage(source: Float32Array, width: number, height: number, sigma
 }
 
 /**
- * Cobertura de tierra en 0–1, con 0.5 en la costa. La rejilla de 0.5° es escalonada; el desenfoque
- * deja una curva continua y el shader la recorta al ancho de un píxel de pantalla.
+ * Cobertura de tierra en 0–1, con 0.5 en la costa. El desenfoque quita el escalón de la rejilla;
+ * el shader desplaza esa costa con ruido para abrir golfos, cabos e islas.
  */
 export function landMaskTexture(maxAnisotropy = 8) {
   const { width, height, cells } = landGrid();
   const scale = 2;
   const fine = expandBinary(cells, width, height, scale);
-  // 1.8 celdas de origen: aplana el escalón de la rejilla y conserva los istmos estrechos.
-  const coverage = blurCoverage(fine.values, fine.width, fine.height, 1.8 * scale);
+  // 1.05 celdas de origen: quita el escalón de la rejilla y deja la costa lo bastante firme para el detalle.
+  const coverage = blurCoverage(fine.values, fine.width, fine.height, 1.05 * scale);
 
   const canvas = document.createElement("canvas");
   canvas.width = fine.width;

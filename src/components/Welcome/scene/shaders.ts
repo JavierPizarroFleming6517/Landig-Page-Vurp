@@ -235,15 +235,49 @@ export const landmass = {
     float shard(vec3 p) {
       return fract(sin(dot(floor(p * uShardDensity), vec3(12.9898, 78.233, 37.719))) * 43758.5453);
     }
+    vec3 hash33(vec3 p) {
+      p = fract(p * vec3(0.1031, 0.1030, 0.0973));
+      p += dot(p, p.yxz + 33.33);
+      return normalize(fract((p.xxy + p.yzz) * p.zyx) * 2.0 - 1.0 + vec3(0.0001, 0.0002, 0.0003));
+    }
+    float gradNoise(vec3 p) {
+      vec3 i = floor(p);
+      vec3 f = fract(p);
+      vec3 u = f * f * (3.0 - 2.0 * f);
+      return mix(
+        mix(mix(dot(hash33(i), f), dot(hash33(i + vec3(1.0, 0.0, 0.0)), f - vec3(1.0, 0.0, 0.0)), u.x),
+            mix(dot(hash33(i + vec3(0.0, 1.0, 0.0)), f - vec3(0.0, 1.0, 0.0)), dot(hash33(i + vec3(1.0, 1.0, 0.0)), f - vec3(1.0, 1.0, 0.0)), u.x), u.y),
+        mix(mix(dot(hash33(i + vec3(0.0, 0.0, 1.0)), f - vec3(0.0, 0.0, 1.0)), dot(hash33(i + vec3(1.0, 0.0, 1.0)), f - vec3(1.0, 0.0, 1.0)), u.x),
+            mix(dot(hash33(i + vec3(0.0, 1.0, 1.0)), f - vec3(0.0, 1.0, 1.0)), dot(hash33(i + vec3(1.0, 1.0, 1.0)), f - vec3(1.0, 1.0, 1.0)), u.x), u.y),
+        u.z);
+    }
     void main() {
-      float lon = atan(vLocal.x, vLocal.z);
-      float lat = asin(clamp(vLocal.y, -1.0, 1.0));
-      float sdf = texture2D(uMask, vec2(lon * 0.15915494 + 0.5, 0.5 - lat * 0.31830989)).r;
+      vec3 p = normalize(vLocal);
+      // Varias escalas de ruido Perlin desplazan la costa: golfos, cabos y grano fino.
+      float lon = atan(p.x, p.z);
+      float lat = asin(clamp(p.y, -1.0, 1.0));
+      lon += gradNoise(p * 3.2) * 0.13 + gradNoise(p * 8.6 + 1.7) * 0.05 + gradNoise(p * 19.0 + 4.4) * 0.024 + gradNoise(p * 44.0 + 8.2) * 0.011;
+      lat += gradNoise(p * 3.2 + vec3(6.2, 1.4, 9.1)) * 0.095 + gradNoise(p * 9.5 + 3.3) * 0.04 + gradNoise(p * 22.0 + 7.1) * 0.018 + gradNoise(p * 48.0 + 2.6) * 0.008;
+      lat = clamp(lat, -1.5707963, 1.5707963);
+      vec2 uv = vec2(lon * 0.15915494 + 0.5, 0.5 - lat * 0.31830989);
+      float base = texture2D(uMask, uv, -3.5).r;
+      float n1 = gradNoise(p * 29.0 + 2.4);
+      float n2 = gradNoise(p * 29.0 + vec3(5.1, 8.4, 1.7));
+      float neighbor = texture2D(uMask, uv + vec2(n1, n2) * 0.011, -3.5).r;
+      float islets = smoothstep(0.22, 0.58, n1) * smoothstep(0.1, 0.5, n2);
+      float offshore = 1.0 - smoothstep(0.18, 0.46, base);
+      float close = smoothstep(0.52, 0.8, neighbor);
+      float sdf = max(base, islets * offshore * close);
+      float mote = gradNoise(p * 67.0 + 11.0);
+      float moteNear = texture2D(uMask, uv + vec2(mote, gradNoise(p * 67.0 + 3.8)) * 0.005, -3.5).r;
+      sdf = max(sdf, smoothstep(0.34, 0.7, mote) * (1.0 - smoothstep(0.12, 0.4, base)) * smoothstep(0.55, 0.82, moteNear));
+      float grain = gradNoise(p * 86.0 + 5.6);
+      sdf += grain * 0.34 * (1.0 - smoothstep(0.0, 0.22, abs(sdf - 0.5)));
       float front = distance(vWorld, uImpact) - uShatter * 5.0 + shard(vWorld) * 0.45;
       if (uShatter > 0.0 && front < 0.0) discard;
 
       // Un píxel de pantalla, en unidades de la cobertura. El tope solo frena el limbo, donde la derivada se dispara.
-      float w = clamp(fwidth(sdf), 0.0001, 0.18);
+      float w = clamp(fwidth(base), 0.0001, 0.18);
       if (sdf < 0.5 - w * 2.05) discard;
       float cover = smoothstep(0.5 - w * 1.35, 0.5 + w * 0.55, sdf);
       float stroke = 1.0 - smoothstep(w * 0.25, w * 2.7, max(sdf - 0.5, 0.0));
