@@ -8,7 +8,9 @@ import {
   Handshake,
   KeyRound,
   Lock,
+  Mail,
   Puzzle,
+  Route,
   ScanSearch,
   ServerCog,
   ShieldCheck,
@@ -21,6 +23,7 @@ import type {
   HeroContent,
   ImageAsset,
   IntroContent,
+  NavEntry,
   NavLink,
   SecurityFeature,
   SecurityStat,
@@ -34,13 +37,6 @@ const unsplash = (id: string, alt: string, width = 1920): ImageAsset => ({
   src: `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=80`,
   alt,
 });
-
-export const navLinks: readonly NavLink[] = [
-  { label: "Propuesta", href: "#propuesta" },
-  { label: "Cómo trabajamos", href: "#proceso" },
-  { label: "Soluciones", href: "#soluciones" },
-  { label: "Seguridad", href: "#seguridad" },
-];
 
 export const hero: HeroContent = {
   eyebrow: "Software & Cybersecurity",
@@ -182,6 +178,36 @@ export const solutions: readonly Solution[] = [
     image: unsplash("photo-1518770660439-4636190af475", "Primer plano de una placa de circuitos"),
   },
 ];
+
+/** Menú del header. Los ítems de "Soluciones" salen de `solutions`, así no se duplica el contenido. */
+export const navMenu: readonly NavEntry[] = [
+  {
+    kind: "group",
+    id: "soluciones",
+    label: "Soluciones",
+    items: solutions.map((solution) => ({
+      label: solution.name,
+      description: solution.tagline,
+      href: "#soluciones",
+      icon: solution.icon,
+    })),
+    footer: { label: "Ver todas las soluciones", href: "#soluciones" },
+  },
+  {
+    kind: "group",
+    id: "empresa",
+    label: "Empresa",
+    items: [
+      { label: "Propuesta de valor", description: "Sistemas que ordenan tu empresa", href: "#propuesta", icon: Puzzle },
+      { label: "Cómo trabajamos", description: "De la idea al sistema, en 4 etapas", href: "#proceso", icon: Route },
+      { label: "Contacto", description: "Primera reunión sin costo", href: "#contacto", icon: Mail },
+    ],
+  },
+  { kind: "link", label: "Seguridad", href: "#seguridad" },
+];
+
+/** CTA principal del header (lleva a la sección de contacto). */
+export const navCta: NavLink = { label: "Cotizar proyecto", href: "#contacto" };
 
 export const securityBackground: ImageAsset = unsplash(
   "photo-1563986768609-322da13575f3",

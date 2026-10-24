@@ -8,6 +8,22 @@ export interface NavLink {
   href: `#${string}`;
 }
 
+/** Ítem de un dropdown del header: ícono, título y una descripción corta. */
+export interface NavMenuItem extends NavLink {
+  description: string;
+  icon: LucideIcon;
+}
+
+export interface NavGroup {
+  id: string;
+  label: string;
+  items: readonly NavMenuItem[];
+  /** Enlace opcional al pie del panel (p. ej., "Ver todas las soluciones"). */
+  footer?: NavLink;
+}
+
+export type NavEntry = ({ kind: "link" } & NavLink) | ({ kind: "group" } & NavGroup);
+
 export interface ImageAsset {
   src: string;
   alt: string;
