@@ -137,7 +137,7 @@ function orbitLines() {
   });
 }
 
-export function createPlanet(shared: SharedUniforms, _tier: Tier): Planet {
+export function createPlanet(shared: SharedUniforms, _tier: Tier, maxAnisotropy = 8): Planet {
   const root = new Group();
   // Orientación inicial: el eje gira `roll` en pantalla y se inclina para dejar `facing.lat` al centro.
   const orient = new Group();
@@ -180,14 +180,20 @@ export function createPlanet(shared: SharedUniforms, _tier: Tier): Planet {
         uniforms: {
           ...shared,
           uColor: { value: color(COLORS.lila) },
-          uShade: { value: color(COLORS.orquideaClaro) },
+          uEdge: { value: color(COLORS.lilaClaro) },
+          uIvory: { value: color(COLORS.marfil) },
           uHot: { value: color(COLORS.lilaClaro) },
           uShardDensity: { value: EXPLOSION.shardDensity },
-          uMask: { value: track(landMaskTexture()) },
+          uMask: { value: track(landMaskTexture(maxAnisotropy)) },
         },
         vertexShader: shaders.landmass.vertex,
         fragmentShader: shaders.landmass.fragment,
         transparent: true,
+        depthTest: true,
+        depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -2,
+        polygonOffsetUnits: -2,
       }),
     ),
   );

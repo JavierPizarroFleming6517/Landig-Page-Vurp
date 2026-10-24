@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { welcomeLines } from "./config";
+import { welcomeHeadline } from "./config";
 import { createHeaderHooks } from "./headerHooks";
 import { paintStars } from "./starfield";
 
@@ -8,7 +8,7 @@ const STATIC_POINTS = 6000;
 
 /**
  * Intro para `prefers-reduced-motion`: una sección normal de 100svh, sin sticky ni scroll animado, con el globo
- * de puntos pintado una vez, el logo completo y los tres mensajes. No descarga three ni corre ningún rAF.
+ * de puntos pintado una vez, el titular y el logo completo. No descarga three ni corre ningún rAF.
  */
 export function WelcomeStatic() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -56,6 +56,7 @@ export function WelcomeStatic() {
         <canvas ref={starsRef} className="welcome__stars" />
       </div>
       <div className="welcome-static">
+        <h2 className="welcome-static__headline">{welcomeHeadline}</h2>
         <canvas ref={globeRef} className="welcome-static__globe" aria-hidden="true" />
         <img
           className="welcome-static__logo"
@@ -64,11 +65,6 @@ export function WelcomeStatic() {
           width={395}
           height={124}
         />
-        <div className="welcome-static__messages">
-          {welcomeLines.map((line) => (
-            <p key={line}>{line}</p>
-          ))}
-        </div>
       </div>
     </section>
   );

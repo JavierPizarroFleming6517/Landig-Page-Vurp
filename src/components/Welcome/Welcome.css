@@ -100,7 +100,8 @@
   will-change: transform, opacity;
 }
 
-.welcome__logo img {
+.welcome__logo svg {
+  display: block;
   width: 100%;
   height: 100%;
 }
@@ -109,25 +110,18 @@
   z-index: 1;
 }
 
-.welcome__messages {
-  left: 0;
-  top: 0;
+.welcome__headline {
+  left: 50%;
+  top: calc(var(--nav-height) + 4.25rem);
   z-index: 3;
-  display: grid;
-  width: var(--text-w);
-  opacity: 0;
-  will-change: transform, opacity;
-}
-
-.welcome__line {
-  grid-area: 1 / 1;
-  align-self: center;
+  width: min(44rem, calc(100% - 2.5rem));
   margin: 0;
   opacity: 0;
+  transform: translateX(-50%);
   text-align: center;
-  font-size: clamp(1.5rem, 1rem + 1.4vw, 2.25rem);
+  font-size: clamp(1.85rem, 1.25rem + 1.8vw, 2.85rem);
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   color: var(--vurp-marfil);
 }
@@ -180,9 +174,10 @@
 }
 
 @media (max-width: 899px) {
-  .welcome__line {
-    font-size: 1.25rem;
-    line-height: 1.3;
+  .welcome__headline {
+    top: calc(var(--nav-height) + 2.75rem);
+    font-size: 1.55rem;
+    line-height: 1.25;
   }
 }
 
@@ -225,15 +220,9 @@
   height: auto;
 }
 
-.welcome-static__messages {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.welcome-static__messages p {
-  margin: 0;
-  font-size: clamp(1.15rem, 0.9rem + 1vw, 1.6rem);
+.welcome-static__headline {
+  max-width: 36rem;
+  font-size: clamp(1.35rem, 1rem + 1.2vw, 2rem);
   font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.02em;

@@ -2,9 +2,9 @@
  * Configuración central de la intro. Los tramos, la cámara, las órbitas y los tiempos se ajustan aquí,
  * sin tocar la lógica. Los tramos de scroll se expresan como fracción (0–1) del recorrido de la sección.
  */
-import { welcomeLines } from "../../data/content";
+import { welcomeHeadline } from "../../data/content";
 
-export { welcomeLines };
+export { welcomeHeadline };
 
 /** Alto total de la sección. El stage sticky mide 100svh, así que el recorrido es (SECTION_VH − 100)vh. */
 export const SECTION_VH = 500;
@@ -27,24 +27,11 @@ export const SCENES: readonly [SceneRange, ...SceneRange[]] = [
   { id: "transicion", label: "6 · Transición", start: 0.9, end: 1 },
 ];
 
-/** Puntos de la línea de tiempo (fracciones del recorrido). */
+/**
+ * Puntos de la línea de tiempo (fracciones del recorrido).
+ * Las dos mitades del isotipo se encuentran al empezar `shatter`: el estallido no cambia de ventana.
+ */
 export const TIMELINE = {
-  /** Recorrido sobre el horizonte: el logo y el texto pasan de un extremo del arco al otro. */
-  orbitStart: 0.05,
-  orbitEnd: 0.54,
-  /** Ambos se juntan en el centro, justo encima del horizonte, y se quedan ahí antes del impacto. */
-  converge: { start: 0.54, end: 0.66 },
-  /** Posición de cada mensaje dentro del recorrido de la órbita (0–1). */
-  messageAnchors: [0, 0.45, 0.92] as const,
-  /**
-   * Distancia (en recorrido de órbita) a la que un mensaje empieza a apagarse y en la que desaparece. Con `outer`
-   * menor que la mitad de la distancia entre anclas, el saliente se apaga antes de que entre el siguiente y
-   * nunca se encima el texto.
-   */
-  messageFade: { inner: 0.1, outer: 0.22 },
-  /** Desplazamiento vertical (px) con que un mensaje entra desde abajo y el anterior sale hacia arriba. */
-  messageShiftPx: 14,
-  textOut: { start: 0.7, end: 0.74 },
   impact: 0.745,
   glow: { start: 0.68, peak: 0.745, end: 0.82 },
   /** El destello nunca supera `max` de opacidad: nada de pantallazo blanco. */

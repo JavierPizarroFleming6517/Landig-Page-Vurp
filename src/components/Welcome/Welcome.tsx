@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { BrandReveal } from "./BrandReveal";
-import { HEADER, SECTION_VH, welcomeLines } from "./config";
+import { HEADER, SECTION_VH, welcomeHeadline } from "./config";
 import { DebugOverlay, type DebugHandle } from "./DebugOverlay";
 import { createHeaderHooks } from "./headerHooks";
 import { computeLayout, type StageLayout } from "./layout";
-import { Messages } from "./Messages";
-import { OrbitLogo } from "./OrbitLogo";
+import { SplitMark } from "./SplitMark";
 import type { SceneController } from "./scene/createScene";
 import { paintStars } from "./starfield";
 import { poseAt, sceneAt, type OrbiterPose } from "./timeline";
@@ -38,9 +37,9 @@ function WelcomeScroll({ started }: WelcomeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<SceneController | null>(null);
   const planetRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
-  const messagesRef = useRef<HTMLDivElement>(null);
-  const lineRefs = useRef<Array<HTMLParagraphElement | null>>([]);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const rightRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
   const waveRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLDivElement>(null);
@@ -48,7 +47,7 @@ function WelcomeScroll({ started }: WelcomeProps) {
   const [headerHooks] = useState(createHeaderHooks);
   const debugRef = useRef<DebugHandle | null>(null);
   const layoutRef = useRef<StageLayout | null>(null);
-  const lastRef = useRef({ progress: -1, enter: -1, layout: null as StageLayout | null, logoFront: true });
+  const lastRef = useRef({ progress: -1, enter: -1, layout: null as StageLayout | null });
   const [debug] = useState(() => new URLSearchParams(window.location.search).has("debug"));
 
   useEffect(() => {
@@ -131,28 +130,20 @@ function WelcomeScroll({ started }: WelcomeProps) {
     last.enter = frame.enter;
     last.layout = layout;
 
-    const logo = logoRef.current;
-    const messages = messagesRef.current;
+    const left = leftRef.current;
+    const right = rightRef.current;
+    const headline = headlineRef.current;
     const planet = planetRef.current;
     const wave = waveRef.current;
     const flash = flashRef.current;
     const reveal = revealRef.current;
     const halo = haloRef.current;
     const backdrop = backdropRef.current;
-    if (!logo || !messages || !planet || !wave || !flash || !reveal || !halo || !backdrop) return;
+    if (!left || !right || !headline || !planet || !wave || !flash || !reveal || !halo || !backdrop) return;
 
-    place(logo, pose.logo);
-    if (pose.logo.front !== last.logoFront) {
-      last.logoFront = pose.logo.front;
-      logo.dataset.layer = pose.logo.front ? "front" : "back";
-    }
-    place(messages, pose.text);
-    pose.messages.forEach((opacity, index) => {
-      const line = lineRefs.current[index];
-      if (!line) return;
-      line.style.opacity = String(opacity);
-      line.style.transform = `translate3d(0, ${pose.messageOffsets[index] ?? 0}px, 0)`;
-    });
+    place(left, pose.left);
+    place(right, pose.right);
+    headline.style.opacity = String(pose.headline);
 
     planet.style.opacity = String(pose.planet.bodyOpacity);
     planet.style.setProperty("--glow", pose.planet.glow.toFixed(3));
@@ -195,11 +186,13 @@ function WelcomeScroll({ started }: WelcomeProps) {
           <canvas ref={starsRef} className="welcome__stars" />
           <div className="welcome__floor" />
         </div>
-        <OrbitLogo logoRef={logoRef} />
+        <h2 ref={headlineRef} className="welcome__headline">
+          {welcomeHeadline}
+        </h2>
+        <SplitMark leftRef={leftRef} rightRef={rightRef} />
         <div ref={planetRef} className="welcome__planet" aria-hidden="true" />
         <canvas ref={canvasRef} className="welcome__canvas" aria-hidden="true" />
         <div ref={waveRef} className="welcome__wave" aria-hidden="true" />
-        <Messages lines={welcomeLines} containerRef={messagesRef} lineRefs={lineRefs} />
         <div ref={flashRef} className="welcome__flash" aria-hidden="true" />
         <BrandReveal revealRef={revealRef} haloRef={haloRef} />
         {debug && <DebugOverlay handleRef={debugRef} />}

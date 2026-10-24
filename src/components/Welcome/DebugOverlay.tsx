@@ -36,8 +36,8 @@ export function DebugOverlay({ handleRef }: { handleRef: RefObject<DebugHandle |
             `fps       ${fps}`,
             ...extra,
             `entrada   ${pct(frame.enter)}`,
-            `logo      ${pose.logo.front ? "delante" : "detrás"}`,
-            `mensajes  ${pose.messages.map((value) => value.toFixed(2)).join(" · ")}`,
+            `mitades   ${pose.left.opacity.toFixed(2)} · ${Math.round(pose.left.x)} / ${Math.round(pose.right.x)}`,
+            `titular   ${pose.headline.toFixed(2)}`,
           ].join("\n");
         }
         playheadRef.current?.style.setProperty("left", `${frame.progress * 100}%`);

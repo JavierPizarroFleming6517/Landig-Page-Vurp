@@ -206,8 +206,6 @@ export const continents = {
  */
 export const landmass = {
   vertex: /* glsl */ `
-    varying vec3 vNormal;
-    varying vec3 vView;
     varying vec3 vWorld;
     varying vec3 vLocal;
     varying float vFocus;
@@ -215,8 +213,6 @@ export const landmass = {
     void main() {
       vec4 world = modelMatrix * vec4(position, 1.0);
       vec4 mv = viewMatrix * world;
-      vNormal = normalize(normalMatrix * normal);
-      vView = normalize(-mv.xyz);
       vWorld = world.xyz;
       vLocal = normalize(position);
       gl_Position = projectionMatrix * mv;
@@ -225,16 +221,14 @@ export const landmass = {
   `,
   fragment: /* glsl */ `
     uniform vec3 uColor;
-    uniform vec3 uShade;
+    uniform vec3 uEdge;
+    uniform vec3 uIvory;
     uniform vec3 uHot;
     uniform vec3 uImpact;
     uniform float uOpacity;
-    uniform float uGlow;
     uniform float uShatter;
     uniform float uShardDensity;
     uniform sampler2D uMask;
-    varying vec3 vNormal;
-    varying vec3 vView;
     varying vec3 vWorld;
     varying vec3 vLocal;
     varying float vFocus;
@@ -244,17 +238,21 @@ export const landmass = {
     void main() {
       float lon = atan(vLocal.x, vLocal.z);
       float lat = asin(clamp(vLocal.y, -1.0, 1.0));
-      float land = texture2D(uMask, vec2(lon * 0.15915494 + 0.5, 0.5 - lat * 0.31830989)).r;
-      if (land < 0.5) discard;
+      float sdf = texture2D(uMask, vec2(lon * 0.15915494 + 0.5, 0.5 - lat * 0.31830989)).r;
       float front = distance(vWorld, uImpact) - uShatter * 5.0 + shard(vWorld) * 0.45;
       if (uShatter > 0.0 && front < 0.0) discard;
-      float light = clamp(dot(vNormal, normalize(vec3(-0.35, 0.62, 0.7))), 0.0, 1.0);
-      float facing = clamp(dot(vNormal, vView), 0.0, 1.0);
-      vec3 color = mix(uShade, uColor, 0.42 + light * 0.58);
-      color += uColor * pow(1.0 - facing, 2.2) * (0.12 + uGlow * 0.2);
-      float edge = uShatter > 0.0 ? smoothstep(0.14, 0.0, front) : 0.0;
-      color = mix(color, uHot, edge * 0.55);
-      gl_FragColor = vec4(color, uOpacity * vFocus);
+
+      // Un píxel de pantalla, en unidades de la cobertura. El tope solo frena el limbo, donde la derivada se dispara.
+      float w = clamp(fwidth(sdf), 0.0001, 0.18);
+      if (sdf < 0.5 - w * 2.05) discard;
+      float cover = smoothstep(0.5 - w * 1.35, 0.5 + w * 0.55, sdf);
+      float stroke = 1.0 - smoothstep(w * 0.25, w * 2.7, max(sdf - 0.5, 0.0));
+      vec3 edgeColor = mix(uEdge, uIvory, 0.7);
+      vec3 color = mix(uColor, edgeColor, stroke);
+      float breakEdge = uShatter > 0.0 ? smoothstep(0.14, 0.0, front) : 0.0;
+      color = mix(color, uHot, breakEdge * 0.55);
+      float alpha = mix(0.5, 1.0, stroke) * cover;
+      gl_FragColor = vec4(color, alpha * uOpacity * vFocus);
     }
   `,
 };

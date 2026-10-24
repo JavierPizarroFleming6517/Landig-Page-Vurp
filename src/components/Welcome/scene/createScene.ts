@@ -39,7 +39,7 @@ export function createScene(canvas: HTMLCanvasElement, layout: StageLayout): Sce
   const renderer = new WebGLRenderer({
     canvas,
     alpha: true,
-    antialias: window.devicePixelRatio < 2,
+    antialias: true,
     powerPreference: "high-performance",
   });
   renderer.outputColorSpace = LinearSRGBColorSpace;
@@ -52,7 +52,7 @@ export function createScene(canvas: HTMLCanvasElement, layout: StageLayout): Sce
   const shared = createSharedUniforms();
   // El tier de puntos se fija al crear la escena (no se rehace la geometría al rotar el dispositivo).
   const tier = layout.compact ? "compact" : "wide";
-  const planet = createPlanet(shared, tier);
+  const planet = createPlanet(shared, tier, renderer.capabilities.getMaxAnisotropy());
   scene.add(planet.root);
   const explosion = createExplosion();
   scene.add(explosion.group);
@@ -72,8 +72,8 @@ export function createScene(canvas: HTMLCanvasElement, layout: StageLayout): Sce
 
   const setLayout = (next: StageLayout) => {
     current = next;
-    const cap = next.compact ? PLANET.dprCap.compact : PLANET.dprCap.wide;
-    const dpr = Math.min(window.devicePixelRatio || 1, reduced ? PLANET.adaptive.reducedDpr : cap);
+    const cap = reduced ? PLANET.adaptive.reducedDpr : 2;
+    const dpr = Math.min(window.devicePixelRatio || 1, cap);
     renderer.setPixelRatio(dpr);
     renderer.setSize(next.width, next.height, false);
     shared.uPixelRatio.value = dpr;

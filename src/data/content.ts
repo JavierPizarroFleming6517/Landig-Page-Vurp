@@ -56,11 +56,7 @@ export const intro: IntroContent = {
   tagline: "Software & Cybersecurity",
 };
 
-export const welcomeLines = [
-  "Transformamos ideas en tecnología.",
-  "Desarrollamos soluciones para desafíos reales.",
-  "Protegemos lo que construyes.",
-] as const;
+export const welcomeHeadline = "Desarrollamos soluciones adaptadas a tus problemas";
 
 export const valueProps: readonly ValueProp[] = [
   {
