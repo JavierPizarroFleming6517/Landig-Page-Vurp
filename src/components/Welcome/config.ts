@@ -58,6 +58,15 @@ export const TIMELINE = {
   backdropOut: { start: 0.88, end: 0.96 },
 } as const;
 
+/**
+ * Header durante la intro: la barra se vuelve translúcida apenas empieza el scroll de la animación y recupera su
+ * fondo cuando la escena termina de fundirse en Grafito (fin de `backdropOut`).
+ */
+export const HEADER = {
+  translucentFrom: 0.005,
+  translucentUntil: TIMELINE.backdropOut.end,
+} as const;
+
 /** Entrada de la escena 1, por tiempo, una vez que termina el splash. */
 export const ENTER = {
   delayMs: 150,
@@ -203,6 +212,13 @@ export const PLANET = {
   atmosphereAlpha: 0.38,
   /** Tope de devicePixelRatio para el canvas WebGL. */
   dprCap: { wide: 2, compact: 1.5 },
+  /**
+   * Degradación adaptativa: si durante `windowMs` el frame promedio supera `frameBudgetMs`, la escena baja una vez
+   * a DPR `reducedDpr` y dibuja solo `reducedPointShare` de los puntos de los continentes.
+   */
+  adaptive: { frameBudgetMs: 24, windowMs: 1000, reducedDpr: 1, reducedPointShare: 0.5 },
+  /** En móvil, con la escena quieta (sin scroll ni explosión), se renderiza un frame de cada dos. */
+  idleHalfRate: { wide: false, compact: true },
 } as const;
 
 /** Ciudades reales (lat, lon) y sus conexiones. Coquimbo es la base de Vurp. */

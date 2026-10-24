@@ -35,6 +35,21 @@
   --nav-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
 }
 
+/*
+ * Gancho de la intro: mientras corre la animación solo la barra (fondo, borde y sombra) se vuelve translúcida,
+ * para no tapar la escena. Logo, enlaces y botones quedan igual. Con el menú móvil abierto, la barra es normal.
+ */
+html[data-welcome-nav="translucent"] .navbar:not(.navbar--open) {
+  --nav-bg: rgba(28, 26, 33, 0.18);
+  --nav-border: rgba(228, 213, 242, 0.08);
+  --nav-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+html[data-welcome-nav="translucent"] .navbar:not(.navbar--open) .navbar__bar {
+  backdrop-filter: saturate(140%) blur(4px);
+  -webkit-backdrop-filter: saturate(140%) blur(4px);
+}
+
 .navbar :focus-visible {
   outline-color: var(--nav-accent);
 }
@@ -53,7 +68,8 @@
   box-shadow: var(--nav-shadow);
   transition:
     background-color 0.35s var(--ease-out),
-    border-color 0.35s var(--ease-out);
+    border-color 0.35s var(--ease-out),
+    box-shadow 0.35s var(--ease-out);
 }
 
 .navbar__logo {

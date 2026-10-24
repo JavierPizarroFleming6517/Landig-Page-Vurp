@@ -59,6 +59,8 @@ export interface Planet {
   baseSpin: number;
   /** Líneas orbitales (se expanden al fragmentarse el planeta). */
   orbits: Group;
+  /** Fracción (0–1) de los puntos de los continentes que se dibujan; el orden ya viene barajado. */
+  setPointShare: (share: number) => void;
   dispose: () => void;
 }
 
@@ -171,8 +173,9 @@ export function createPlanet(shared: SharedUniforms, tier: Tier): Planet {
   occluder.renderOrder = 0;
   spin.add(occluder);
 
+  const continentPoints = track(continentGeometry(PLANET.continents.points[tier], PLANET.continents.radius));
   const continents = new Points(
-    track(continentGeometry(PLANET.continents.points[tier], PLANET.continents.radius)),
+    continentPoints,
     track(
       new ShaderMaterial({
         uniforms: {
@@ -281,6 +284,10 @@ export function createPlanet(shared: SharedUniforms, tier: Tier): Planet {
     spin,
     baseSpin: -PLANET.facing.lon * DEG,
     orbits,
+    setPointShare: (share) => {
+      const count = continentPoints.getAttribute("position").count;
+      continentPoints.setDrawRange(0, Math.round(count * share));
+    },
     dispose: () => disposables.forEach((item) => item.dispose()),
   };
 }

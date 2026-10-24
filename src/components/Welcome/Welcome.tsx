@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { BrandReveal } from "./BrandReveal";
-import { SECTION_VH, welcomeLines } from "./config";
+import { HEADER, SECTION_VH, welcomeLines } from "./config";
 import { DebugOverlay, type DebugHandle } from "./DebugOverlay";
+import { createHeaderHooks } from "./headerHooks";
 import { computeLayout, type StageLayout } from "./layout";
 import { Messages } from "./Messages";
 import { OrbitLogo } from "./OrbitLogo";
@@ -9,6 +11,7 @@ import type { SceneController } from "./scene/createScene";
 import { paintStars } from "./starfield";
 import { poseAt, sceneAt, type OrbiterPose } from "./timeline";
 import { useScrollTimeline, type TimelineFrame } from "./useScrollTimeline";
+import { WelcomeStatic } from "./WelcomeStatic";
 import "./Welcome.css";
 
 interface WelcomeProps {
@@ -21,17 +24,13 @@ const place = (element: HTMLElement, { x, y, scale, opacity }: OrbiterPose) => {
   element.style.opacity = String(opacity);
 };
 
-/**
- * Gancho con el header: durante la revelación y la transición (escenas 5 y 6) se oculta el logo de la navbar,
- * para respetar el área de protección del logo completo y no duplicarlo.
- */
-const setNavLogoHidden = (hidden: boolean) => {
-  const root = document.documentElement;
-  if (hidden) root.dataset.welcome = "reveal";
-  else delete root.dataset.welcome;
-};
-
+/** Intro de la landing: la animación por scroll o, con `prefers-reduced-motion`, la versión estática. */
 export function Welcome({ started }: WelcomeProps) {
+  const reduced = usePrefersReducedMotion();
+  return reduced ? <WelcomeStatic /> : <WelcomeScroll started={started} />;
+}
+
+function WelcomeScroll({ started }: WelcomeProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
@@ -46,7 +45,7 @@ export function Welcome({ started }: WelcomeProps) {
   const flashRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLDivElement>(null);
   const haloRef = useRef<HTMLDivElement>(null);
-  const navHiddenRef = useRef(false);
+  const [headerHooks] = useState(createHeaderHooks);
   const debugRef = useRef<DebugHandle | null>(null);
   const layoutRef = useRef<StageLayout | null>(null);
   const lastRef = useRef({ progress: -1, enter: -1, layout: null as StageLayout | null, logoFront: true });
@@ -102,13 +101,11 @@ export function Welcome({ started }: WelcomeProps) {
     const layout = layoutRef.current;
     if (!layout) return;
     const pose = poseAt(frame.progress, frame.enter, layout);
-    // Se decide con el scroll real (sin suavizar), así un salto por ancla nunca deja el logo oculto.
+    // Los ganchos del header se deciden con el scroll real (sin suavizar): un salto por ancla nunca los deja puestos.
+    // Logo de la barra fuera durante la revelación y la transición (escenas 5 y 6), por el área de respeto.
     const { id: sceneId } = sceneAt(frame.target);
-    const hideNavLogo = (sceneId === "revelacion" || sceneId === "transicion") && frame.target < 1;
-    if (hideNavLogo !== navHiddenRef.current) {
-      navHiddenRef.current = hideNavLogo;
-      setNavLogoHidden(hideNavLogo);
-    }
+    headerHooks.sync("logoHidden", (sceneId === "revelacion" || sceneId === "transicion") && frame.target < 1);
+    headerHooks.sync("translucent", frame.target > HEADER.translucentFrom && frame.target < HEADER.translucentUntil);
     const scene = sceneRef.current;
     scene?.render({
       time: frame.now / 1000,
@@ -121,7 +118,7 @@ export function Welcome({ started }: WelcomeProps) {
       focus: pose.focus,
     });
     debugRef.current?.update(frame, pose, [
-      `webgl     ${stageRef.current?.dataset.webgl ?? "-"} · dpr ${scene?.pixelRatio() ?? "-"}`,
+      `webgl     ${stageRef.current?.dataset.webgl ?? "-"} · dpr ${scene?.pixelRatio() ?? "-"} · ${scene?.quality() ?? "-"}`,
       `planeta   ×${layout.planetScale.toFixed(2)} · ${Math.round(layout.planetPx)} px`,
       `capa      ${layout.fits ? "ok" : "no cabe"} · ${Math.round(layout.logoClearance)} px del disco`,
     ]);
@@ -170,15 +167,16 @@ export function Welcome({ started }: WelcomeProps) {
     halo.style.opacity = String(pose.reveal.halo);
     halo.style.transform = `translate(-50%, -50%) scale(${0.8 + pose.reveal.halo * 0.25})`;
     backdrop.style.opacity = String(pose.backdrop);
-  }, []);
+  }, [headerHooks]);
 
-  const onVisibilityChange = useCallback((visible: boolean) => {
-    if (visible || !navHiddenRef.current) return;
-    navHiddenRef.current = false;
-    setNavLogoHidden(false);
-  }, []);
+  const onVisibilityChange = useCallback(
+    (visible: boolean) => {
+      if (!visible) headerHooks.reset();
+    },
+    [headerHooks],
+  );
 
-  useEffect(() => () => setNavLogoHidden(false), []);
+  useEffect(() => () => headerHooks.reset(), [headerHooks]);
 
   useScrollTimeline({ sectionRef, stageRef, started, onFrame, onVisibilityChange });
 

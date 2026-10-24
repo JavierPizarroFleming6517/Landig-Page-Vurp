@@ -27,6 +27,8 @@ export interface SceneController {
   setLayout: (layout: StageLayout) => void;
   render: (frame: SceneFrame) => void;
   pixelRatio: () => number;
+  /** "normal" o "reducida" (tras la degradación adaptativa). */
+  quality: () => "normal" | "reducida";
   dispose: () => void;
 }
 
@@ -49,17 +51,29 @@ export function createScene(canvas: HTMLCanvasElement, layout: StageLayout): Sce
 
   const shared = createSharedUniforms();
   // El tier de puntos se fija al crear la escena (no se rehace la geometría al rotar el dispositivo).
-  const planet = createPlanet(shared, layout.compact ? "compact" : "wide");
+  const tier = layout.compact ? "compact" : "wide";
+  const planet = createPlanet(shared, tier);
   scene.add(planet.root);
   const explosion = createExplosion();
   scene.add(explosion.group);
 
   let lastOpacity = -1;
+  let current = layout;
+  let reduced = false;
+  // Medición de rendimiento: intervalos entre frames renderizados (se ignoran pausas de más de 100 ms).
+  let lastTime = -1;
+  let sampled = 0;
+  let frames = 0;
+  // Media cadencia en reposo (móvil): se compara con el frame anterior.
+  let lastProgress = -1;
+  let skipNext = false;
   /** Momento en que el planeta empieza a verse: desde ahí corre la rotación propia, así la escena 1 parte de frente. */
   let shownAt: number | null = null;
 
   const setLayout = (next: StageLayout) => {
-    const dpr = Math.min(window.devicePixelRatio || 1, next.compact ? PLANET.dprCap.compact : PLANET.dprCap.wide);
+    current = next;
+    const cap = next.compact ? PLANET.dprCap.compact : PLANET.dprCap.wide;
+    const dpr = Math.min(window.devicePixelRatio || 1, reduced ? PLANET.adaptive.reducedDpr : cap);
     renderer.setPixelRatio(dpr);
     renderer.setSize(next.width, next.height, false);
     shared.uPixelRatio.value = dpr;
@@ -75,13 +89,40 @@ export function createScene(canvas: HTMLCanvasElement, layout: StageLayout): Sce
   setLayout(layout);
   renderer.compile(scene, camera);
 
+  /** Si el equipo no sostiene el presupuesto de frame, baja una sola vez la resolución y la cantidad de puntos. */
+  const measure = (time: number) => {
+    if (reduced) return;
+    const interval = (time - lastTime) * 1000;
+    lastTime = time;
+    if (interval <= 0 || interval > 100) return;
+    sampled += interval;
+    frames += 1;
+    if (sampled < PLANET.adaptive.windowMs) return;
+    if (sampled / frames > PLANET.adaptive.frameBudgetMs) {
+      reduced = true;
+      planet.setPointShare(PLANET.adaptive.reducedPointShare);
+      setLayout(current);
+    }
+    sampled = 0;
+    frames = 0;
+  };
+
   return {
     setLayout,
     render: ({ time, progress, opacity, glow, shatter, burst, impact, focus }) => {
       // Sin nada visible (antes de la entrada o con la explosión ya disipada) basta un frame vacío.
       const visible = shatter >= 1 && burst >= 1 ? 0 : opacity;
       if (visible <= 0.001 && lastOpacity <= 0.001 && lastOpacity >= 0) return;
+      const idle = progress === lastProgress && shatter === 0 && burst === 0 && visible === lastOpacity;
+      lastProgress = progress;
+      if (PLANET.idleHalfRate[tier] && idle) {
+        skipNext = !skipNext;
+        if (skipNext) return;
+      }
       lastOpacity = visible;
+      // Se mide solo con la escena en movimiento: en reposo (y a media cadencia) el intervalo no dice nada.
+      if (idle) lastTime = -1;
+      else measure(time);
       if (shownAt === null && opacity > 0) shownAt = time;
       shared.uTime.value = time;
       shared.uOpacity.value = visible;
@@ -97,6 +138,7 @@ export function createScene(canvas: HTMLCanvasElement, layout: StageLayout): Sce
       renderer.render(scene, camera);
     },
     pixelRatio: () => renderer.getPixelRatio(),
+    quality: () => (reduced ? "reducida" : "normal"),
     dispose: () => {
       planet.dispose();
       explosion.dispose();
