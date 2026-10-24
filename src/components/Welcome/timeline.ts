@@ -35,6 +35,8 @@ export interface WelcomePose {
   text: OrbiterPose;
   /** Opacidad propia de cada mensaje (relevo); se multiplica por la del bloque de texto. */
   messages: readonly [number, number, number];
+  /** Desplazamiento vertical (px) de cada mensaje durante el relevo: entra desde abajo, sale hacia arriba. */
+  messageOffsets: readonly [number, number, number];
   planet: { opacity: number; glow: number; shatter: number };
   impact: { x: number; y: number };
   burst: number;
@@ -69,6 +71,8 @@ export function poseAt(progress: number, enter: number, layout: StageLayout): We
   const [a0, a1, a2] = TIMELINE.messageAnchors;
   const relay = (anchor: number) =>
     1 - smoothstep(TIMELINE.messageFade.inner, TIMELINE.messageFade.outer, Math.abs(t - anchor));
+  const shift = (anchor: number) =>
+    Math.max(-1, Math.min(1, (anchor - t) / TIMELINE.messageFade.outer)) * TIMELINE.messageShiftPx;
 
   const impact = project(orbitPoint({ ...logoOrbit, radius: 1.02, offsetY: 0 }, -1.5 * Math.PI), layout);
   const { glow, flash, shatter, burst, planetOut, reveal, backdropOut, textOut } = TIMELINE;
@@ -91,6 +95,7 @@ export function poseAt(progress: number, enter: number, layout: StageLayout): We
       front: true,
     },
     messages: [relay(a0), relay(a1), relay(a2)],
+    messageOffsets: [shift(a0), shift(a1), shift(a2)],
     planet: {
       opacity: enter * (1 - smoothstep(planetOut.start, planetOut.end, p)),
       glow: Math.max(impactGlow, enterGlow),

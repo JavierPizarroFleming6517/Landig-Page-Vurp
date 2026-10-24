@@ -33,9 +33,15 @@ export const TIMELINE = {
   orbitStart: 0.04,
   orbitEnd: 0.5,
   /** Posición de cada mensaje dentro del recorrido de la órbita (0–1). */
-  messageAnchors: [0, 0.45, 1] as const,
-  /** Distancia (en recorrido de órbita) a la que un mensaje empieza a apagarse y en la que desaparece. */
-  messageFade: { inner: 0.14, outer: 0.32 },
+  messageAnchors: [0, 0.45, 0.92] as const,
+  /**
+   * Distancia (en recorrido de órbita) a la que un mensaje empieza a apagarse y en la que desaparece. Con `outer`
+   * menor que la mitad de la distancia entre anclas, el saliente se apaga antes de que entre el siguiente y
+   * nunca se encima el texto.
+   */
+  messageFade: { inner: 0.1, outer: 0.22 },
+  /** Desplazamiento vertical (px) con que un mensaje entra desde abajo y el anterior sale hacia arriba. */
+  messageShiftPx: 14,
   textOut: { start: 0.56, end: 0.6 },
   dive: { start: 0.6, end: 0.68 },
   impact: 0.68,

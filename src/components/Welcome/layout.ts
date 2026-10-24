@@ -1,3 +1,4 @@
+import { orbitPoint } from "./orbits";
 import {
   BREAKPOINT,
   CAMERA,
@@ -43,19 +44,33 @@ function discClearance(x: number, y: number, halfWidth: number, halfHeight: numb
 }
 
 /**
- * Radio de la órbita del logo: el cambio de capa ocurre en los extremos (θ = 0 y π, profundidad 0), así que
- * ahí la caja del logo debe quedar fuera del disco (Rx ≥ Rplaneta + ancho/2 + margen) y dentro de la pantalla.
+ * Radio de la órbita del logo. El cambio de capa ocurre en los extremos (θ = 0 y π, profundidad 0), así que ahí
+ * la caja del logo debe quedar fuera del disco (Rx ≥ Rplaneta + ancho/2 + margen). Además, en todo el arco
+ * trasero (con su escala por profundidad) el logo no puede acercarse al borde de la pantalla.
  */
-function solveLogoRadius(orbit: OrbitConfig, planetPx: number, halfWidth: number, halfHeight: number, width: number) {
+function solveLogoRadius(preset: LayoutPreset, planetPx: number, halfWidth: number, halfHeight: number, width: number) {
+  const orbit = preset.logoOrbit;
   const roll = orbit.roll ?? 0;
   const clearanceAt = (radius: number) =>
     discClearance(radius * planetPx * Math.cos(roll), radius * planetPx * Math.sin(roll), halfWidth, halfHeight, planetPx);
+  const focal = planetPx * CAMERA.distance;
+  const extentAt = (radius: number) => {
+    let extent = 0;
+    for (let step = 0; step <= 32; step += 1) {
+      const point = orbitPoint({ ...orbit, radius }, (-Math.PI * step) / 32);
+      const depthScale = CAMERA.distance / (CAMERA.distance - point.z);
+      const scale = 1 + (depthScale - 1) * preset.logoDepthGain;
+      extent = Math.max(extent, Math.abs(point.x) * (focal / (CAMERA.distance - point.z)) + halfWidth * scale);
+    }
+    return extent;
+  };
+
   let need = 1;
   while (need < 4 && clearanceAt(need) < LAYOUT_MARGIN.disc) need += 0.005;
-  const horizontal = Math.abs(Math.cos(roll));
-  const max = horizontal < 1e-3 ? Infinity : (width / 2 - LAYOUT_MARGIN.edge - halfWidth) / (planetPx * horizontal);
-  const fits = need <= max;
-  const radius = fits ? Math.min(max, Math.max(need, orbit.radius)) : need;
+  const limit = width / 2 - LAYOUT_MARGIN.edge;
+  let radius = Math.max(need, orbit.radius);
+  while (radius > need && extentAt(radius) > limit) radius -= 0.005;
+  const fits = extentAt(radius) <= limit;
   return { radius, fits, clearance: clearanceAt(radius) };
 }
 
@@ -77,7 +92,7 @@ export function computeLayout(width: number, height: number): StageLayout {
     const planetPx = basePx * planetScale;
     const logoPx = Math.round(planetPx * preset.logoSize);
     const logoWidth = Math.round(logoPx * LOGO_ASPECT);
-    return { planetScale, planetPx, logoPx, logoWidth, logo: solveLogoRadius(preset.logoOrbit, planetPx, logoWidth / 2, logoPx / 2, width) };
+    return { planetScale, planetPx, logoPx, logoWidth, logo: solveLogoRadius(preset, planetPx, logoWidth / 2, logoPx / 2, width) };
   };
   const preferred = attempt(PLANET_SCALE.preferred);
   const chosen = preferred.logo.fits ? preferred : attempt(PLANET_SCALE.min);

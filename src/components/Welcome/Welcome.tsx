@@ -120,7 +120,9 @@ export function Welcome({ started }: WelcomeProps) {
     place(messages, pose.text);
     pose.messages.forEach((opacity, index) => {
       const line = lineRefs.current[index];
-      if (line) line.style.opacity = String(opacity);
+      if (!line) return;
+      line.style.opacity = String(opacity);
+      line.style.transform = `translate3d(0, ${pose.messageOffsets[index] ?? 0}px, 0)`;
     });
 
     planet.style.opacity = String(pose.planet.opacity);
