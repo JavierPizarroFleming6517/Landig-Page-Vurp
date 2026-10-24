@@ -1,0 +1,194 @@
+/* El alto de la sección se fija en línea desde config.ts (SECTION_VH). */
+.welcome {
+  position: relative;
+  overflow: clip;
+  background: var(--vurp-grafito);
+}
+
+.welcome__stage {
+  --cx: 50%;
+  --cy: 50%;
+  --planet-r: 160px;
+  --logo-h: 80px;
+  --text-w: 420px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.welcome__stage > * {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Orden de capas: fondo 0 · logo detrás 1 · planeta 2 · logo delante y texto 3 · destello y revelación 4 · debug 5 */
+.welcome__backdrop {
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 45%, var(--vurp-grafito) 0%, #1c1a21 70%, #151319 100%);
+}
+
+.welcome__planet {
+  left: var(--cx);
+  top: var(--cy);
+  z-index: 2;
+  width: calc(var(--planet-r) * 2);
+  height: calc(var(--planet-r) * 2);
+  border-radius: 50%;
+  opacity: 0;
+  /* Placeholder de la Fase 1: disco opaco que tapa lo que pasa por detrás. */
+  background: radial-gradient(circle at 35% 30%, #3a3442, #1b1920 70%);
+  border: 1px solid rgba(228, 213, 242, 0.35);
+  box-shadow: 0 0 calc(var(--glow, 0) * 90px) calc(var(--glow, 0) * 16px) rgba(180, 132, 210, calc(var(--glow, 0) * 0.7));
+  transform: translate(-50%, -50%) scale(calc(1 + var(--shatter, 0) * 0.25));
+}
+
+.welcome__logo {
+  left: 0;
+  top: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: calc(var(--logo-h) * 1.4);
+  height: var(--logo-h);
+  opacity: 0;
+  border-radius: 10px;
+  background: var(--vurp-orquidea-claro);
+  color: var(--vurp-grafito);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  will-change: transform, opacity;
+}
+
+.welcome__logo[data-layer="back"] {
+  z-index: 1;
+}
+
+.welcome__messages {
+  left: 0;
+  top: 0;
+  z-index: 3;
+  display: grid;
+  width: var(--text-w);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.welcome__line {
+  grid-area: 1 / 1;
+  align-self: center;
+  margin: 0;
+  opacity: 0;
+  text-align: center;
+  font-size: clamp(1.5rem, 1rem + 1.4vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--vurp-marfil);
+}
+
+.welcome__wave {
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: calc(var(--planet-r) * 2);
+  height: calc(var(--planet-r) * 2);
+  border-radius: 50%;
+  border: 2px solid var(--vurp-lila-claro);
+  opacity: 0;
+}
+
+.welcome__flash {
+  inset: 0;
+  z-index: 4;
+  opacity: 0;
+  background: radial-gradient(circle at var(--fx, 50%) var(--fy, 50%), var(--vurp-lila-claro), rgba(180, 132, 210, 0.4) 18%, transparent 45%);
+}
+
+.welcome__reveal {
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: clamp(220px, 30vw, 380px);
+  aspect-ratio: 395 / 124;
+  opacity: 0;
+  border: 1px dashed var(--vurp-lila-claro);
+  border-radius: 12px;
+  color: var(--vurp-lila-claro);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 899px) {
+  .welcome__line {
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+}
+
+/* Panel de depuración (?debug) */
+.welcome-debug {
+  inset: 0;
+  z-index: 5;
+  font: 500 0.75rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--vurp-marfil);
+}
+
+.welcome-debug__readout {
+  position: absolute;
+  top: calc(var(--nav-height) + 0.75rem);
+  left: 0.75rem;
+  margin: 0;
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.62);
+  white-space: pre;
+}
+
+.welcome-debug__track {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  height: 1.5rem;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.welcome-debug__segment {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  border-left: 1px solid rgba(228, 213, 242, 0.45);
+  color: rgba(250, 247, 242, 0.75);
+}
+
+.welcome-debug__impact {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--vurp-orquidea-claro);
+}
+
+.welcome-debug__playhead {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--vurp-marfil);
+}

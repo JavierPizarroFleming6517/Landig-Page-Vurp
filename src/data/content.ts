@@ -61,8 +61,8 @@ export const intro: IntroContent = {
 };
 
 export const welcomeLines = [
-  "Transformamos ideas en soluciones digitales.",
-  "Desarrollamos tecnología a la medida de tu negocio.",
+  "Transformamos ideas en tecnología.",
+  "Desarrollamos soluciones para desafíos reales.",
   "Protegemos lo que construyes.",
 ] as const;
 
