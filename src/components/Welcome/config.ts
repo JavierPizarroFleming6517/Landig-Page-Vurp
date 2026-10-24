@@ -20,18 +20,20 @@ export interface SceneRange {
 
 export const SCENES: readonly [SceneRange, ...SceneRange[]] = [
   { id: "presentacion", label: "1 · Presentación", start: 0, end: 0.1 },
-  { id: "orbita", label: "2 · Órbita", start: 0.1, end: 0.32 },
-  { id: "intercambio", label: "3 · Intercambio", start: 0.32, end: 0.56 },
-  { id: "impacto", label: "4 · Impacto", start: 0.56, end: 0.74 },
-  { id: "revelacion", label: "5 · Revelación", start: 0.74, end: 0.88 },
-  { id: "transicion", label: "6 · Transición", start: 0.88, end: 1 },
+  { id: "orbita", label: "2 · Órbita", start: 0.1, end: 0.4 },
+  { id: "intercambio", label: "3 · Intercambio", start: 0.4, end: 0.58 },
+  { id: "impacto", label: "4 · Impacto", start: 0.58, end: 0.8 },
+  { id: "revelacion", label: "5 · Revelación", start: 0.8, end: 0.9 },
+  { id: "transicion", label: "6 · Transición", start: 0.9, end: 1 },
 ];
 
 /** Puntos de la línea de tiempo (fracciones del recorrido). */
 export const TIMELINE = {
-  /** Recorrido de las órbitas: el logo y el texto pasan de θ = 0 a θ = π. */
-  orbitStart: 0.04,
-  orbitEnd: 0.5,
+  /** Recorrido sobre el horizonte: el logo y el texto pasan de un extremo del arco al otro. */
+  orbitStart: 0.05,
+  orbitEnd: 0.54,
+  /** Ambos se juntan en el centro, justo encima del horizonte, y se quedan ahí antes del impacto. */
+  converge: { start: 0.54, end: 0.66 },
   /** Posición de cada mensaje dentro del recorrido de la órbita (0–1). */
   messageAnchors: [0, 0.45, 0.92] as const,
   /**
@@ -42,20 +44,19 @@ export const TIMELINE = {
   messageFade: { inner: 0.1, outer: 0.22 },
   /** Desplazamiento vertical (px) con que un mensaje entra desde abajo y el anterior sale hacia arriba. */
   messageShiftPx: 14,
-  textOut: { start: 0.56, end: 0.6 },
-  dive: { start: 0.6, end: 0.68 },
-  impact: 0.68,
-  glow: { start: 0.58, peak: 0.68, end: 0.76 },
+  textOut: { start: 0.7, end: 0.74 },
+  impact: 0.745,
+  glow: { start: 0.68, peak: 0.745, end: 0.82 },
   /** El destello nunca supera `max` de opacidad: nada de pantallazo blanco. */
-  flash: { rise: 0.672, end: 0.7, max: 0.35 },
+  flash: { rise: 0.738, end: 0.78, max: 0.35 },
   /** Fragmentación: el cuerpo se disuelve desde el punto de impacto y los puntos de los continentes se dispersan. */
-  shatter: { start: 0.676, end: 0.8 },
+  shatter: { start: 0.74, end: 0.86 },
   /** Ondas de energía y núcleo de luz en el punto de impacto. */
-  burst: { start: 0.676, end: 0.74 },
+  burst: { start: 0.74, end: 0.8 },
   /** Solo para el planeta CSS de respaldo (sin WebGL). */
-  planetOut: { start: 0.69, end: 0.78 },
-  reveal: { inStart: 0.76, inEnd: 0.82, outStart: 0.88, outEnd: 0.94 },
-  backdropOut: { start: 0.88, end: 0.96 },
+  planetOut: { start: 0.75, end: 0.84 },
+  reveal: { inStart: 0.8, inEnd: 0.86, outStart: 0.9, outEnd: 0.96 },
+  backdropOut: { start: 0.9, end: 0.98 },
 } as const;
 
 /**
@@ -100,15 +101,27 @@ export interface LayoutPreset {
   /** Radio base del planeta en px = min(ancho × planetVw, alto × planetVh); luego se multiplica por PLANET_SCALE. */
   planetVw: number;
   planetVh: number;
-  /** Centro vertical del planeta como fracción del alto del stage. */
-  centerY: number;
-  /** Alto del logo orbitando, relativo al radio del planeta en px. */
-  logoSize: number;
+  /** Corona del planeta (borde superior del horizonte), como fracción del alto. */
+  horizon: number;
+  /** Margen (px) que se resta al semiancho para que la curva no se corte en el borde. */
+  horizonInset: number;
+  /** El logo completo aparece a esta fracción de alto por encima de la corona. */
+  revealLift: number;
+  /** Alcance horizontal del arco, como fracción del ancho. */
+  arcReach: number;
+  /** Separación del arco respecto de la curva del horizonte, como fracción del alto. */
+  arcLift: number;
+  /** El texto viaja siempre por encima del isotipo, a esta fracción del alto. */
+  textRise: number;
+  /** Subida extra en el centro del arco (fracción del alto): el texto sube más que el isotipo. */
+  logoCrest: number;
+  textCrest: number;
+  /** Alto del isotipo que orbita, como fracción del alto de pantalla, con tope. */
+  logoVh: number;
+  logoMaxPx: number;
   /** Ancho del bloque de texto: min(textMaxPx, ancho × textVw). */
   textVw: number;
   textMaxPx: number;
-  logoOrbit: OrbitConfig;
-  textOrbit: OrbitConfig;
   /** Cuánto amplifica la profundidad la escala proyectada (1 = perspectiva pura). */
   logoDepthGain: number;
   textDepthGain: number;
@@ -134,29 +147,40 @@ export const LAYOUT: Record<"wide" | "compact", LayoutPreset> = {
   wide: {
     planetVw: 0.15,
     planetVh: 0.24,
-    centerY: 0.46,
-    logoSize: 0.4,
-    textVw: 0.26,
-    textMaxPx: 360,
-    logoOrbit: { radius: 1.55, tilt: 0.85, offsetY: 0 },
-    textOrbit: { radius: 1.78, tilt: 0.6, offsetY: 0 },
-    logoDepthGain: 2.5,
-    textDepthGain: 0.3,
-    logoBackOpacity: 0.55,
+    horizon: 0.58,
+    horizonInset: 28,
+    revealLift: 0.16,
+    arcReach: 0.34,
+    arcLift: 0.095,
+    textRise: 0.045,
+    logoCrest: 0.02,
+    textCrest: 0.16,
+    logoVh: 0.14,
+    logoMaxPx: 132,
+    textVw: 0.3,
+    textMaxPx: 420,
+    logoDepthGain: 1,
+    textDepthGain: 1,
+    logoBackOpacity: 1,
   },
   compact: {
     planetVw: 0.25,
     planetVh: 0.2,
-    centerY: 0.4,
-    logoSize: 0.44,
-    textVw: 0.82,
-    textMaxPx: 360,
-    // En móvil no hay ancho para dar la vuelta por los costados: la órbita va en diagonal.
-    logoOrbit: { radius: 1.46, tilt: 0.85, offsetY: 0, roll: 0.75 },
-    textOrbit: { radius: 0.12, tilt: 0.4, offsetY: -2.1 },
-    logoDepthGain: 2.5,
-    textDepthGain: 0.3,
-    logoBackOpacity: 0.55,
+    horizon: 0.8,
+    horizonInset: 8,
+    revealLift: 0.2,
+    arcReach: 0.18,
+    arcLift: 0.07,
+    textRise: 0.1,
+    logoCrest: 0.015,
+    textCrest: 0.08,
+    logoVh: 0.09,
+    logoMaxPx: 84,
+    textVw: 0.56,
+    textMaxPx: 320,
+    logoDepthGain: 1,
+    textDepthGain: 1,
+    logoBackOpacity: 1,
   },
 };
 
@@ -177,7 +201,8 @@ export const COLORS = {
 /** Planeta 3D (radio = 1 unidad de mundo). */
 export const PLANET = {
   /** Orientación inicial (grados): punto que queda de frente en la escena 1 y giro del eje en pantalla. */
-  facing: { lat: -18, lon: -60, roll: 12 },
+  // lat más cerrada: la cara que mira a cámara (América) queda en el casquete superior, el que asoma como horizonte.
+  facing: { lat: -70, lon: -58, roll: 6 },
   /** Rotación propia (rad/s, desde que aparece el planeta) y giro extra a lo largo de todo el recorrido (rad). */
   spinSpeed: 0.03,
   scrollTurn: 0.6,

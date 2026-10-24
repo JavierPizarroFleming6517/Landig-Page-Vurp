@@ -1,6 +1,6 @@
 import { ENTER, SCENES, TIMELINE, type SceneRange } from "./config";
 import type { StageLayout } from "./layout";
-import { orbitPoint, project, type Vec3 } from "./orbits";
+import { horizonPoint, project, type Vec3 } from "./orbits";
 
 export const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 export const lerp = (from: number, to: number, t: number) => from + (to - from) * t;
@@ -56,25 +56,16 @@ export interface WelcomePose {
 /** Pose completa de la escena: función pura del progreso, la entrada (0–1) y el layout. */
 export function poseAt(progress: number, enter: number, layout: StageLayout): WelcomePose {
   const p = clamp01(progress);
-  const { preset } = layout;
   const t = easeInOutSine(clamp01((p - TIMELINE.orbitStart) / (TIMELINE.orbitEnd - TIMELINE.orbitStart)));
   const lift = (1 - enter) * ENTER.offsetPx;
+  const converge = easeInOutSine(clamp01((p - TIMELINE.converge.start) / (TIMELINE.converge.end - TIMELINE.converge.start)));
+  const gatherLogo = { x: layout.cx, y: layout.revealY + layout.height * 0.06 };
+  const gatherText = { x: layout.cx, y: layout.revealY - layout.height * 0.1 };
 
-  // Logo: de derecha a izquierda por el arco trasero y, en el impacto, en espiral hacia el frente del planeta.
-  const dive = easeInCubic(clamp01((p - TIMELINE.dive.start) / (TIMELINE.dive.end - TIMELINE.dive.start)));
-  const logoOrbit = {
-    ...layout.logoOrbit,
-    radius: lerp(layout.logoOrbit.radius, 1.02, dive),
-    offsetY: lerp(layout.logoOrbit.offsetY, 0, dive),
-  };
-  const logoPoint = orbitPoint(logoOrbit, -Math.PI * t - (Math.PI / 2) * dive);
-  const logoProj = project(logoPoint, layout);
-  const deepest = layout.logoOrbit.radius * Math.cos(layout.logoOrbit.tilt);
-  const depth = clamp01(-logoPoint.z / deepest);
-
-  // Texto: de izquierda a derecha por el arco delantero, siempre delante del planeta.
-  const textPoint = orbitPoint(layout.textOrbit, Math.PI - Math.PI * t);
-  const textProj = project(textPoint, layout);
+  const crest = Math.sin(Math.PI * t);
+  // Logo: de derecha a izquierda, pegado a la curva. Texto: de izquierda a derecha, más arriba.
+  const logoArc = horizonPoint(layout, Math.PI * t, layout.preset.logoCrest * crest);
+  const textArc = horizonPoint(layout, Math.PI - Math.PI * t, layout.preset.textRise + layout.preset.textCrest * crest);
 
   const [a0, a1, a2] = TIMELINE.messageAnchors;
   const relay = (anchor: number) =>
@@ -82,28 +73,27 @@ export function poseAt(progress: number, enter: number, layout: StageLayout): We
   const shift = (anchor: number) =>
     Math.max(-1, Math.min(1, (anchor - t) / TIMELINE.messageFade.outer)) * TIMELINE.messageShiftPx;
 
-  const impactWorld = orbitPoint({ ...logoOrbit, radius: 1.02, offsetY: 0 }, -1.5 * Math.PI);
+  // Cara que mira a cámara tras la inclinación del horizonte (lat −70°): el estallido queda en el casquete visible.
+  const impactWorld: Vec3 = { x: 0, y: 0.94, z: 0.342 };
   const impact = project(impactWorld, layout);
   const { glow, flash, shatter, burst, planetOut, reveal, backdropOut, textOut } = TIMELINE;
   const impactGlow = smoothstep(glow.start, glow.peak, p) * (1 - smoothstep(glow.peak, glow.end, p));
   const enterGlow = ENTER.glow * Math.sin(Math.PI * enter);
 
-  const logoScale = 1 + (logoProj.depthScale - 1) * preset.logoDepthGain;
-  const logoOpacity = enter * lerp(1, preset.logoBackOpacity, depth) * (1 - smoothstep(0.85, 1, dive));
-  const logoFront = logoPoint.z >= 0;
+  const logoOpacity = enter * (1 - smoothstep(textOut.start, textOut.end, p));
 
   return {
     logo: {
-      x: logoProj.x,
-      y: logoProj.y + lift,
-      scale: logoScale,
+      x: lerp(logoArc.x, gatherLogo.x, converge),
+      y: lerp(logoArc.y, gatherLogo.y, converge) + lift,
+      scale: lerp(1, 1.08, converge),
       opacity: logoOpacity,
-      front: logoFront,
+      front: true,
     },
     text: {
-      x: textProj.x,
-      y: textProj.y + lift,
-      scale: 1 + (textProj.depthScale - 1) * preset.textDepthGain,
+      x: lerp(textArc.x, gatherText.x, converge),
+      y: lerp(textArc.y, gatherText.y, converge) + lift,
+      scale: 1,
       opacity: enter * (1 - smoothstep(textOut.start, textOut.end, p)),
       front: true,
     },
@@ -117,10 +107,10 @@ export function poseAt(progress: number, enter: number, layout: StageLayout): We
     },
     impact: { x: impact.x, y: impact.y, world: impactWorld },
     focus: {
-      x: logoProj.x,
-      y: logoProj.y + lift,
-      radius: (Math.hypot(layout.logoWidth, layout.logoPx) / 2) * logoScale,
-      amount: logoFront ? logoOpacity : 0,
+      x: lerp(logoArc.x, gatherLogo.x, converge),
+      y: lerp(logoArc.y, gatherLogo.y, converge) + lift,
+      radius: Math.hypot(layout.logoWidth, layout.logoPx) / 2,
+      amount: logoOpacity,
     },
     burst: smoothstep(burst.start, burst.end, p),
     flash: flash.max * smoothstep(flash.rise, TIMELINE.impact, p) * (1 - smoothstep(TIMELINE.impact, flash.end, p)),

@@ -59,6 +59,8 @@ function WelcomeScroll({ started }: WelcomeProps) {
       layoutRef.current = layout;
       stage.style.setProperty("--cx", `${layout.cx}px`);
       stage.style.setProperty("--cy", `${layout.cy}px`);
+      stage.style.setProperty("--horizon", `${layout.horizonPx}px`);
+      stage.style.setProperty("--reveal-y", `${layout.revealY}px`);
       stage.style.setProperty("--planet-r", `${layout.planetPx}px`);
       stage.style.setProperty("--logo-h", `${layout.logoPx}px`);
       stage.style.setProperty("--logo-w", `${layout.logoWidth}px`);
@@ -119,8 +121,8 @@ function WelcomeScroll({ started }: WelcomeProps) {
     });
     debugRef.current?.update(frame, pose, [
       `webgl     ${stageRef.current?.dataset.webgl ?? "-"} · dpr ${scene?.pixelRatio() ?? "-"} · ${scene?.quality() ?? "-"}`,
-      `planeta   ×${layout.planetScale.toFixed(2)} · ${Math.round(layout.planetPx)} px`,
-      `capa      ${layout.fits ? "ok" : "no cabe"} · ${Math.round(layout.logoClearance)} px del disco`,
+      `planeta   ${Math.round(layout.planetPx)} px · horizonte ${Math.round(layout.horizonPx)}`,
+      `revelación ${Math.round(layout.revealY)} px`,
     ]);
 
     const last = lastRef.current;
