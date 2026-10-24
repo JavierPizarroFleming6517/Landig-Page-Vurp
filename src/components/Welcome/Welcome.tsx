@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { BrandReveal } from "./BrandReveal";
 import { SECTION_VH, welcomeLines } from "./config";
 import { DebugOverlay, type DebugHandle } from "./DebugOverlay";
 import { computeLayout, type StageLayout } from "./layout";
@@ -6,7 +7,7 @@ import { Messages } from "./Messages";
 import { OrbitLogo } from "./OrbitLogo";
 import type { SceneController } from "./scene/createScene";
 import { paintStars } from "./starfield";
-import { poseAt, type OrbiterPose } from "./timeline";
+import { poseAt, sceneAt, type OrbiterPose } from "./timeline";
 import { useScrollTimeline, type TimelineFrame } from "./useScrollTimeline";
 import "./Welcome.css";
 
@@ -18,6 +19,16 @@ interface WelcomeProps {
 const place = (element: HTMLElement, { x, y, scale, opacity }: OrbiterPose) => {
   element.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(${scale})`;
   element.style.opacity = String(opacity);
+};
+
+/**
+ * Gancho con el header: durante la revelación y la transición (escenas 5 y 6) se oculta el logo de la navbar,
+ * para respetar el área de protección del logo completo y no duplicarlo.
+ */
+const setNavLogoHidden = (hidden: boolean) => {
+  const root = document.documentElement;
+  if (hidden) root.dataset.welcome = "reveal";
+  else delete root.dataset.welcome;
 };
 
 export function Welcome({ started }: WelcomeProps) {
@@ -34,6 +45,8 @@ export function Welcome({ started }: WelcomeProps) {
   const waveRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLDivElement>(null);
+  const haloRef = useRef<HTMLDivElement>(null);
+  const navHiddenRef = useRef(false);
   const debugRef = useRef<DebugHandle | null>(null);
   const layoutRef = useRef<StageLayout | null>(null);
   const lastRef = useRef({ progress: -1, enter: -1, layout: null as StageLayout | null, logoFront: true });
@@ -89,6 +102,13 @@ export function Welcome({ started }: WelcomeProps) {
     const layout = layoutRef.current;
     if (!layout) return;
     const pose = poseAt(frame.progress, frame.enter, layout);
+    // Se decide con el scroll real (sin suavizar), así un salto por ancla nunca deja el logo oculto.
+    const { id: sceneId } = sceneAt(frame.target);
+    const hideNavLogo = (sceneId === "revelacion" || sceneId === "transicion") && frame.target < 1;
+    if (hideNavLogo !== navHiddenRef.current) {
+      navHiddenRef.current = hideNavLogo;
+      setNavLogoHidden(hideNavLogo);
+    }
     const scene = sceneRef.current;
     scene?.render({
       time: frame.now / 1000,
@@ -118,8 +138,9 @@ export function Welcome({ started }: WelcomeProps) {
     const wave = waveRef.current;
     const flash = flashRef.current;
     const reveal = revealRef.current;
+    const halo = haloRef.current;
     const backdrop = backdropRef.current;
-    if (!logo || !messages || !planet || !wave || !flash || !reveal || !backdrop) return;
+    if (!logo || !messages || !planet || !wave || !flash || !reveal || !halo || !backdrop) return;
 
     place(logo, pose.logo);
     if (pose.logo.front !== last.logoFront) {
@@ -146,10 +167,20 @@ export function Welcome({ started }: WelcomeProps) {
 
     reveal.style.opacity = String(pose.reveal.opacity);
     reveal.style.transform = `translate(-50%, -50%) scale(${pose.reveal.scale})`;
+    halo.style.opacity = String(pose.reveal.halo);
+    halo.style.transform = `translate(-50%, -50%) scale(${0.8 + pose.reveal.halo * 0.25})`;
     backdrop.style.opacity = String(pose.backdrop);
   }, []);
 
-  useScrollTimeline({ sectionRef, stageRef, started, onFrame });
+  const onVisibilityChange = useCallback((visible: boolean) => {
+    if (visible || !navHiddenRef.current) return;
+    navHiddenRef.current = false;
+    setNavLogoHidden(false);
+  }, []);
+
+  useEffect(() => () => setNavLogoHidden(false), []);
+
+  useScrollTimeline({ sectionRef, stageRef, started, onFrame, onVisibilityChange });
 
   return (
     <section
@@ -170,9 +201,7 @@ export function Welcome({ started }: WelcomeProps) {
         <div ref={waveRef} className="welcome__wave" aria-hidden="true" />
         <Messages lines={welcomeLines} containerRef={messagesRef} lineRefs={lineRefs} />
         <div ref={flashRef} className="welcome__flash" aria-hidden="true" />
-        <div ref={revealRef} className="welcome__reveal" aria-hidden="true">
-          logo completo
-        </div>
+        <BrandReveal revealRef={revealRef} haloRef={haloRef} />
         {debug && <DebugOverlay handleRef={debugRef} />}
       </div>
     </section>

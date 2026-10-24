@@ -48,7 +48,8 @@ export interface WelcomePose {
   focus: { x: number; y: number; radius: number; amount: number };
   burst: number;
   flash: number;
-  reveal: { opacity: number; scale: number };
+  /** Logo completo: opacidad, escala y luminosidad del halo que tiene detrás. */
+  reveal: { opacity: number; scale: number; halo: number };
   backdrop: number;
 }
 
@@ -125,7 +126,12 @@ export function poseAt(progress: number, enter: number, layout: StageLayout): We
     flash: flash.max * smoothstep(flash.rise, TIMELINE.impact, p) * (1 - smoothstep(TIMELINE.impact, flash.end, p)),
     reveal: {
       opacity: smoothstep(reveal.inStart, reveal.inEnd, p) * (1 - smoothstep(reveal.outStart, reveal.outEnd, p)),
-      scale: lerp(0.88, 1, smoothstep(reveal.inStart, reveal.inEnd + 0.02, p)),
+      scale: lerp(0.88, 1, easeOutCubic(clamp01((p - reveal.inStart) / (reveal.inEnd + 0.02 - reveal.inStart)))),
+      // El halo sube con la entrada, se asienta un poco durante la pausa y se va antes que el logo.
+      halo:
+        smoothstep(reveal.inStart, reveal.inEnd, p) *
+        (1 - 0.4 * smoothstep(reveal.inEnd, reveal.inEnd + 0.04, p)) *
+        (1 - smoothstep(reveal.outStart - 0.02, reveal.outEnd - 0.02, p)),
     },
     backdrop: enter * (1 - smoothstep(backdropOut.start, backdropOut.end, p)),
   };

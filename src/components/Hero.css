@@ -9,6 +9,17 @@
   background: var(--vurp-grafito);
 }
 
+/* Empalme con la intro: la foto nace desde Grafito, así el borde superior no aparece como un corte. */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: 22%;
+  background: linear-gradient(180deg, var(--vurp-grafito), transparent);
+  pointer-events: none;
+}
+
 .hero__photo {
   position: absolute;
   inset: 0;

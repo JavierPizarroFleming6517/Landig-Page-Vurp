@@ -150,22 +150,33 @@
   background: radial-gradient(circle at var(--fx, 50%) var(--fy, 50%), var(--vurp-lila-claro), rgba(180, 132, 210, 0.4) 18%, transparent 45%);
 }
 
-.welcome__reveal {
-  left: 50%;
-  top: 50%;
+/* Halo de escena detrás del logo completo: da la luminosidad sin tocar el logo. */
+.welcome__halo {
+  left: var(--cx);
+  top: var(--cy);
   z-index: 4;
-  display: grid;
-  place-items: center;
-  width: clamp(220px, 30vw, 380px);
+  width: clamp(440px, 64vw, 860px);
+  aspect-ratio: 2 / 1;
+  opacity: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(180, 132, 210, 0.3), rgba(85, 35, 111, 0.16) 55%, transparent);
+  transform: translate(-50%, -50%);
+}
+
+/* Logo completo oficial: mínimo 220 px de ancho (el manual pide 160 px para la versión con bajada). */
+.welcome__reveal {
+  left: var(--cx);
+  top: var(--cy);
+  z-index: 4;
+  width: clamp(220px, 28vw, 400px);
   aspect-ratio: 395 / 124;
   opacity: 0;
-  border: 1px dashed var(--vurp-lila-claro);
-  border-radius: 12px;
-  color: var(--vurp-lila-claro);
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+}
+
+.welcome__reveal img {
+  width: 100%;
+  height: 100%;
 }
 
 @media (max-width: 899px) {

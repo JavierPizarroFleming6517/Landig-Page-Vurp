@@ -17,6 +17,8 @@ interface Options {
   stageRef: RefObject<HTMLElement | null>;
   started: boolean;
   onFrame: (frame: TimelineFrame) => void;
+  /** Se llama cuando la sección entra o sale de pantalla (y el rAF arranca o se detiene). */
+  onVisibilityChange?: (visible: boolean) => void;
 }
 
 /**
@@ -24,12 +26,14 @@ interface Options {
  * y entrega el frame a `onFrame`. No intercepta eventos: el scroll sigue siendo nativo.
  * Se detiene cuando la sección sale de pantalla o la pestaña queda oculta.
  */
-export function useScrollTimeline({ sectionRef, stageRef, started, onFrame }: Options) {
+export function useScrollTimeline({ sectionRef, stageRef, started, onFrame, onVisibilityChange }: Options) {
   const onFrameRef = useRef(onFrame);
+  const onVisibilityRef = useRef(onVisibilityChange);
   const startedRef = useRef(started);
 
   useEffect(() => {
     onFrameRef.current = onFrame;
+    onVisibilityRef.current = onVisibilityChange;
     startedRef.current = started;
   });
 
@@ -80,6 +84,7 @@ export function useScrollTimeline({ sectionRef, stageRef, started, onFrame }: Op
 
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry?.isIntersecting === true;
+      onVisibilityRef.current?.(visible);
       if (visible) start();
       else stop();
     });
