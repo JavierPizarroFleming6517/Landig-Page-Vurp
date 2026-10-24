@@ -10,10 +10,11 @@ import {
   Points,
   ShaderMaterial,
   SphereGeometry,
+  Vector2,
   Vector3,
   type IUniform,
 } from "three";
-import { CAMERA, COLORS, NETWORK, PLANET } from "../config";
+import { CAMERA, COLORS, EXPLOSION, NETWORK, PLANET } from "../config";
 import { continentGeometry, hash, latLonToVector } from "./continents";
 import * as shaders from "./shaders";
 
@@ -24,7 +25,31 @@ export interface SharedUniforms {
   uOpacity: IUniform<number>;
   uGlow: IUniform<number>;
   uPixelRatio: IUniform<number>;
+  /** Avance lineal de la explosión (0–1) y punto de impacto en el mundo. */
+  uShatter: IUniform<number>;
+  uImpact: IUniform<Vector3>;
+  /** Atenuación bajo el logo, en px CSS del stage. */
+  uViewport: IUniform<Vector2>;
+  uFocus: IUniform<Vector2>;
+  uFocusRadius: IUniform<number>;
+  uFocusAmount: IUniform<number>;
+  uFocusDim: IUniform<number>;
 }
+
+/** Valores iniciales de los uniforms compartidos. */
+export const createSharedUniforms = (): SharedUniforms => ({
+  uTime: { value: 0 },
+  uOpacity: { value: 0 },
+  uGlow: { value: 0 },
+  uPixelRatio: { value: 1 },
+  uShatter: { value: 0 },
+  uImpact: { value: new Vector3(0, 0, 1) },
+  uViewport: { value: new Vector2(1, 1) },
+  uFocus: { value: new Vector2() },
+  uFocusRadius: { value: 1 },
+  uFocusAmount: { value: 0 },
+  uFocusDim: { value: EXPLOSION.focusDim },
+});
 
 export interface Planet {
   /** Contenedor del planeta, la atmósfera y las líneas orbitales. `spin` gira dentro de la orientación inicial. */
@@ -32,6 +57,8 @@ export interface Planet {
   spin: Group;
   /** Giro de `spin` que deja `PLANET.facing` de frente. */
   baseSpin: number;
+  /** Líneas orbitales (se expanden al fragmentarse el planeta). */
+  orbits: Group;
   dispose: () => void;
 }
 
@@ -132,6 +159,8 @@ export function createPlanet(shared: SharedUniforms, tier: Tier): Planet {
           uCore: { value: color(COLORS.planetCore) },
           uRim: { value: color(COLORS.berenjena) },
           uLight: { value: color(COLORS.orquidea) },
+          uHot: { value: color(COLORS.lilaClaro) },
+          uShardDensity: { value: EXPLOSION.shardDensity },
         },
         vertexShader: shaders.occluder.vertex,
         fragmentShader: shaders.occluder.fragment,
@@ -154,6 +183,7 @@ export function createPlanet(shared: SharedUniforms, tier: Tier): Planet {
           uIvoryShare: { value: PLANET.continents.ivoryShare },
           uSize: { value: PLANET.continents.size[tier] },
           uDistance: { value: CAMERA.distance },
+          uSpread: { value: EXPLOSION.spread },
         },
         vertexShader: shaders.continents.vertex,
         fragmentShader: shaders.continents.fragment,
@@ -221,12 +251,14 @@ export function createPlanet(shared: SharedUniforms, tier: Tier): Planet {
       uPulseGain: { value: 0.3 },
     }),
   );
+  const orbits = new Group();
   for (const { geometry, tiltX, tiltZ } of orbitLines()) {
     const line = new LineSegments(track(geometry), orbitMaterial);
     line.rotation.set(tiltX, 0, tiltZ);
     line.renderOrder = 4;
-    root.add(line);
+    orbits.add(line);
   }
+  root.add(orbits);
 
   const atmosphere = new Mesh(
     track(new SphereGeometry(PLANET.atmosphereRadius, 64, 48)),
@@ -248,6 +280,7 @@ export function createPlanet(shared: SharedUniforms, tier: Tier): Planet {
     root,
     spin,
     baseSpin: -PLANET.facing.lon * DEG,
+    orbits,
     dispose: () => disposables.forEach((item) => item.dispose()),
   };
 }

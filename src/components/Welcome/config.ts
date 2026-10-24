@@ -48,8 +48,11 @@ export const TIMELINE = {
   glow: { start: 0.58, peak: 0.68, end: 0.76 },
   /** El destello nunca supera `max` de opacidad: nada de pantallazo blanco. */
   flash: { rise: 0.672, end: 0.7, max: 0.35 },
-  shatter: { start: 0.675, end: 0.74 },
-  burst: { start: 0.676, end: 0.75 },
+  /** Fragmentación: el cuerpo se disuelve desde el punto de impacto y los puntos de los continentes se dispersan. */
+  shatter: { start: 0.676, end: 0.8 },
+  /** Ondas de energía y núcleo de luz en el punto de impacto. */
+  burst: { start: 0.676, end: 0.74 },
+  /** Solo para el planeta CSS de respaldo (sin WebGL). */
   planetOut: { start: 0.69, end: 0.78 },
   reveal: { inStart: 0.76, inEnd: 0.82, outStart: 0.88, outEnd: 0.94 },
   backdropOut: { start: 0.88, end: 0.96 },
@@ -253,6 +256,25 @@ export const NETWORK = {
     ["singapur", "sidney"],
     ["sanFrancisco", "tokio"],
   ],
+} as const;
+
+/** Explosión digital (Fase 4): sin fuego, solo luz en la paleta. */
+export const EXPLOSION = {
+  /** Distancia máxima (unidades de mundo) que recorren los puntos más rápidos al dispersarse. */
+  spread: 1.35,
+  /** Tamaño de los fragmentos en que se rompe el cuerpo (celdas por unidad de mundo). */
+  shardDensity: 26,
+  /** Ondas: radio final (unidades de mundo), desfase dentro del tramo `burst` y opacidad máxima. */
+  waves: [
+    { radius: 2.6, delay: 0, alpha: 0.85, width: 0.035 },
+    { radius: 3.6, delay: 0.16, alpha: 0.5, width: 0.06 },
+  ],
+  /** Onda que recorre la superficie del planeta desde el impacto. */
+  surfaceWave: { radius: 1.6, alpha: 0.6 },
+  /** Núcleo de luz en el punto de impacto (radio en unidades de mundo). */
+  core: { radius: 0.5, alpha: 0.72 },
+  /** Opacidad a la que bajan los puntos y arcos que quedan detrás del logo cuando cruza por delante del disco. */
+  focusDim: 0.3,
 } as const;
 
 /** Fondo: estrellas pintadas una sola vez por resize. */

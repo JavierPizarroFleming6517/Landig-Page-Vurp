@@ -1,6 +1,6 @@
 import { ENTER, SCENES, TIMELINE, type SceneRange } from "./config";
 import type { StageLayout } from "./layout";
-import { orbitPoint, project } from "./orbits";
+import { orbitPoint, project, type Vec3 } from "./orbits";
 
 export const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 export const lerp = (from: number, to: number, t: number) => from + (to - from) * t;
@@ -37,8 +37,15 @@ export interface WelcomePose {
   messages: readonly [number, number, number];
   /** Desplazamiento vertical (px) de cada mensaje durante el relevo: entra desde abajo, sale hacia arriba. */
   messageOffsets: readonly [number, number, number];
-  planet: { opacity: number; glow: number; shatter: number };
-  impact: { x: number; y: number };
+  /**
+   * `opacity` gobierna la escena WebGL (la explosión la desarma por sí sola); `bodyOpacity` es el fundido del
+   * planeta CSS de respaldo. `shatter` avanza linealmente: cada punto aplica su propia curva.
+   */
+  planet: { opacity: number; bodyOpacity: number; glow: number; shatter: number };
+  /** Punto de impacto en pantalla (px) y en el mundo 3D. */
+  impact: { x: number; y: number; world: Vec3 };
+  /** Zona del logo cuando cruza por delante del disco: ahí se atenúan los puntos para no perder contraste. */
+  focus: { x: number; y: number; radius: number; amount: number };
   burst: number;
   flash: number;
   reveal: { opacity: number; scale: number };
@@ -74,18 +81,23 @@ export function poseAt(progress: number, enter: number, layout: StageLayout): We
   const shift = (anchor: number) =>
     Math.max(-1, Math.min(1, (anchor - t) / TIMELINE.messageFade.outer)) * TIMELINE.messageShiftPx;
 
-  const impact = project(orbitPoint({ ...logoOrbit, radius: 1.02, offsetY: 0 }, -1.5 * Math.PI), layout);
+  const impactWorld = orbitPoint({ ...logoOrbit, radius: 1.02, offsetY: 0 }, -1.5 * Math.PI);
+  const impact = project(impactWorld, layout);
   const { glow, flash, shatter, burst, planetOut, reveal, backdropOut, textOut } = TIMELINE;
   const impactGlow = smoothstep(glow.start, glow.peak, p) * (1 - smoothstep(glow.peak, glow.end, p));
   const enterGlow = ENTER.glow * Math.sin(Math.PI * enter);
+
+  const logoScale = 1 + (logoProj.depthScale - 1) * preset.logoDepthGain;
+  const logoOpacity = enter * lerp(1, preset.logoBackOpacity, depth) * (1 - smoothstep(0.85, 1, dive));
+  const logoFront = logoPoint.z >= 0;
 
   return {
     logo: {
       x: logoProj.x,
       y: logoProj.y + lift,
-      scale: 1 + (logoProj.depthScale - 1) * preset.logoDepthGain,
-      opacity: enter * lerp(1, preset.logoBackOpacity, depth) * (1 - smoothstep(0.85, 1, dive)),
-      front: logoPoint.z >= 0,
+      scale: logoScale,
+      opacity: logoOpacity,
+      front: logoFront,
     },
     text: {
       x: textProj.x,
@@ -97,11 +109,18 @@ export function poseAt(progress: number, enter: number, layout: StageLayout): We
     messages: [relay(a0), relay(a1), relay(a2)],
     messageOffsets: [shift(a0), shift(a1), shift(a2)],
     planet: {
-      opacity: enter * (1 - smoothstep(planetOut.start, planetOut.end, p)),
+      opacity: enter,
+      bodyOpacity: enter * (1 - smoothstep(planetOut.start, planetOut.end, p)),
       glow: Math.max(impactGlow, enterGlow),
-      shatter: smoothstep(shatter.start, shatter.end, p),
+      shatter: clamp01((p - shatter.start) / (shatter.end - shatter.start)),
     },
-    impact: { x: impact.x, y: impact.y },
+    impact: { x: impact.x, y: impact.y, world: impactWorld },
+    focus: {
+      x: logoProj.x,
+      y: logoProj.y + lift,
+      radius: (Math.hypot(layout.logoWidth, layout.logoPx) / 2) * logoScale,
+      amount: logoFront ? logoOpacity : 0,
+    },
     burst: smoothstep(burst.start, burst.end, p),
     flash: flash.max * smoothstep(flash.rise, TIMELINE.impact, p) * (1 - smoothstep(TIMELINE.impact, flash.end, p)),
     reveal: {

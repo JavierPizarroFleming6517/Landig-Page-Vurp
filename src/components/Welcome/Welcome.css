@@ -82,7 +82,9 @@
   transform: translate(-50%, -50%) scale(calc(1 + var(--shatter, 0) * 0.25));
 }
 
-.welcome__stage[data-webgl="ready"] .welcome__planet {
+/* Con WebGL listo, el planeta y la onda CSS (respaldo) se ocultan: la escena 3D hace el impacto. */
+.welcome__stage[data-webgl="ready"] .welcome__planet,
+.welcome__stage[data-webgl="ready"] .welcome__wave {
   visibility: hidden;
 }
 

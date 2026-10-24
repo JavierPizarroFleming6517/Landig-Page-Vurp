@@ -90,7 +90,16 @@ export function Welcome({ started }: WelcomeProps) {
     if (!layout) return;
     const pose = poseAt(frame.progress, frame.enter, layout);
     const scene = sceneRef.current;
-    scene?.render({ time: frame.now / 1000, progress: frame.progress, opacity: pose.planet.opacity, glow: pose.planet.glow });
+    scene?.render({
+      time: frame.now / 1000,
+      progress: frame.progress,
+      opacity: pose.planet.opacity,
+      glow: pose.planet.glow,
+      shatter: pose.planet.shatter,
+      burst: pose.burst,
+      impact: pose.impact.world,
+      focus: pose.focus,
+    });
     debugRef.current?.update(frame, pose, [
       `webgl     ${stageRef.current?.dataset.webgl ?? "-"} · dpr ${scene?.pixelRatio() ?? "-"}`,
       `planeta   ×${layout.planetScale.toFixed(2)} · ${Math.round(layout.planetPx)} px`,
@@ -125,7 +134,7 @@ export function Welcome({ started }: WelcomeProps) {
       line.style.transform = `translate3d(0, ${pose.messageOffsets[index] ?? 0}px, 0)`;
     });
 
-    planet.style.opacity = String(pose.planet.opacity);
+    planet.style.opacity = String(pose.planet.bodyOpacity);
     planet.style.setProperty("--glow", pose.planet.glow.toFixed(3));
     planet.style.setProperty("--shatter", pose.planet.shatter.toFixed(3));
 
