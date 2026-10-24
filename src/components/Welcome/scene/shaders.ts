@@ -200,6 +200,65 @@ export const continents = {
   `,
 };
 
+/**
+ * Masas continentales sólidas, justo sobre el cuerpo. El mismo frente de ruptura del planeta las recorta,
+ * así el impacto no cambia de momento ni de lugar.
+ */
+export const landmass = {
+  vertex: /* glsl */ `
+    varying vec3 vNormal;
+    varying vec3 vView;
+    varying vec3 vWorld;
+    varying vec3 vLocal;
+    varying float vFocus;
+    ${focusChunk}
+    void main() {
+      vec4 world = modelMatrix * vec4(position, 1.0);
+      vec4 mv = viewMatrix * world;
+      vNormal = normalize(normalMatrix * normal);
+      vView = normalize(-mv.xyz);
+      vWorld = world.xyz;
+      vLocal = normalize(position);
+      gl_Position = projectionMatrix * mv;
+      vFocus = focusDim(gl_Position);
+    }
+  `,
+  fragment: /* glsl */ `
+    uniform vec3 uColor;
+    uniform vec3 uShade;
+    uniform vec3 uHot;
+    uniform vec3 uImpact;
+    uniform float uOpacity;
+    uniform float uGlow;
+    uniform float uShatter;
+    uniform float uShardDensity;
+    uniform sampler2D uMask;
+    varying vec3 vNormal;
+    varying vec3 vView;
+    varying vec3 vWorld;
+    varying vec3 vLocal;
+    varying float vFocus;
+    float shard(vec3 p) {
+      return fract(sin(dot(floor(p * uShardDensity), vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+    }
+    void main() {
+      float lon = atan(vLocal.x, vLocal.z);
+      float lat = asin(clamp(vLocal.y, -1.0, 1.0));
+      float land = texture2D(uMask, vec2(lon * 0.15915494 + 0.5, 0.5 - lat * 0.31830989)).r;
+      if (land < 0.5) discard;
+      float front = distance(vWorld, uImpact) - uShatter * 5.0 + shard(vWorld) * 0.45;
+      if (uShatter > 0.0 && front < 0.0) discard;
+      float light = clamp(dot(vNormal, normalize(vec3(-0.35, 0.62, 0.7))), 0.0, 1.0);
+      float facing = clamp(dot(vNormal, vView), 0.0, 1.0);
+      vec3 color = mix(uShade, uColor, 0.42 + light * 0.58);
+      color += uColor * pow(1.0 - facing, 2.2) * (0.12 + uGlow * 0.2);
+      float edge = uShatter > 0.0 ? smoothstep(0.14, 0.0, front) : 0.0;
+      color = mix(color, uHot, edge * 0.55);
+      gl_FragColor = vec4(color, uOpacity * vFocus);
+    }
+  `,
+};
+
 /** Nodos de ciudad: punto redondo con núcleo Marfil y halo lila, con un parpadeo sutil. Se apagan en el impacto. */
 export const nodes = {
   vertex: /* glsl */ `

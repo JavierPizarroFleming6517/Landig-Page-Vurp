@@ -53,7 +53,13 @@ function decodeMask() {
     const col = Math.min(width - 1, Math.max(0, Math.floor(((lon + 180) / 360) * width)));
     return cells[row * width + col] === 1;
   };
-  return { isLand, landShare: landArea / totalArea };
+  return { isLand, landShare: landArea / totalArea, width, height, cells };
+}
+
+/** Rejilla equirectangular de la máscara: 1 es tierra. La usan las masas sólidas del globo 3D. */
+export function landGrid() {
+  const { width, height, cells } = decodeMask();
+  return { width, height, cells };
 }
 
 /**

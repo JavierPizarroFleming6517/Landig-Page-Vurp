@@ -15,7 +15,7 @@ import {
   type IUniform,
 } from "three";
 import { CAMERA, COLORS, EXPLOSION, NETWORK, PLANET } from "../config";
-import { continentGeometry, hash, latLonToVector } from "./continents";
+import { continentSphere, hash, landMaskTexture, latLonToVector } from "./continents";
 import * as shaders from "./shaders";
 
 /** Uniforms compartidos por todos los materiales del planeta (se pasan por referencia). */
@@ -59,7 +59,7 @@ export interface Planet {
   baseSpin: number;
   /** Líneas orbitales (se expanden al fragmentarse el planeta). */
   orbits: Group;
-  /** Fracción (0–1) de los puntos de los continentes que se dibujan; el orden ya viene barajado. */
+  /** Reservado para la degradación adaptativa. Las masas sólidas no se diezmán. */
   setPointShare: (share: number) => void;
   dispose: () => void;
 }
@@ -137,7 +137,7 @@ function orbitLines() {
   });
 }
 
-export function createPlanet(shared: SharedUniforms, tier: Tier): Planet {
+export function createPlanet(shared: SharedUniforms, _tier: Tier): Planet {
   const root = new Group();
   // Orientación inicial: el eje gira `roll` en pantalla y se inclina para dejar `facing.lat` al centro.
   const orient = new Group();
@@ -173,26 +173,21 @@ export function createPlanet(shared: SharedUniforms, tier: Tier): Planet {
   occluder.renderOrder = 0;
   spin.add(occluder);
 
-  const continentPoints = track(continentGeometry(PLANET.continents.points[tier], PLANET.continents.radius));
-  const continents = new Points(
-    continentPoints,
+  const continents = new Mesh(
+    track(continentSphere(PLANET.continents.radius)),
     track(
       new ShaderMaterial({
         uniforms: {
           ...shared,
-          uFrom: { value: color(COLORS.orquideaClaro) },
-          uTo: { value: color(COLORS.lilaClaro) },
-          uIvory: { value: color(COLORS.marfil) },
-          uIvoryShare: { value: PLANET.continents.ivoryShare },
-          uSize: { value: PLANET.continents.size[tier] },
-          uDistance: { value: CAMERA.distance },
-          uSpread: { value: EXPLOSION.spread },
+          uColor: { value: color(COLORS.lila) },
+          uShade: { value: color(COLORS.orquideaClaro) },
+          uHot: { value: color(COLORS.lilaClaro) },
+          uShardDensity: { value: EXPLOSION.shardDensity },
+          uMask: { value: track(landMaskTexture()) },
         },
-        vertexShader: shaders.continents.vertex,
-        fragmentShader: shaders.continents.fragment,
+        vertexShader: shaders.landmass.vertex,
+        fragmentShader: shaders.landmass.fragment,
         transparent: true,
-        depthWrite: false,
-        blending: AdditiveBlending,
       }),
     ),
   );
@@ -284,10 +279,7 @@ export function createPlanet(shared: SharedUniforms, tier: Tier): Planet {
     spin,
     baseSpin: -PLANET.facing.lon * DEG,
     orbits,
-    setPointShare: (share) => {
-      const count = continentPoints.getAttribute("position").count;
-      continentPoints.setDrawRange(0, Math.round(count * share));
-    },
+    setPointShare: () => {},
     dispose: () => disposables.forEach((item) => item.dispose()),
   };
 }

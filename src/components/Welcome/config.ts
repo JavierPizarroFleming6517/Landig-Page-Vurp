@@ -208,7 +208,7 @@ export const PLANET = {
   scrollTurn: 0.6,
   /** La esfera oclusora es apenas menor que los puntos para que no parpadeen con ella. */
   occluderRadius: 0.985,
-  /** Continentes como nube de puntos (máscara Natural Earth 110m). Cantidad de puntos de tierra por tier. */
+  /** Continentes sólidos (máscara Natural Earth 110m) a este radio, justo sobre el cuerpo. */
   continents: {
     points: { wide: 9000, compact: 4000 },
     radius: 1.003,
