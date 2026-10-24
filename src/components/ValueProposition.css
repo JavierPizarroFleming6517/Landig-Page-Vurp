@@ -35,7 +35,6 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.25rem;
-  perspective: 1200px;
 }
 
 .value__cards > :nth-child(even) {
@@ -51,8 +50,6 @@
   background: var(--surface);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
-  transform-origin: center bottom;
-  will-change: transform, opacity;
 }
 
 .value-card__top {

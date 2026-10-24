@@ -1,23 +1,15 @@
-import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Mail } from "lucide-react";
-import { useRef } from "react";
 import { contactInfo, ctaBackground } from "../data/content";
 import "./CallToAction.css";
 
 export function CallToAction() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
-  const cardScale = useTransform(scrollYProgress, [0, 0.4], [0.9, 1]);
-  const cardOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
-
   return (
-    <section id="contacto" ref={ref} className="section cta">
+    <section id="contacto" className="section cta">
       <div className="container">
-        <motion.div className="cta__card media-surface" style={{ scale: cardScale, opacity: cardOpacity }}>
-          <motion.div className="media-bg cta__bg" style={{ y: bgY }} data-parallax>
+        <div className="cta__card media-surface">
+          <div className="media-bg cta__bg">
             <img src={ctaBackground.src} alt="" loading="lazy" />
-          </motion.div>
+          </div>
           <div className="cta__overlay" />
 
           <div className="cta__content">
@@ -38,7 +30,7 @@ export function CallToAction() {
               </a>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,6 +1,5 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { contactInfo, footerColumns, socialLinks } from "../data/content";
-import { Reveal } from "./ui/Reveal";
 import { BrandLogo } from "./ui/BrandLogo";
 import "./Footer.css";
 
@@ -10,7 +9,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="container">
-        <Reveal className="footer__top">
+        <div className="footer__top">
           <div className="footer__brand">
             <a href="#bienvenida" className="footer__logo" aria-label="Vurp, volver al inicio">
               <BrandLogo />
@@ -63,7 +62,7 @@ export function Footer() {
               </li>
             </ul>
           </div>
-        </Reveal>
+        </div>
 
         <div className="footer__bottom">
           <p>© {year} Vurp. Todos los derechos reservados.</p>

@@ -19,7 +19,6 @@ export interface CallToActionLink {
 }
 
 export interface HeroContent {
-  lead: string;
   eyebrow: string;
   title: string;
   highlight: string;

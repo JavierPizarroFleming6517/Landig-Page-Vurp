@@ -1,4 +1,3 @@
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navLinks } from "../data/content";
@@ -12,16 +11,20 @@ interface NavbarProps {
 }
 
 export function Navbar({ theme, onToggleTheme }: NavbarProps) {
-  const { scrollY, scrollYProgress } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const hero = document.getElementById("inicio");
-    const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0;
-    const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-height")) || 72;
-    setScrolled(latest + navHeight >= heroBottom);
-  });
+  useEffect(() => {
+    const onScroll = () => {
+      const hero = document.getElementById("inicio");
+      const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0;
+      const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-height")) || 72;
+      setScrolled(window.scrollY + navHeight >= heroBottom);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -54,18 +57,7 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
 
         <div className="navbar__actions">
           <button type="button" className="navbar__icon-btn" onClick={onToggleTheme} aria-label={themeLabel}>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={theme}
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="navbar__icon"
-              >
-                {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-              </motion.span>
-            </AnimatePresence>
+            <span className="navbar__icon">{theme === "light" ? <Moon size={18} /> : <Sun size={18} />}</span>
           </button>
           <a href="#contacto" className="btn btn--primary navbar__cta">
             Cotizar proyecto
@@ -83,39 +75,22 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
         </div>
       </div>
 
-      <motion.div className="navbar__progress" style={{ scaleX: scrollYProgress }} aria-hidden="true" />
-
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.nav
-            id="mobile-menu"
-            className="navbar__mobile"
-            aria-label="Navegación móvil"
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <ul>
-              {navLinks.map((link, index) => (
-                <motion.li
-                  key={link.href}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 * index + 0.1 }}
-                >
-                  <a href={link.href} onClick={closeMenu}>
-                    {link.label}
-                  </a>
-                </motion.li>
-              ))}
-            </ul>
-            <a href="#contacto" className="btn btn--primary" onClick={closeMenu}>
-              Cotizar proyecto
-            </a>
-          </motion.nav>
-        )}
-      </AnimatePresence>
+      {menuOpen && (
+        <nav id="mobile-menu" className="navbar__mobile" aria-label="Navegación móvil">
+          <ul>
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <a href={link.href} onClick={closeMenu}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a href="#contacto" className="btn btn--primary" onClick={closeMenu}>
+            Cotizar proyecto
+          </a>
+        </nav>
+      )}
     </header>
   );
 }

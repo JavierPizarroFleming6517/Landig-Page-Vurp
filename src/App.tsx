@@ -7,7 +7,6 @@ import { Navbar } from "./components/Navbar";
 import { SecurityHighlight } from "./components/SecurityHighlight";
 import { Services } from "./components/Services";
 import { ValueProposition } from "./components/ValueProposition";
-import { Welcome } from "./components/Welcome/Welcome";
 import { useTheme } from "./hooks/useTheme";
 
 export default function App() {
@@ -18,8 +17,7 @@ export default function App() {
       <Intro />
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
       <main>
-        <Welcome />
-        <Hero ready />
+        <Hero />
         <ValueProposition />
         <DynamicShowcase />
         <Services />

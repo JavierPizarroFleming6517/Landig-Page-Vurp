@@ -43,7 +43,6 @@ export const navLinks: readonly NavLink[] = [
 ];
 
 export const hero: HeroContent = {
-  lead: "Tecnología clara para empresas que quieren avanzar con orden.",
   eyebrow: "Software & Cybersecurity",
   title: "Software a medida que",
   highlight: "ordena tu empresa.",
