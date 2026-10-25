@@ -23,6 +23,8 @@ export interface HeroPose {
   /** Capa de profundidad del fondo de adentro. */
   depth: { scale: number };
   erp: { y: number; scale: number; opacity: number };
+  /** Armado del ERP (0–1 cada uno): sidebar, tarjetas, datos sobre los skeletons y gráficos. */
+  assembly: { side: number; cards: number; fill: number; charts: number };
   /** Badge, título, bajada y CTAs. */
   copy: readonly [Fade, Fade, Fade, Fade];
   /** Zoom del notebook visto desde p = 0 (1 → kEnd). */
@@ -67,6 +69,12 @@ export function poseAt(progress: number, layout: HeroLayout): HeroPose {
       y: lerp(layout.erp.assemblyY, 0, settle),
       scale: lerp(ERP.arriveScale, 1, easeOutCubic(arrive)) * lerp(layout.erp.assemblyScale, 1, settle),
       opacity: smoothstep(0, 1, arrive),
+    },
+    assembly: {
+      side: smoothstep(TIMELINE.erpSide.start, TIMELINE.erpSide.end, p),
+      cards: progressIn(p, TIMELINE.erpCards),
+      fill: smoothstep(TIMELINE.erpFill.start, TIMELINE.erpFill.end, p),
+      charts: easeOutCubic(progressIn(p, TIMELINE.erpCharts)),
     },
     copy: [fade(starts[0]), fade(starts[1]), fade(starts[2]), fade(starts[3])],
     zoom: lerpLog(1, layout.kEnd, e),

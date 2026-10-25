@@ -1,7 +1,8 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { hero, marquee } from "../../data/content";
-import { BREAKPOINT, DEVICE, LOGO, NAV_CLEARANCE, SECTION_VH, ZOOM } from "./config";
+import { BREAKPOINT, DEVICE, LIVE, LOGO, NAV_CLEARANCE, SECTION_VH, ZOOM } from "./config";
 import { DebugOverlay, type DebugHandle } from "./DebugOverlay";
+import { Erp } from "./Erp";
 import { computeLayout, type HeroLayout } from "./layout";
 import { Notebook } from "./Notebook";
 import { poseAt } from "./timeline";
@@ -47,7 +48,14 @@ export function Hero() {
   const itemRefs = useRef<Array<HTMLElement | null>>([]);
   const debugRef = useRef<DebugHandle | null>(null);
   const layoutRef = useRef<HeroLayout | null>(null);
-  const lastRef = useRef({ progress: -1, layout: null as HeroLayout | null, deviceVisible: true, moving: false });
+  const lastRef = useRef({
+    progress: -1,
+    layout: null as HeroLayout | null,
+    deviceVisible: true,
+    moving: false,
+    live: false,
+    assembly: "",
+  });
   /** Sección en pantalla (lo actualiza el IntersectionObserver; antes, una medición inicial). */
   const inViewRef = useRef(false);
   const [params] = useState(readDebugParams);
@@ -66,6 +74,12 @@ export function Hero() {
     if (moving !== last.moving) {
       last.moving = moving;
       stageRef.current?.classList.toggle("is-moving", moving);
+    }
+    // El ERP queda vivo (loops en CSS) al terminar de armarse; con histéresis para no reiniciarlo por un temblor.
+    const live = frame.progress >= (last.live ? LIVE.off : LIVE.on);
+    if (live !== last.live) {
+      last.live = live;
+      erpRef.current?.classList.toggle("is-live", live);
     }
     if (last.progress === frame.progress && last.layout === current) return;
     last.progress = frame.progress;
@@ -91,6 +105,16 @@ export function Hero() {
 
     erp.style.transform = `translate3d(0, ${pose.erp.y}px, 0) scale(${pose.erp.scale})`;
     erp.style.opacity = String(pose.erp.opacity);
+    // El armado interno va en variables CSS (heredadas): Erp.css las traduce a transform y opacity.
+    const { side, cards, fill, charts } = pose.assembly;
+    const assembly = [side, cards, fill, charts].map((value) => value.toFixed(3)).join();
+    if (assembly !== last.assembly) {
+      last.assembly = assembly;
+      erp.style.setProperty("--erp-side", side.toFixed(3));
+      erp.style.setProperty("--erp-cards", cards.toFixed(3));
+      erp.style.setProperty("--erp-fill", fill.toFixed(3));
+      erp.style.setProperty("--erp-charts", charts.toFixed(3));
+    }
 
     pose.copy.forEach((fade, index) => {
       const item = itemRefs.current[index];
@@ -182,20 +206,7 @@ export function Hero() {
                   : undefined
               }
             >
-              <div className="erp-ph__bar">
-                <span className="dot" />
-                <span className="dot" />
-                <span className="dot" />
-                <span>Operación · Vurp</span>
-              </div>
-              <div className="erp-ph__body">
-                <div className="erp-ph__side" />
-                <div className="erp-ph__grid">
-                  {Array.from({ length: 6 }, (_, index) => (
-                    <div key={index} className="erp-ph__card" />
-                  ))}
-                </div>
-              </div>
+              <Erp />
             </div>
             <div ref={copyRef} className="hero__copy">
               <p ref={setItem(0)} className="hero__badge">

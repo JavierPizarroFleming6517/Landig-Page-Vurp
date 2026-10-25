@@ -6,12 +6,17 @@ import {
   GitBranch,
   KeyRound,
   Layers3,
+  LayoutDashboard,
+  LifeBuoy,
   Lock,
   MessagesSquare,
   Puzzle,
+  Receipt,
   ScanSearch,
   ShieldCheck,
+  ShoppingCart,
   Sparkles,
+  Users,
   Workflow,
 } from "lucide-react";
 
@@ -37,6 +42,85 @@ export const hero = {
     { label: "Ver soluciones", href: "#soluciones", variant: "ghost" },
     { label: "Cotizar proyecto", href: "#contacto", variant: "solid" },
   ],
+} as const;
+
+/**
+ * ERP decorativo del Hero: un sistema de operación genérico, con datos ficticios y sin nombres reales de clientes
+ * ni empresas.
+ */
+export const heroErp = {
+  workspace: "Operación",
+  site: "Planta Norte",
+  search: "Buscar pedido, cliente o SKU",
+  user: "MR",
+  /** Estados de seguridad que se alternan en la barra superior. */
+  status: ["Respaldo OK · 03:00", "Accesos verificados · 24/24"],
+  modules: [
+    { label: "Resumen", icon: LayoutDashboard, active: true },
+    { label: "Pedidos", icon: ShoppingCart, badge: "12" },
+    { label: "Inventario", icon: Boxes },
+    { label: "Facturación", icon: Receipt },
+    { label: "Tickets", icon: LifeBuoy, badge: "4" },
+    { label: "Clientes", icon: Users },
+    { label: "Seguridad", icon: ShieldCheck },
+  ],
+  access: { title: "Accesos verificados", text: "24 de 24 sesiones con doble factor" },
+  heading: { title: "Resumen de hoy", meta: "Martes 14 · Turno mañana" },
+  ranges: ["Hoy", "Semana", "Mes"],
+  kpis: [
+    /** `ticker`: valores por los que sube el contador cuando el ERP queda vivo (el primero es el estático). */
+    { label: "Pedidos hoy", value: "128", ticker: ["128", "129", "131", "132"], delta: "+12 % vs. ayer" },
+    { label: "Facturado del mes", value: "$18,4 M", ticker: ["$18,4 M", "$18,5 M", "$18,6 M"], delta: "+8 % vs. mes anterior" },
+    { label: "Stock crítico", value: "7 SKU", delta: "2 menos que ayer" },
+    { label: "Tickets abiertos", value: "12", delta: "4 con prioridad alta" },
+  ],
+  sales: {
+    title: "Ventas de la semana",
+    total: "$4,2 M",
+    days: ["L", "M", "M", "J", "V", "S", "D"],
+    /** Monto vendido (línea) y pedidos (barras) por día, en unidades relativas. */
+    amounts: [42, 55, 48, 63, 71, 58, 66],
+    orders: [18, 22, 20, 27, 31, 24, 28],
+  },
+  orders: {
+    title: "Pedidos recientes",
+    /** Fila que entra arriba en el loop, junto con la notificación. */
+    incoming: { id: "#10483", detail: "Despacho a domicilio · 4 ítems", status: "Nuevo", tone: "accent" },
+    rows: [
+      { id: "#10482", detail: "Retiro en tienda · 6 ítems", status: "Preparando", tone: "progress" },
+      { id: "#10481", detail: "Despacho a domicilio · 2 ítems", status: "En ruta", tone: "accent" },
+      { id: "#10480", detail: "Despacho a empresa · 14 ítems", status: "Facturado", tone: "done" },
+      { id: "#10479", detail: "Retiro en bodega · 3 ítems", status: "Entregado", tone: "done" },
+    ],
+  },
+  tickets: {
+    title: "Tickets",
+    /** Tarjeta que pasa de "En curso" a "Resuelto" en el loop. */
+    moving: "Error en guía de despacho",
+    columns: [
+      { label: "Pendiente", cards: ["Ajuste de stock en bodega 2", "Cambio de dirección de despacho"] },
+      { label: "En curso", cards: ["Error en guía de despacho", "Revisión de factura 2291"] },
+      { label: "Resuelto", cards: ["Alta de usuario en bodega"] },
+    ],
+  },
+  security: {
+    title: "Seguridad",
+    items: [
+      { label: "Respaldo diario", value: "OK · 03:00" },
+      { label: "Accesos verificados", value: "24 de 24" },
+      { label: "Alertas críticas", value: "0" },
+      { label: "Doble factor", value: "100 % del equipo" },
+    ],
+  },
+  inventory: {
+    title: "Inventario",
+    items: [
+      { label: "Caja de cartón 40×30", level: 0.18 },
+      { label: "Etiqueta térmica 100×150", level: 0.34 },
+      { label: "Cinta de embalaje 48 mm", level: 0.72 },
+    ],
+  },
+  notification: { title: "Nuevo pedido #10483", meta: "Despacho a domicilio · hace 1 min" },
 } as const;
 
 export const marquee = [

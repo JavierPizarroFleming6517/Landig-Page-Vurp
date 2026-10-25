@@ -36,8 +36,13 @@ export const TIMELINE = {
   zoom: { start: 0.05, end: 0.38 },
   /** El logo de la pantalla se apaga justo antes del cruce. */
   logoFade: { start: 0.27, end: 0.33 },
-  /** Llegada del ERP desde el fondo y descenso a su posición final. */
+  /** Llegada del ERP desde el fondo (el marco) y descenso a su posición final. */
   erpIn: { start: 0.38, end: 0.46 },
+  /** Armado del ERP: entra el sidebar, aparecen las tarjetas como skeleton, se llenan con datos y se dibujan los gráficos. */
+  erpSide: { start: 0.44, end: 0.52 },
+  erpCards: { start: 0.5, end: 0.6 },
+  erpFill: { start: 0.57, end: 0.65 },
+  erpCharts: { start: 0.6, end: 0.72 },
   erpSettle: { start: 0.72, end: 0.86 },
   /** Badge, título, bajada y CTAs: inicio de cada uno, duración común y desplazamiento vertical (px). */
   copy: { starts: [0.76, 0.79, 0.82, 0.85] as const, duration: 0.06, offsetPx: 16 },
@@ -101,6 +106,12 @@ export const DEVICE = {
   /** Perspectiva del stage (px) cuando hay inclinación. */
   perspectivePx: 1800,
 } as const;
+
+/**
+ * El ERP queda vivo (micro-animaciones en loop, independientes del scroll) al terminar de armarse. Con histéresis:
+ * se apaga recién al volver por debajo de `off`, para que un temblor del scroll no lo reinicie.
+ */
+export const LIVE = { on: 0.72, off: 0.7 } as const;
 
 /** Símbolo en la pantalla: ancho en p = 0 (fracción del ancho de la pantalla) y cuánto crece antes de apagarse. */
 export const LOGO = {

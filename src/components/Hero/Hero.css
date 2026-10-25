@@ -54,7 +54,7 @@
 }
 
 /* will-change solo con la sección en pantalla y la escena en movimiento (lo escribe el timeline). */
-.hero__stage.is-active.is-moving :is(.hero__device, .hero__depth, .hero__logo, .hero__erp, .hero__copy > *) {
+.hero__stage.is-active.is-moving :is(.hero__device, .hero__depth, .hero__logo, .hero__erp, .hero__copy > *, .erp__side, .erp-in) {
   will-change: transform, opacity;
 }
 
@@ -149,79 +149,15 @@
   margin-top: 1.5rem;
 }
 
-/* ERP (placeholder de la Fase 1). */
+/* ERP: posición y tamaño los fija el layout; el contenido está en Erp.css. */
 .hero__erp {
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: rgba(10, 8, 14, 0.55);
   opacity: 0;
   transform-origin: 50% 50%;
 }
 
-.erp-ph__bar {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-bottom: 1rem;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
-.dot {
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 50%;
-  background: #6d3d86;
-}
-
-.dot:nth-child(2) {
-  background: #b484d2;
-}
-
-.dot:nth-child(3) {
-  background: #e4d5f2;
-}
-
-.erp-ph__body {
-  display: grid;
-  flex: 1;
-  grid-template-columns: 180px 1fr;
-  gap: 0.75rem;
-}
-
-.erp-ph__side,
-.erp-ph__card {
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: rgba(250, 247, 242, 0.03);
-}
-
-.erp-ph__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-}
-
 .hero > .wrap {
   padding-bottom: 2rem;
-}
-
-@media (max-width: 899px) {
-  .erp-ph__body {
-    grid-template-columns: 1fr;
-  }
-
-  .erp-ph__side {
-    display: none;
-  }
-
-  .erp-ph__grid {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 /* Depuración (`?debug`). */
