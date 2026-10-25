@@ -860,6 +860,14 @@ ul {
   right: 1.25rem;
   bottom: 1.25rem;
   z-index: 8;
+  transition: opacity 0.35s ease, visibility 0s;
+}
+
+/* Mientras el Hero está en animación el botón quedaría encima de la escena. */
+:root[data-hero-playing] .top {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0s linear 0.35s;
 }
 
 :focus-visible {

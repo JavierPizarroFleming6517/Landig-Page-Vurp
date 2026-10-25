@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { hero, marquee } from "../../data/content";
-import { BREAKPOINT, LOGO, NAV_CLEARANCE, SECTION_VH } from "./config";
+import { BREAKPOINT, DEVICE, LOGO, NAV_CLEARANCE, SECTION_VH, ZOOM } from "./config";
 import { DebugOverlay, type DebugHandle } from "./DebugOverlay";
 import { computeLayout, type HeroLayout } from "./layout";
 import { Notebook } from "./Notebook";
@@ -9,6 +9,9 @@ import { useScrollTimeline, type TimelineFrame } from "./useScrollTimeline";
 import "./Hero.css";
 
 const loop = [...marquee, ...marquee];
+
+/** La capa de profundidad sobresale lo justo para cubrir el viewport incluso a su escala mínima. */
+const depthInset = `${-50 * (1 / ZOOM.depthFrom - 1)}%`;
 
 /**
  * Hero en animación (en pantalla y con progreso < 1): el header pierde su fondo y se esconde el botón de volver
@@ -19,7 +22,10 @@ const setPlaying = (playing: boolean) => {
   if (root.hasAttribute("data-hero-playing") !== playing) root.toggleAttribute("data-hero-playing", playing);
 };
 
-/** `?debug` muestra el panel; junto a él, `w` fuerza el ancho de la pantalla y `p` fija el progreso. */
+/**
+ * `?debug` muestra el panel; junto a él, `w` fuerza el ancho de la pantalla, `t` la inclinación inicial (grados) y
+ * `p` fija el progreso.
+ */
 function readDebugParams() {
   const params = new URLSearchParams(window.location.search);
   const debug = params.has("debug");
@@ -27,7 +33,7 @@ function readDebugParams() {
     const value = Number.parseFloat(params.get(key) ?? "");
     return debug && Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : undefined;
   };
-  return { debug, widthFraction: read("w", 0.3, 1.5), progress: read("p", 0, 1) };
+  return { debug, widthFraction: read("w", 0.3, 1.5), tiltDeg: read("t", 0, 12), progress: read("p", 0, 1) };
 }
 
 export function Hero() {
@@ -41,7 +47,7 @@ export function Hero() {
   const itemRefs = useRef<Array<HTMLElement | null>>([]);
   const debugRef = useRef<DebugHandle | null>(null);
   const layoutRef = useRef<HeroLayout | null>(null);
-  const lastRef = useRef({ progress: -1, layout: null as HeroLayout | null, deviceVisible: true });
+  const lastRef = useRef({ progress: -1, layout: null as HeroLayout | null, deviceVisible: true, moving: false });
   /** Sección en pantalla (lo actualiza el IntersectionObserver; antes, una medición inicial). */
   const inViewRef = useRef(false);
   const [params] = useState(readDebugParams);
@@ -55,6 +61,12 @@ export function Hero() {
     setPlaying(inViewRef.current && frame.progress < 1);
 
     const last = lastRef.current;
+    // will-change solo en movimiento: en reposo el navegador vuelve a rasterizar a la escala real.
+    const moving = frame.progress !== frame.target;
+    if (moving !== last.moving) {
+      last.moving = moving;
+      stageRef.current?.classList.toggle("is-moving", moving);
+    }
     if (last.progress === frame.progress && last.layout === current) return;
     last.progress = frame.progress;
     last.layout = current;
@@ -88,7 +100,7 @@ export function Hero() {
     });
   }, []);
 
-  // will-change solo mientras la sección está en pantalla. Fuera de ella, el header y el resto vuelven a su estilo.
+  // Fuera de pantalla no hay will-change, y el header y el resto vuelven a su estilo.
   const onVisibilityChange = useCallback((visible: boolean) => {
     inViewRef.current = visible;
     stageRef.current?.classList.toggle("is-active", visible);
@@ -120,6 +132,7 @@ export function Hero() {
         copyBottom: copy.offsetTop + copy.offsetHeight,
         headerBottom: document.querySelector(".nav__bar")?.getBoundingClientRect().bottom ?? NAV_CLEARANCE,
         widthFraction: params.widthFraction,
+        tiltDeg: params.tiltDeg,
       });
       layoutRef.current = next;
       setLayout(next);
@@ -131,7 +144,7 @@ export function Hero() {
     observer.observe(copy);
     measure();
     return () => observer.disconnect();
-  }, [params.widthFraction, refresh]);
+  }, [params.widthFraction, params.tiltDeg, refresh]);
 
   const setItem = (index: number) => (node: HTMLElement | null) => {
     itemRefs.current[index] = node;
@@ -140,9 +153,17 @@ export function Hero() {
   return (
     <section className="hero" id="inicio">
       <div ref={trackRef} className="hero__track">
-        <div ref={stageRef} className="hero__stage">
+        <div
+          ref={stageRef}
+          className="hero__stage"
+          style={
+            layout && layout.tiltDeg > 0
+              ? { perspective: DEVICE.perspectivePx, perspectiveOrigin: `${layout.cx}px ${layout.cy0}px` }
+              : undefined
+          }
+        >
           <div className="hero__world">
-            <div ref={depthRef} className="hero__depth" aria-hidden="true" />
+            <div ref={depthRef} className="hero__depth" style={{ inset: depthInset }} aria-hidden="true" />
             <img
               ref={logoRef}
               className="hero__logo"

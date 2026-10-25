@@ -1,4 +1,4 @@
-import { DEVICE, ERP, LOGO, SCENES, TIMELINE, ZOOM, type SceneRange } from "./config";
+import { ERP, LOGO, SCENES, TIMELINE, ZOOM, type SceneRange } from "./config";
 import { clamp01, easeInOutSine, easeOutCubic, lerp, lerpLog, progressIn, smoothstep } from "./easing";
 import type { HeroLayout } from "./layout";
 
@@ -53,7 +53,7 @@ export function poseAt(progress: number, layout: HeroLayout): HeroPose {
       tx: layout.cx - layout.device.originX,
       ty: cy - layout.device.originY,
       scale: lerpLog(1 / layout.kEnd, 1, e),
-      tilt: DEVICE.tiltDeg * (1 - centered),
+      tilt: layout.tiltDeg * (1 - centered),
       visible: e < 1,
     },
     logo: {

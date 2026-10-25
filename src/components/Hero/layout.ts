@@ -1,32 +1,6 @@
 import { BREAKPOINT, DEVICE, ERP, LOGO, TIMELINE, ZOOM } from "./config";
 import { lerp } from "./easing";
-
-export interface Rect {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
-export interface KeyRow {
-  y: number;
-  h: number;
-  x0: number;
-  x1: number;
-  gap: number;
-}
-
-/** Geometría del notebook en p = 0, en px del viewport (es también el viewBox del SVG). */
-export interface NotebookGeometry {
-  /** Plano de la habitación: cubre el viewport durante todo el zoom y tiene el agujero de la pantalla. */
-  room: Rect;
-  screen: Rect;
-  lid: Rect & { r: number };
-  hinge: Rect;
-  /** Base en trapecio: se ensancha hacia el espectador. */
-  deck: { top: number; bottom: number; topLeft: number; topRight: number; bottomLeft: number; bottomRight: number };
-  keyRows: readonly KeyRow[];
-}
+import { heightToRows, notebookGeometry, type NotebookGeometry } from "./notebookGeometry";
 
 export interface HeroLayout {
   width: number;
@@ -43,6 +17,8 @@ export interface HeroLayout {
   eCross: number;
   pCross: number;
   notebook: NotebookGeometry;
+  /** Inclinación inicial del notebook (grados). */
+  tiltDeg: number;
   /** Elemento del notebook maquetado a tamaño de cruce (escala máxima 1) y su transform-origin (centro de la pantalla). */
   device: { width: number; height: number; originX: number; originY: number };
   /** Símbolo de la pantalla a su tamaño máximo (justo antes de apagarse). */
@@ -56,8 +32,9 @@ interface Options {
   copyBottom: number;
   /** Borde inferior del header fijo (px, medido). */
   headerBottom: number;
-  /** Ancho de la pantalla forzado desde `?debug&w=`. */
+  /** Ancho de la pantalla e inclinación forzados desde `?debug&w=` y `?debug&t=`. */
   widthFraction?: number;
+  tiltDeg?: number;
 }
 
 /** Progreso en que el easing del zoom alcanza `value` (bisección: el easing es monótono). */
@@ -72,72 +49,10 @@ function zoomProgressAt(value: number) {
   return lerp(TIMELINE.zoom.start, TIMELINE.zoom.end, (low + high) / 2);
 }
 
-/**
- * Alto (en anchos de pantalla) desde el borde superior de la tapa hasta el final de las primeras `rows` filas de
- * teclas. Admite filas fraccionarias.
- */
-function heightToRows(rows: number) {
-  const { bezel, hinge, keys } = DEVICE;
-  let total = bezel.top + 1 / DEVICE.aspect + bezel.bottom + hinge.height + keys.top;
-  for (let row = 0; row < Math.ceil(rows); row += 1) {
-    const share = Math.min(1, rows - row);
-    total += share * (keys.height + (share === 1 ? keys.gap : 0)) * Math.pow(keys.growth, row);
-  }
-  return total;
-}
-
-function notebookGeometry(screen: Rect, room: Rect): NotebookGeometry {
-  const sw = screen.w;
-  const { bezel, hinge, deck, keys } = DEVICE;
-  const lid = {
-    x: screen.x - bezel.side * sw,
-    y: screen.y - bezel.top * sw,
-    w: screen.w + 2 * bezel.side * sw,
-    h: screen.h + (bezel.top + bezel.bottom) * sw,
-    r: DEVICE.lidRadius * sw,
-  };
-  const hingeRect = {
-    x: lid.x + hinge.inset * sw,
-    y: lid.y + lid.h,
-    w: lid.w - 2 * hinge.inset * sw,
-    h: hinge.height * sw,
-  };
-  const deckTop = hingeRect.y + hingeRect.h;
-  const deckDepth = deck.depth * sw;
-  const topLeft = lid.x - deck.overhang * sw;
-  const topRight = lid.x + lid.w + deck.overhang * sw;
-  const deckShape = {
-    top: deckTop,
-    bottom: deckTop + deckDepth,
-    topLeft,
-    topRight,
-    bottomLeft: topLeft - deck.flare * deckDepth,
-    bottomRight: topRight + deck.flare * deckDepth,
-  };
-  const edgeAt = (y: number) => {
-    const t = (y - deckShape.top) / deckDepth;
-    return [lerp(deckShape.topLeft, deckShape.bottomLeft, t), lerp(deckShape.topRight, deckShape.bottomRight, t)] as const;
-  };
-
-  const keyRows: KeyRow[] = [];
-  let y = deckTop + keys.top * sw;
-  for (let row = 0; row < keys.rows; row += 1) {
-    const grow = Math.pow(keys.growth, row);
-    const h = keys.height * sw * grow;
-    const gap = keys.gap * sw * grow;
-    const [left, right] = edgeAt(y + h / 2);
-    const inset = keys.inset * (right - left);
-    keyRows.push({ y, h, x0: left + inset, x1: right - inset, gap });
-    y += h + gap;
-  }
-
-  return { room, screen, lid, hinge: hingeRect, deck: deckShape, keyRows };
-}
-
 export function computeLayout(
   width: number,
   height: number,
-  { copyBottom, headerBottom, widthFraction }: Options,
+  { copyBottom, headerBottom, widthFraction, tiltDeg }: Options,
 ): HeroLayout {
   const compact = width < BREAKPOINT;
   const preset = compact ? "compact" : "wide";
@@ -147,7 +62,7 @@ export function computeLayout(
   // Pantalla en p = 0: la tapa completa queda bajo el header. En escritorio el ancho es el que cabe entre el header
   // y el borde inferior con algunas filas de teclas a la vista, con `fraction` como máximo.
   const lidTop = headerBottom + DEVICE.topMargin;
-  const toScreenCenter = DEVICE.bezel.top + 1 / DEVICE.aspect / 2;
+  const toScreenCenter = DEVICE.lid.top + 1 / DEVICE.aspect / 2;
   let sw: number;
   let cy0: number;
   if (compact) {
@@ -196,6 +111,7 @@ export function computeLayout(
     eCross,
     pCross: zoomProgressAt(eCross),
     notebook: notebookGeometry(screen, room),
+    tiltDeg: tiltDeg ?? DEVICE.tiltDeg,
     device: {
       width: room.w * kEnd,
       height: room.h * kEnd,

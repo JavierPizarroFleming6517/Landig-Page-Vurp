@@ -50,6 +50,8 @@ export const ZOOM = {
   depthFrom: 0.85,
 } as const;
 
+const units = (count: number) => Array.from({ length: count }, () => 1);
+
 /**
  * Notebook. Las medidas de las piezas son relativas al ancho de la pantalla en p = 0. El aspecto es el del área
  * visible de la pantalla (16:10).
@@ -67,17 +69,37 @@ export const DEVICE = {
   visibleRows: 2.5,
   /** Móvil: centro vertical de la pantalla como fracción del alto del stage. */
   compactCenterY: 0.42,
-  bezel: { side: 0.022, top: 0.034, bottom: 0.03 },
-  lidRadius: 0.02,
-  hinge: { height: 0.014, inset: 0.03 },
-  /** Base: cuánto sobresale de la tapa, profundidad y ensanche hacia el espectador (perspectiva). */
-  deck: { overhang: 0.03, depth: 0.7, flare: 0.08 },
-  /** Teclas: filas, columnas, margen superior y lateral, alto y separación de la primera fila, crecimiento por fila. */
-  keys: { rows: 6, cols: 14, top: 0.035, inset: 0.07, height: 0.03, gap: 0.006, growth: 1.1 },
+  /** Tapa: bisel lateral, superior (con cámara) e inferior, borde de aluminio y radio de esquina. */
+  lid: { side: 0.026, top: 0.04, bottom: 0.036, rim: 0.0045, radius: 0.022 },
+  /** Radio de la cámara. */
+  camera: 0.0042,
+  hinge: { height: 0.016, inset: 0.06 },
+  /**
+   * Base vista desde arriba y de frente: cuánto sobresale de la tapa, profundidad proyectada, ensanche hacia el
+   * espectador, perspectiva (cuánto más altas se ven las zonas cercanas) y alto del borde frontal.
+   */
+  deck: { overhang: 0.015, depth: 0.4, flare: 0.1, perspective: 0.5, lip: 0.016 },
+  /**
+   * Teclado: tramo de la profundidad que ocupa (0 = bisagra, 1 = borde frontal), margen lateral (fracción del ancho
+   * de la base), separación entre teclas (fracción de una tecla) y fracción del alto que muestra el costado frontal.
+   */
+  keyboard: { from: 0.05, to: 0.6, inset: 0.085, gap: 0.16, travel: 0.24 },
+  /** Filas de teclas: alto relativo y ancho de cada tecla en unidades (cada fila ocupa el ancho completo). */
+  rows: [
+    { height: 0.55, keys: units(14) },
+    { height: 1, keys: [...units(13), 1.5] },
+    { height: 1, keys: [1.5, ...units(12), 1] },
+    { height: 1, keys: [1.8, ...units(11), 1.7] },
+    { height: 1, keys: [2.3, ...units(10), 2.2] },
+    { height: 1, keys: [1, 1, 1.2, 1.3, 5.5, 1.3, 1.2, 1, 1] },
+  ] as readonly { height: number; keys: readonly number[] }[],
+  touchpad: { from: 0.67, to: 0.94, width: 0.4 },
   /** Margen sobre la escala de cruce: con 1.04 el bisel ya está fuera del viewport cuando termina el zoom. */
   crossMargin: 1.04,
-  /** Inclinación inicial (grados) que se endereza al llegar al cruce. 0 = frontal. */
+  /** Inclinación inicial (grados) que se endereza al llegar al cruce. 0 = frontal. `?debug&t=` la sobreescribe. */
   tiltDeg: 0,
+  /** Perspectiva del stage (px) cuando hay inclinación. */
+  perspectivePx: 1800,
 } as const;
 
 /** Símbolo en la pantalla: ancho en p = 0 (fracción del ancho de la pantalla) y cuánto crece antes de apagarse. */
