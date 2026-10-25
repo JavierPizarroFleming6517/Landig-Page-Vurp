@@ -30,7 +30,6 @@ export const navLinks = [
   { label: "Plataforma", href: "#plataforma" },
   { label: "Proceso", href: "#proceso" },
   { label: "Casos", href: "#casos" },
-  { label: "Preguntas", href: "#preguntas" },
 ] as const;
 
 export const hero = {
@@ -158,25 +157,13 @@ export const flowSteps: readonly FlowStep[] = [
     icon: Layers3,
     kicker: "Desarrollo",
     title: "Construimos a medida",
-    text: "El software sigue tu flujo, no una plantilla. Cada pieza existe porque tu operación la necesita.",
-  },
-  {
-    icon: GitBranch,
-    kicker: "Integración",
-    title: "Conectamos lo que ya usas",
-    text: "Correo, pagos, inventario o el sistema que no vas a reemplazar. La información deja de vivir en copias.",
+    text: "El software sigue tu flujo, no una plantilla, y se conecta con lo que ya usas: correo, pagos o inventario.",
   },
   {
     icon: Lock,
     kicker: "Seguridad",
     title: "Cerramos los accesos",
     text: "Roles, cifrado y respaldos entran en la misma entrega. La protección no queda para una fase posterior.",
-  },
-  {
-    icon: CalendarCheck,
-    kicker: "Acompañamiento",
-    title: "Dejamos todo andando",
-    text: "Capacitamos a tu equipo, documentamos en español claro y seguimos cerca cuando la operación cambia.",
   },
 ];
 
@@ -189,15 +176,19 @@ export interface SolutionFeature {
 export interface Solution {
   id: string;
   label: string;
+  icon: LucideIcon;
   title: string;
   summary: string;
   features: readonly SolutionFeature[];
+  /** Pantalla de ejemplo del notebook (public/soluciones/), con datos ficticios. */
+  screen: { src: string; alt: string };
 }
 
 export const solutions: readonly Solution[] = [
   {
     id: "software",
     label: "Software a medida",
+    icon: Layers3,
     title: "Un sistema para tu forma de trabajar",
     summary: "Reemplazamos el conjunto de planillas, chats y archivos sueltos por una herramienta que tu equipo entiende.",
     features: [
@@ -222,10 +213,15 @@ export const solutions: readonly Solution[] = [
         text: "Pantallas claras y una puesta en marcha con tu equipo, no un manual que nadie abre.",
       },
     ],
+    screen: {
+      src: "/soluciones/software.webp",
+      alt: "Ejemplo de panel de operación con datos ficticios: pedidos del día, estados, responsables y tareas del equipo.",
+    },
   },
   {
     id: "automatizacion",
     label: "Automatización",
+    icon: Workflow,
     title: "Lo repetitivo deja de ocupar el día",
     summary: "Detectamos los avisos, registros y seguimientos que hoy se hacen a mano y los encadenamos.",
     features: [
@@ -250,10 +246,15 @@ export const solutions: readonly Solution[] = [
         text: "Las personas se quedan con las decisiones. El resto circula solo.",
       },
     ],
+    screen: {
+      src: "/soluciones/automatizacion.webp",
+      alt: "Ejemplo de flujo automatizado con datos ficticios: un pedido nuevo se registra, avisa a bodega y confirma al cliente.",
+    },
   },
   {
     id: "seguridad",
     label: "Ciberseguridad",
+    icon: ShieldCheck,
     title: "Protección dentro del mismo proyecto",
     summary: "Accesos, cifrado, respaldos y registro forman parte del sistema, no un anexo al final.",
     features: [
@@ -278,6 +279,10 @@ export const solutions: readonly Solution[] = [
         text: "Queda constancia de quién hizo qué. Sirve para el control interno y para dormir más tranquilo.",
       },
     ],
+    screen: {
+      src: "/soluciones/seguridad.webp",
+      alt: "Ejemplo de panel de seguridad con datos ficticios: accesos por rol, respaldos diarios y registro de actividad.",
+    },
   },
 ];
 
@@ -412,33 +417,6 @@ export const cases = [
   },
 ] as const;
 
-export const faqs = [
-  {
-    q: "¿Trabajan con plantillas o todo es a medida?",
-    a: "A medida. Partimos de tu operación. Si algo estándar alcanza, te lo decimos; no vamos a inventar complejidad.",
-  },
-  {
-    q: "¿La seguridad se cotiza aparte?",
-    a: "No. Accesos, cuidado de los datos y respaldos forman parte del proyecto desde el diseño.",
-  },
-  {
-    q: "¿Tienen que botar los sistemas que ya usan?",
-    a: "No. Integramos lo que conviene conservar y reemplazamos solo lo que ya no da abasto.",
-  },
-  {
-    q: "¿Dónde están?",
-    a: "En Coquimbo, Chile. Las reuniones y el acompañamiento son con el equipo que construye.",
-  },
-  {
-    q: "¿Qué pasa después de la entrega?",
-    a: "Capacitamos, documentamos y seguimos disponibles cuando el proceso cambia.",
-  },
-  {
-    q: "¿Cómo parto?",
-    a: "Escríbenos qué quieres ordenar. La primera conversación sirve para ver si tiene sentido hacer el proyecto.",
-  },
-] as const;
-
 export const footerColumns = [
   {
     title: "Producto",
@@ -454,7 +432,6 @@ export const footerColumns = [
     links: [
       { label: "Proceso", href: "#proceso" },
       { label: "Casos de uso", href: "#casos" },
-      { label: "Preguntas", href: "#preguntas" },
       { label: "Contacto", href: "#contacto" },
     ],
   },
