@@ -2,7 +2,7 @@ import { Cases } from "./components/Cases";
 import { Contact } from "./components/Contact";
 import { Flow } from "./components/Flow";
 import { Footer } from "./components/Footer";
-import { Hero } from "./components/Hero";
+import { Hero } from "./components/Hero/Hero";
 import { Metrics } from "./components/Metrics";
 import { Navbar } from "./components/Navbar";
 import { Platform } from "./components/Platform";

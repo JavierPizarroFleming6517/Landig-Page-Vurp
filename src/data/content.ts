@@ -28,6 +28,17 @@ export const navLinks = [
   { label: "Preguntas", href: "#preguntas" },
 ] as const;
 
+export const hero = {
+  badge: "Software a medida y ciberseguridad",
+  title: "Ordenamos tu operación",
+  titleAccent: "en un sistema a medida.",
+  lead: "Diseñamos software, automatizaciones y seguridad para la forma en que realmente trabajas. Sin plantillas genéricas y sin dejar la protección para el final.",
+  actions: [
+    { label: "Ver soluciones", href: "#soluciones", variant: "ghost" },
+    { label: "Cotizar proyecto", href: "#contacto", variant: "solid" },
+  ],
+} as const;
+
 export const marquee = [
   "Software a medida",
   "Automatización",

@@ -1,0 +1,268 @@
+/* Recorrido de scroll: el stage sticky queda pegado mientras dura. `clip` (no `hidden`) para no romper el sticky. */
+.hero__track {
+  --track-vh: 300;
+  position: relative;
+  height: calc(var(--track-vh) * 1vh);
+  height: calc(var(--track-vh) * 1svh);
+  overflow: clip;
+}
+
+.hero__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Lo de adentro de la pantalla: nunca escala con el notebook, se ve a través del agujero. */
+.hero__world {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+}
+
+.hero__depth {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 420px at 78% 0%, rgba(180, 132, 210, 0.32), transparent 62%),
+    radial-gradient(640px 360px at 0% 100%, rgba(85, 35, 111, 0.45), transparent 60%),
+    linear-gradient(115deg, #2c2340 0%, #1a1524 48%, #121016 100%);
+  transform: scale(0.85);
+}
+
+.hero__logo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  transform-origin: 50% 50%;
+}
+
+.hero__device {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+
+.hero__device svg {
+  display: block;
+}
+
+.hero__stage.is-active :is(.hero__device, .hero__depth, .hero__logo, .hero__erp, .hero__copy > *) {
+  will-change: transform, opacity;
+}
+
+/* Notebook (placeholder de la Fase 1). */
+.notebook__room {
+  fill: var(--bg);
+}
+
+.notebook__lid {
+  fill: #0e0c11;
+  stroke: #3a3642;
+  stroke-width: 1.5;
+}
+
+.notebook__hinge {
+  fill: #1c1a21;
+}
+
+.notebook__deck {
+  fill: #25232b;
+}
+
+.notebook__key {
+  fill: #16141a;
+  stroke: rgba(228, 213, 242, 0.08);
+  stroke-width: 1;
+}
+
+/* Composición final: texto arriba y centrado. Está en el DOM desde el inicio; la pose lo hace aparecer. */
+.hero__copy {
+  position: absolute;
+  top: calc(var(--nav) + clamp(0.5rem, 4vh, 3rem));
+  left: var(--gutter);
+  right: var(--gutter);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.hero__copy > * {
+  opacity: 0;
+}
+
+.hero__badge {
+  display: inline-flex;
+  margin-bottom: 1.1rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid rgba(250, 247, 242, 0.16);
+  border-radius: 999px;
+  background: rgba(250, 247, 242, 0.06);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.hero__title {
+  max-width: 18ch;
+  font-size: clamp(2.4rem, 4.6vw, 4.8rem);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.hero__lead {
+  max-width: 40rem;
+  margin-top: 1.1rem;
+  color: #ddd4ea;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+}
+
+.hero__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* ERP (placeholder de la Fase 1). */
+.hero__erp {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(10, 8, 14, 0.55);
+  opacity: 0;
+  transform-origin: 50% 50%;
+}
+
+.erp-ph__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #6d3d86;
+}
+
+.dot:nth-child(2) {
+  background: #b484d2;
+}
+
+.dot:nth-child(3) {
+  background: #e4d5f2;
+}
+
+.erp-ph__body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 180px 1fr;
+  gap: 0.75rem;
+}
+
+.erp-ph__side,
+.erp-ph__card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(250, 247, 242, 0.03);
+}
+
+.erp-ph__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.hero > .wrap {
+  padding-bottom: 2rem;
+}
+
+@media (max-width: 899px) {
+  .erp-ph__body {
+    grid-template-columns: 1fr;
+  }
+
+  .erp-ph__side {
+    display: none;
+  }
+
+  .erp-ph__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Depuración (`?debug`). */
+.hero-debug {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  font: 500 0.75rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--text);
+}
+
+.hero-debug__readout {
+  position: absolute;
+  top: calc(var(--nav) + 0.75rem);
+  left: 0.75rem;
+  margin: 0;
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.62);
+  white-space: pre;
+}
+
+.hero-debug__track {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  height: 1.5rem;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.hero-debug__segment {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  border-left: 1px solid rgba(228, 213, 242, 0.45);
+  color: rgba(250, 247, 242, 0.75);
+}
+
+.hero-debug__cross {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--accent-strong);
+}
+
+.hero-debug__playhead {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--text);
+}

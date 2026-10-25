@@ -214,8 +214,10 @@ ul {
 }
 
 .nav {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
   padding: 0.85rem 0 0;
 }
@@ -228,10 +230,29 @@ ul {
   width: calc(100% - (var(--gutter) * 2));
   margin-inline: auto;
   padding: 0.55rem 0.7rem 0.55rem 1rem;
-  border: 1px solid var(--line);
+  position: relative;
+  isolation: isolate;
   border-radius: 999px;
+}
+
+/* Fondo, blur y borde en una capa propia: se apaga mientras el Hero está en animación (`data-hero-playing`).
+   Al apagarse pasa a `visibility: hidden` cuando termina el fundido, así el backdrop-filter deja de calcularse. */
+.nav__bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid var(--line);
+  border-radius: inherit;
   background: rgba(18, 16, 22, 0.78);
   backdrop-filter: blur(16px);
+  transition: opacity 0.35s ease, visibility 0s;
+}
+
+:root[data-hero-playing] .nav__bar::before {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0s linear 0.35s;
 }
 
 .nav__logo img {
@@ -262,139 +283,6 @@ ul {
 
 .nav__panel {
   display: none;
-}
-
-.hero {
-  padding: 1.25rem 0 2rem;
-}
-
-.hero__panel {
-  position: relative;
-  overflow: hidden;
-  width: calc(100% + (var(--gutter) * 2));
-  margin-inline: calc(var(--gutter) * -1);
-  padding: clamp(2.75rem, 6vw, 5.5rem) var(--gutter) 2.25rem;
-  border-bottom: 1px solid var(--line);
-  background:
-    radial-gradient(900px 420px at 78% 0%, rgba(180, 132, 210, 0.32), transparent 62%),
-    radial-gradient(640px 360px at 0% 100%, rgba(85, 35, 111, 0.45), transparent 60%),
-    linear-gradient(115deg, #2c2340 0%, #1a1524 48%, #121016 100%);
-}
-
-.hero__layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
-  gap: clamp(1.5rem, 3vw, 3.5rem);
-  align-items: center;
-}
-
-.hero__copy {
-  max-width: 46rem;
-  text-align: left;
-}
-
-.hero__badge {
-  display: inline-flex;
-  margin-bottom: 1.25rem;
-  padding: 0.4rem 0.85rem;
-  border: 1px solid rgba(250, 247, 242, 0.16);
-  border-radius: 999px;
-  background: rgba(250, 247, 242, 0.06);
-  color: var(--accent);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-}
-
-.hero__title {
-  font-size: clamp(2.8rem, 5.4vw, 6rem);
-  font-weight: 600;
-  letter-spacing: -0.055em;
-  line-height: 0.96;
-}
-
-.hero__lead {
-  max-width: 38rem;
-  margin: 1.25rem 0 0;
-  color: #ddd4ea;
-  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
-}
-
-.hero__actions {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.75rem;
-}
-
-.stage {
-  margin-top: 2.5rem;
-  padding: 1rem;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: rgba(10, 8, 14, 0.45);
-}
-
-.stage__bar {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-bottom: 1rem;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
-.dot {
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 50%;
-  background: #6d3d86;
-}
-
-.dot:nth-child(2) {
-  background: #b484d2;
-}
-
-.dot:nth-child(3) {
-  background: #e4d5f2;
-}
-
-.stage__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
-.stage__card:first-child {
-  grid-column: 1 / -1;
-}
-
-.stage__card {
-  padding: 1rem;
-  border-radius: 18px;
-  border: 1px solid var(--line);
-  background: rgba(250, 247, 242, 0.03);
-}
-
-.stage__card strong {
-  display: block;
-  margin-bottom: 0.75rem;
-  font-size: 0.95rem;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.55rem 0;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.pill-ok {
-  color: var(--accent);
 }
 
 .marquee {
@@ -1004,9 +892,7 @@ ul {
     display: none;
   }
 
-  .hero__layout,
   .intro,
-  .stage__grid,
   .solution,
   .solution__list,
   .metrics__grid,
@@ -1025,7 +911,6 @@ ul {
     justify-self: start;
   }
 
-  .stage__card:first-child,
   .metric,
   .metric--lead,
   .metric--banner,
