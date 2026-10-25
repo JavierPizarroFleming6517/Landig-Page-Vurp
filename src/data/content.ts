@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 
 export const contact = {
-  email: "hola@vurp.com",
+  email: "contacto@vurp.cl",
   location: "Coquimbo, Chile",
 } as const;
 
@@ -442,8 +442,7 @@ export const footerColumns = [
     title: "Social",
     links: [
       { label: "LinkedIn", href: "https://www.linkedin.com/" },
-      { label: "Instagram", href: "https://www.instagram.com/" },
-      { label: "GitHub", href: "https://github.com/" },
+      { label: "Facebook", href: "https://www.facebook.com/" },
     ],
   },
 ] as const;

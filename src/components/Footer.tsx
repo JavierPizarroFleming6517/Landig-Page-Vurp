@@ -7,13 +7,6 @@ export function Footer() {
       <div className="wrap">
         <div className="footer__panel">
           <div className="footer__brand">
-            <img src="/brand/logo-completo-oscuro.svg" alt="Vurp · Software & Cybersecurity" data-theme-only="dark" />
-            <img src="/brand/logo-completo.svg" alt="Vurp · Software & Cybersecurity" data-theme-only="light" />
-            <p>
-              {contact.location}
-              <br />
-              {contact.email}
-            </p>
           </div>
           <div className="footer__grid">
             {footerColumns.map((column) => (
@@ -31,7 +24,10 @@ export function Footer() {
           </div>
           <div className="footer__base">
             <p>© 2026 Vurp. Software a medida y ciberseguridad.</p>
-            <p>Hecho en Coquimbo.</p>
+            <div className="footer__contact">
+              <img src="/brand/logo-completo-oscuro.svg" alt="Vurp · Software & Cybersecurity" data-theme-only="dark" />
+              <img src="/brand/logo-completo.svg" alt="Vurp · Software & Cybersecurity" data-theme-only="light" />
+              </div>
           </div>
         </div>
       </div>

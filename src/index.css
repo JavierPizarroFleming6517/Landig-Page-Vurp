@@ -1206,6 +1206,11 @@ ul {
   font-size: 0.9rem;
 }
 
+.footer__contact img {
+  width: 120px;
+  height: auto;
+}
+
 .top {
   position: fixed;
   right: 1.25rem;
