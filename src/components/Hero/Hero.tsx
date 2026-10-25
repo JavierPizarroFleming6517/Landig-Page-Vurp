@@ -1,5 +1,6 @@
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState, type FocusEventHandler, type Ref } from "react";
 import { hero, marquee } from "../../data/content";
+import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { BREAKPOINT, DEVICE, LIVE, LOGO, NAV_CLEARANCE, SECTION_VH, ZOOM } from "./config";
 import { DebugOverlay, type DebugHandle } from "./DebugOverlay";
 import { Erp } from "./Erp";
@@ -37,7 +38,80 @@ function readDebugParams() {
   return { debug, widthFraction: read("w", 0.3, 1.5), tiltDeg: read("t", 0, 12), progress: read("p", 0, 1) };
 }
 
+/** Badge, título, bajada y CTAs: el mismo bloque en la versión animada y en la estática. */
+function HeroCopy({
+  copyRef,
+  itemRef,
+  onFocus,
+  id,
+}: {
+  copyRef?: Ref<HTMLDivElement>;
+  itemRef?: (index: number) => (node: HTMLElement | null) => void;
+  onFocus?: FocusEventHandler<HTMLDivElement>;
+  id?: string;
+}) {
+  return (
+    <div ref={copyRef} id={id} className="hero__copy" onFocus={onFocus}>
+      <p ref={itemRef?.(0)} className="hero__badge">
+        {hero.badge}
+      </p>
+      <h1 ref={itemRef?.(1)} className="hero__title">
+        {hero.title}
+        <br />
+        <em>{hero.titleAccent}</em>
+      </h1>
+      <p ref={itemRef?.(2)} className="hero__lead">
+        {hero.lead}
+      </p>
+      <div ref={itemRef?.(3)} className="hero__actions">
+        {hero.actions.map((action) => (
+          <a key={action.href} className={`btn btn--${action.variant}`} href={action.href}>
+            {action.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HeroMarquee() {
+  return (
+    <div className="wrap">
+      <div className="marquee" aria-label="Qué construye Vurp">
+        <div className="marquee__track">
+          {loop.map((item, index) => (
+            <span className="chip" key={`${item}-${index}`}>
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Hero: la animación por scroll o, con `prefers-reduced-motion`, la composición final estática. */
 export function Hero() {
+  const reduced = usePrefersReducedMotion();
+  return reduced ? <HeroStatic /> : <HeroScroll />;
+}
+
+/** Composición final sin sticky, sin zoom ni rAF: el ERP queda armado y quieto (sin `is-live`, no hay loops). */
+function HeroStatic() {
+  return (
+    <section className="hero hero--static" id="inicio">
+      <div className="hero__stage">
+        <HeroCopy id="contenido" />
+        <div className="hero__erp" aria-hidden="true">
+          <Erp />
+        </div>
+      </div>
+      <HeroMarquee />
+    </section>
+  );
+}
+
+function HeroScroll() {
   const trackRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const deviceRef = useRef<HTMLDivElement>(null);
@@ -52,7 +126,6 @@ export function Hero() {
     progress: -1,
     layout: null as HeroLayout | null,
     deviceVisible: true,
-    moving: false,
     live: false,
     assembly: "",
   });
@@ -69,12 +142,6 @@ export function Hero() {
     setPlaying(inViewRef.current && frame.progress < 1);
 
     const last = lastRef.current;
-    // will-change solo en movimiento: en reposo el navegador vuelve a rasterizar a la escala real.
-    const moving = frame.progress !== frame.target;
-    if (moving !== last.moving) {
-      last.moving = moving;
-      stageRef.current?.classList.toggle("is-moving", moving);
-    }
     // El ERP queda vivo (loops en CSS) al terminar de armarse; con histéresis para no reiniciarlo por un temblor.
     const live = frame.progress >= (last.live ? LIVE.off : LIVE.on);
     if (live !== last.live) {
@@ -222,26 +289,7 @@ export function Hero() {
             >
               <Erp />
             </div>
-            <div ref={copyRef} className="hero__copy" onFocus={onCopyFocus}>
-              <p ref={setItem(0)} className="hero__badge">
-                {hero.badge}
-              </p>
-              <h1 ref={setItem(1)} className="hero__title">
-                {hero.title}
-                <br />
-                <em>{hero.titleAccent}</em>
-              </h1>
-              <p ref={setItem(2)} className="hero__lead">
-                {hero.lead}
-              </p>
-              <div ref={setItem(3)} className="hero__actions">
-                {hero.actions.map((action) => (
-                  <a key={action.href} className={`btn btn--${action.variant}`} href={action.href}>
-                    {action.label}
-                  </a>
-                ))}
-              </div>
-            </div>
+            <HeroCopy copyRef={copyRef} itemRef={setItem} onFocus={onCopyFocus} />
           </div>
           <div
             ref={deviceRef}
@@ -254,17 +302,7 @@ export function Hero() {
           {params.debug && <DebugOverlay handleRef={debugRef} />}
         </div>
       </div>
-      <div className="wrap">
-        <div className="marquee" aria-label="Qué construye Vurp">
-          <div className="marquee__track">
-            {loop.map((item, index) => (
-              <span className="chip" key={`${item}-${index}`}>
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      <HeroMarquee />
     </section>
   );
 }

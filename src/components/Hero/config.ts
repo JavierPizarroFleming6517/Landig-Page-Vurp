@@ -68,6 +68,12 @@ export const DEVICE = {
    * es el que cabe: la tapa completa bajo el header y `visibleRows` filas de teclas sobre el borde inferior.
    */
   widthFraction: { wide: 0.72, compact: 1.2 },
+  /**
+   * En móvil, la fracción baja gradualmente de `compact` (teléfono) a `tablet` entre estos anchos (px): en una tablet
+   * vertical la pantalla no necesita desbordar tanto.
+   */
+  tabletFraction: 0.95,
+  compactBlend: { from: 480, to: 899 },
   /** Margen (px) entre el borde inferior del header (medido) y el borde superior de la tapa. */
   topMargin: 16,
   /** Escritorio: filas de teclas que deben verse sobre el borde inferior del viewport. */
@@ -99,6 +105,11 @@ export const DEVICE = {
     { height: 1, keys: [1, 1, 1.2, 1.3, 5.5, 1.3, 1.2, 1, 1] },
   ] as readonly { height: number; keys: readonly number[] }[],
   touchpad: { from: 0.67, to: 0.94, width: 0.4 },
+  /**
+   * Margen del plano de la habitación alrededor del viewport (fracción por lado). Basta con poco: el plano solo crece
+   * alrededor de un punto del viewport. Cuanto menor, más chica la capa que el navegador rasteriza.
+   */
+  roomMargin: 0.04,
   /** Margen sobre la escala de cruce: con 1.04 el bisel ya está fuera del viewport cuando termina el zoom. */
   crossMargin: 1.04,
   /** Inclinación inicial (grados) que se endereza al llegar al cruce. 0 = frontal. `?debug&t=` la sobreescribe. */
@@ -132,7 +143,9 @@ export const ERP = {
   /** Separación (px) entre el bloque de texto y el borde superior del ERP en la composición final. */
   gapBelowCopy: { wide: 36, compact: 22 },
   /** Posición mínima del borde superior del ERP, como fracción del alto. */
-  minTop: { wide: 0.42, compact: 0.5 },
+  minTop: { wide: 0.42, compact: 0.36 },
+  /** El ERP siempre llega hasta pasado el borde inferior en la composición final (px de más). */
+  bleed: 40,
   /** Escala máxima mientras se arma (centrado) y escala relativa con que llega desde el fondo. */
   assemblyScale: 0.92,
   arriveScale: 0.94,

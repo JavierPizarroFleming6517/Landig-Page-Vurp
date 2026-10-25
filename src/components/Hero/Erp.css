@@ -878,8 +878,28 @@
   }
 }
 
-/* Móvil: una columna, pocas tarjetas. */
-@media (max-width: 899px) {
+/* ERP mediano (tablets): sidebar más angosto; seguridad a doble ancho y sin inventario. */
+@container erp (max-width: 899px) {
+  .erp__body {
+    grid-template-columns: 156px minmax(0, 1fr);
+  }
+
+  .erp__search {
+    flex-basis: 220px;
+  }
+
+  .erp-card--security {
+    grid-column: span 2;
+  }
+
+  .erp-card--inventory {
+    display: none;
+  }
+}
+
+/* ERP angosto (teléfonos): una columna, pocas tarjetas. Depende del ancho del ERP, no del viewport: en una tablet
+   vertical se ve la versión completa. */
+@container erp (max-width: 639px) {
   .erp {
     padding: 8px;
     border-radius: 18px;

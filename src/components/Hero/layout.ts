@@ -1,5 +1,5 @@
 import { BREAKPOINT, DEVICE, ERP, LOGO, TIMELINE, ZOOM } from "./config";
-import { lerp } from "./easing";
+import { clamp01, lerp } from "./easing";
 import { heightToRows, notebookGeometry, type NotebookGeometry } from "./notebookGeometry";
 
 export interface HeroLayout {
@@ -56,7 +56,9 @@ export function computeLayout(
 ): HeroLayout {
   const compact = width < BREAKPOINT;
   const preset = compact ? "compact" : "wide";
-  const fraction = widthFraction ?? DEVICE.widthFraction[preset];
+  const blend = clamp01((width - DEVICE.compactBlend.from) / (DEVICE.compactBlend.to - DEVICE.compactBlend.from));
+  const fraction =
+    widthFraction ?? (compact ? lerp(DEVICE.widthFraction.compact, DEVICE.tabletFraction, blend) : DEVICE.widthFraction.wide);
   const cx = width / 2;
 
   // Pantalla en p = 0: la tapa completa queda bajo el header. En escritorio el ancho es el que cabe entre el header
@@ -83,18 +85,20 @@ export function computeLayout(
   // La habitación cubre el viewport en p = 0 con margen. Como solo crece alrededor de un punto del viewport, lo sigue
   // cubriendo; el margen vertical absorbe además el desplazamiento del centro hasta la mitad del alto.
   const shift = Math.abs(height / 2 - cy0);
-  const marginX = width * 0.15;
-  const marginY = height * 0.15 + shift;
+  const marginX = width * DEVICE.roomMargin;
+  const marginY = height * DEVICE.roomMargin + shift;
   const room = { x: -marginX, y: -marginY, w: width + 2 * marginX, h: height + 2 * marginY };
 
   const logoWidth = LOGO.widthFraction[preset] * sw * LOGO.grow;
 
   const gutter = Math.min(72, Math.max(20, width * 0.032));
   const erpWidth = Math.min(ERP.maxWidth, width - 2 * gutter);
-  const erpHeight = compact
+  const erpTop = Math.max(copyBottom + ERP.gapBelowCopy[preset], height * ERP.minTop[preset]);
+  const baseHeight = compact
     ? Math.min(ERP.compactMaxHeight, height * 0.78)
     : Math.min(ERP.maxHeight, erpWidth / ERP.aspect);
-  const erpTop = Math.max(copyBottom + ERP.gapBelowCopy[preset], height * ERP.minTop[preset]);
+  // Asoma desde el borde inferior: nunca termina antes de él.
+  const erpHeight = Math.max(baseHeight, height - erpTop + ERP.bleed);
   const available = height - headerBottom - 2 * ERP.assemblyMargin;
   const assemblyScale = Math.min(ERP.assemblyScale, available / erpHeight);
   const assemblyCenter = headerBottom + ERP.assemblyMargin + available / 2;

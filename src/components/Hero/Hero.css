@@ -53,8 +53,11 @@
   display: block;
 }
 
-/* will-change solo con la sección en pantalla y la escena en movimiento (lo escribe el timeline). */
-.hero__stage.is-active.is-moving :is(.hero__device, .hero__depth, .hero__logo, .hero__erp, .hero__copy > *, .erp__side, .erp-in) {
+/*
+ * will-change mientras la sección está en pantalla. Activarlo recién al empezar a moverse obliga a rasterizar las
+ * capas de golpe (cuadros de 100–200 ms medidos); fijo, no hay cuadros lentos y la nitidez en reposo es la misma.
+ */
+.hero__stage.is-active :is(.hero__device, .hero__depth, .hero__logo, .hero__erp, .hero__copy > *, .erp__side, .erp-in) {
   will-change: transform, opacity;
 }
 
@@ -184,8 +187,9 @@
   }
 }
 
-/* ERP: posición y tamaño los fija el layout; el contenido está en Erp.css. */
+/* ERP: posición y tamaño los fija el layout; el contenido está en Erp.css (con container queries sobre su ancho). */
 .hero__erp {
+  container: erp / inline-size;
   position: absolute;
   opacity: 0;
   transform-origin: 50% 50%;
@@ -193,6 +197,49 @@
 
 .hero > .wrap {
   padding-bottom: 2rem;
+}
+
+/*
+ * Movimiento reducido (`prefers-reduced-motion`): la composición final en el flujo normal, sin sticky, sin zoom y
+ * sin rAF. El ERP queda armado y quieto, recortado abajo para que asome como en la versión animada.
+ */
+.hero--static .hero__stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: clamp(1.5rem, 4vh, 2.5rem);
+  height: auto;
+  padding: calc(var(--nav) + clamp(0.25rem, 3.5vh, 3rem)) var(--gutter) 0;
+  background:
+    radial-gradient(900px 420px at 78% 0%, rgba(180, 132, 210, 0.32), transparent 62%),
+    radial-gradient(640px 360px at 0% 100%, rgba(85, 35, 111, 0.45), transparent 60%),
+    linear-gradient(115deg, #2c2340 0%, #1a1524 48%, #121016 100%);
+}
+
+.hero--static .hero__copy {
+  position: static;
+}
+
+.hero--static .hero__copy > * {
+  opacity: 1;
+}
+
+.hero--static .hero__erp {
+  position: relative;
+  width: min(1180px, 100%);
+  height: clamp(300px, 46vh, 520px);
+  overflow: hidden;
+  opacity: 1;
+}
+
+.hero--static .hero__erp > .erp {
+  height: 660px;
+}
+
+@container erp (max-width: 639px) {
+  .hero--static .hero__erp > .erp {
+    height: 600px;
+  }
 }
 
 /* Depuración (`?debug`). */
