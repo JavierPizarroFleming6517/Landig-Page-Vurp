@@ -13,7 +13,7 @@ import { Studio } from "./components/Studio";
 export default function App() {
   return (
     <>
-      <a className="skip" href="#inicio">
+      <a className="skip" href="#contenido">
         Saltar al contenido
       </a>
       <Navbar />

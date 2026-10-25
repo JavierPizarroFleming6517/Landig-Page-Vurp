@@ -121,6 +121,8 @@ export function Hero() {
       if (!item) return;
       item.style.opacity = String(fade.opacity);
       item.style.transform = `translate3d(0, ${fade.y}px, 0)`;
+      const hidden = fade.opacity < 0.5;
+      if (item.hasAttribute("data-hidden") !== hidden) item.toggleAttribute("data-hidden", hidden);
     });
   }, []);
 
@@ -170,6 +172,17 @@ export function Hero() {
     return () => observer.disconnect();
   }, [params.widthFraction, params.tiltDeg, refresh]);
 
+  // Los CTAs están en el orden de foco desde el inicio. Si reciben foco antes del final del recorrido (Tab desde el
+  // header), la página salta al final para que lo enfocado se vea.
+  const onCopyFocus = useCallback(() => {
+    const track = trackRef.current;
+    const stage = stageRef.current;
+    if (!track || !stage) return;
+    const travel = track.offsetHeight - stage.offsetHeight;
+    const top = track.getBoundingClientRect().top;
+    if (travel > 0 && -top < travel - 1) window.scrollTo({ top: window.scrollY + top + travel, behavior: "instant" });
+  }, []);
+
   const setItem = (index: number) => (node: HTMLElement | null) => {
     itemRefs.current[index] = node;
   };
@@ -177,6 +190,7 @@ export function Hero() {
   return (
     <section className="hero" id="inicio">
       <div ref={trackRef} className="hero__track">
+        <span id="contenido" className="hero__anchor" />
         <div
           ref={stageRef}
           className="hero__stage"
@@ -208,7 +222,7 @@ export function Hero() {
             >
               <Erp />
             </div>
-            <div ref={copyRef} className="hero__copy">
+            <div ref={copyRef} className="hero__copy" onFocus={onCopyFocus}>
               <p ref={setItem(0)} className="hero__badge">
                 {hero.badge}
               </p>

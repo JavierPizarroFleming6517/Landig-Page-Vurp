@@ -98,10 +98,13 @@
   stroke: rgba(201, 167, 228, 0.12);
 }
 
-/* Composición final: texto arriba y centrado. Está en el DOM desde el inicio; la pose lo hace aparecer. */
+/*
+ * Composición final: texto arriba y centrado. Está en el DOM desde el inicio; la pose lo hace aparecer. Tamaños y
+ * márgenes también escalan con el alto, para que en pantallas bajas el ERP siga asomando.
+ */
 .hero__copy {
   position: absolute;
-  top: calc(var(--nav) + clamp(0.5rem, 4vh, 3rem));
+  top: calc(var(--nav) + clamp(0.25rem, 3.5vh, 3rem));
   left: var(--gutter);
   right: var(--gutter);
   display: grid;
@@ -115,7 +118,7 @@
 
 .hero__badge {
   display: inline-flex;
-  margin-bottom: 1.1rem;
+  margin-bottom: clamp(0.6rem, 1.8vh, 1.1rem);
   padding: 0.4rem 0.85rem;
   border: 1px solid rgba(250, 247, 242, 0.16);
   border-radius: 999px;
@@ -128,7 +131,7 @@
 
 .hero__title {
   max-width: 18ch;
-  font-size: clamp(2.4rem, 4.6vw, 4.8rem);
+  font-size: clamp(2.1rem, min(4.6vw, 7.4vh), 4.8rem);
   font-weight: 600;
   letter-spacing: -0.055em;
   line-height: 0.98;
@@ -136,9 +139,9 @@
 
 .hero__lead {
   max-width: 40rem;
-  margin-top: 1.1rem;
+  margin-top: clamp(0.6rem, 1.6vh, 1.1rem);
   color: #ddd4ea;
-  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-size: clamp(0.95rem, min(1.4vw, 2.2vh), 1.15rem);
 }
 
 .hero__actions {
@@ -146,7 +149,39 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1.5rem;
+  margin-top: clamp(0.9rem, 2.6vh, 1.5rem);
+}
+
+/*
+ * Destino del skip link: un ancla al final del recorrido (con scroll-padding-top = --nav, la página aterriza justo
+ * en la composición final). Va antes del stage en el DOM: el siguiente Tab cae en los CTAs.
+ */
+.hero__anchor {
+  position: absolute;
+  top: calc(100% - 100vh + var(--nav));
+  top: calc(100% - 100svh + var(--nav));
+}
+
+/* Mientras el texto no se ve, los CTAs no reciben clics (siguen en el orden de foco; ver Hero.tsx). */
+.hero__copy > [data-hidden] {
+  pointer-events: none;
+}
+
+@media (max-width: 899px) {
+  .hero__title {
+    font-size: clamp(2rem, min(10vw, 5.2vh), 2.6rem);
+  }
+
+  .hero__lead {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .hero__actions .btn {
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    font-size: 0.95rem;
+  }
 }
 
 /* ERP: posición y tamaño los fija el layout; el contenido está en Erp.css. */

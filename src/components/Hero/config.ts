@@ -130,7 +130,7 @@ export const ERP = {
   aspect: 1.75,
   compactMaxHeight: 600,
   /** Separación (px) entre el bloque de texto y el borde superior del ERP en la composición final. */
-  gapBelowCopy: { wide: 40, compact: 28 },
+  gapBelowCopy: { wide: 36, compact: 22 },
   /** Posición mínima del borde superior del ERP, como fracción del alto. */
   minTop: { wide: 0.42, compact: 0.5 },
   /** Escala máxima mientras se arma (centrado) y escala relativa con que llega desde el fondo. */
