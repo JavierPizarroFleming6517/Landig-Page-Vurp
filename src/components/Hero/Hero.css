@@ -1,0 +1,324 @@
+/* Recorrido de scroll: el stage sticky queda pegado mientras dura. `clip` (no `hidden`) para no romper el sticky. */
+.hero__track {
+  --track-vh: 300;
+  position: relative;
+  height: calc(var(--track-vh) * 1vh);
+  height: calc(var(--track-vh) * 1svh);
+  overflow: clip;
+}
+
+.hero__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Lo de adentro de la pantalla: nunca escala con el notebook, se ve a través del agujero. */
+.hero__world {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+}
+
+.hero__depth {
+  position: absolute;
+  inset: 0;
+  background: var(--hero-depth);
+  transform: scale(0.85);
+}
+
+.hero__logo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  transform-origin: 50% 50%;
+}
+
+.hero__logo img {
+  width: 100%;
+  height: 100%;
+}
+
+.hero__device {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+
+.hero__device svg {
+  display: block;
+}
+
+/*
+ * will-change mientras la sección está en pantalla. Activarlo recién al empezar a moverse obliga a rasterizar las
+ * capas de golpe (cuadros de 100–200 ms medidos); fijo, no hay cuadros lentos y la nitidez en reposo es la misma.
+ */
+.hero__stage.is-active :is(.hero__device, .hero__depth, .hero__logo, .hero__erp, .hero__copy > *, .erp__side, .erp-in) {
+  will-change: transform, opacity;
+}
+
+/* Notebook. Los degradados están en el SVG; aquí van los rellenos y trazos planos. */
+.notebook__room {
+  fill: var(--bg);
+}
+
+/* Brillos de la habitación: los mismos del body, para que empalme con la página en ambos temas. */
+.notebook__glow-a {
+  stop-color: rgb(var(--glow-a-rgb));
+  stop-opacity: var(--glow-a-alpha);
+}
+
+.notebook__glow-b {
+  stop-color: rgb(var(--glow-b-rgb));
+  stop-opacity: var(--glow-b-alpha);
+}
+
+.notebook__glow-a-end {
+  stop-color: rgb(var(--glow-a-rgb));
+  stop-opacity: 0;
+}
+
+.notebook__glow-b-end {
+  stop-color: rgb(var(--glow-b-rgb));
+  stop-opacity: 0;
+}
+
+.notebook__edge-light {
+  fill: none;
+  stroke: rgba(228, 213, 242, 0.16);
+}
+
+.notebook__well {
+  fill: rgba(10, 8, 14, 0.32);
+}
+
+.notebook__key-side {
+  fill: #0f0e12;
+}
+
+.notebook__key {
+  stroke: rgba(228, 213, 242, 0.07);
+}
+
+.notebook__touchpad {
+  fill: rgba(250, 247, 242, 0.03);
+  stroke: rgba(228, 213, 242, 0.1);
+}
+
+.notebook__camera {
+  fill: #18161d;
+}
+
+.notebook__lens {
+  fill: #2c2836;
+}
+
+.notebook__panel {
+  fill: none;
+  stroke: rgba(201, 167, 228, 0.12);
+}
+
+/*
+ * Composición final: texto arriba y centrado. Está en el DOM desde el inicio; la pose lo hace aparecer. Tamaños y
+ * márgenes también escalan con el alto, para que en pantallas bajas el ERP siga asomando.
+ */
+.hero__copy {
+  position: absolute;
+  top: calc(var(--nav) + clamp(0.25rem, 3.5vh, 3rem));
+  left: var(--gutter);
+  right: var(--gutter);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.hero__copy > * {
+  opacity: 0;
+}
+
+.hero__badge {
+  display: inline-flex;
+  margin-bottom: clamp(0.6rem, 1.8vh, 1.1rem);
+  padding: 0.4rem 0.85rem;
+  border: 1px solid rgba(var(--overlay-rgb), 0.16);
+  border-radius: 999px;
+  background: rgba(var(--overlay-rgb), 0.06);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.hero__title {
+  max-width: 18ch;
+  font-size: clamp(2.1rem, min(4.6vw, 7.4vh), 4.8rem);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.hero__lead {
+  max-width: 40rem;
+  margin-top: clamp(0.6rem, 1.6vh, 1.1rem);
+  color: var(--hero-lead);
+  font-size: clamp(0.95rem, min(1.4vw, 2.2vh), 1.15rem);
+}
+
+.hero__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: clamp(0.9rem, 2.6vh, 1.5rem);
+}
+
+/*
+ * Destino del skip link: un ancla al final del recorrido (con scroll-padding-top = --nav, la página aterriza justo
+ * en la composición final). Va antes del stage en el DOM: el siguiente Tab cae en los CTAs.
+ */
+.hero__anchor {
+  position: absolute;
+  top: calc(100% - 100vh + var(--nav));
+  top: calc(100% - 100svh + var(--nav));
+}
+
+/* Mientras el texto no se ve, los CTAs no reciben clics (siguen en el orden de foco; ver Hero.tsx). */
+.hero__copy > [data-hidden] {
+  pointer-events: none;
+}
+
+@media (max-width: 899px) {
+  .hero__title {
+    font-size: clamp(2rem, min(10vw, 5.2vh), 2.6rem);
+  }
+
+  .hero__lead {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .hero__actions .btn {
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* ERP: posición y tamaño los fija el layout; el contenido está en Erp.css (con container queries sobre su ancho). */
+.hero__erp {
+  container: erp / inline-size;
+  position: absolute;
+  opacity: 0;
+  transform-origin: 50% 50%;
+}
+
+.hero > .wrap {
+  /* El marquee llega a los bordes del viewport: este contenedor no lleva el tope de ancho de las secciones. */
+  max-width: none;
+  padding-bottom: 2rem;
+}
+
+/*
+ * Movimiento reducido (`prefers-reduced-motion`): la composición final en el flujo normal, sin sticky, sin zoom y
+ * sin rAF. El ERP queda armado y quieto, recortado abajo para que asome como en la versión animada.
+ */
+.hero--static .hero__stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: clamp(1.5rem, 4vh, 2.5rem);
+  height: auto;
+  padding: calc(var(--nav) + clamp(0.25rem, 3.5vh, 3rem)) var(--gutter) 0;
+  background: var(--hero-depth);
+}
+
+.hero--static .hero__copy {
+  position: static;
+}
+
+.hero--static .hero__copy > * {
+  opacity: 1;
+}
+
+.hero--static .hero__erp {
+  position: relative;
+  width: min(1180px, 100%);
+  height: clamp(300px, 46vh, 520px);
+  overflow: hidden;
+  opacity: 1;
+}
+
+.hero--static .hero__erp > .erp {
+  height: 660px;
+}
+
+@container erp (max-width: 639px) {
+  .hero--static .hero__erp > .erp {
+    height: 600px;
+  }
+}
+
+/* Depuración (`?debug`). */
+.hero-debug {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  font: 500 0.75rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--text);
+}
+
+.hero-debug__readout {
+  position: absolute;
+  top: calc(var(--nav) + 0.75rem);
+  left: 0.75rem;
+  margin: 0;
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.62);
+  white-space: pre;
+}
+
+.hero-debug__track {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  height: 1.5rem;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.hero-debug__segment {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  border-left: 1px solid rgba(228, 213, 242, 0.45);
+  color: rgba(250, 247, 242, 0.75);
+}
+
+.hero-debug__cross {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--accent-strong);
+}
+
+.hero-debug__playhead {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--text);
+}

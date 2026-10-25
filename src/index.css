@@ -1,69 +1,155 @@
-/* ==========================================================================
-   Vurp - Tokens de marca
-   ========================================================================== */
 :root {
-  --vurp-berenjena: #55236f;
-  --vurp-orquidea: #8b46ab;
-  --vurp-lila: #c9a7e4;
-  --vurp-marfil: #faf7f2;
-  --vurp-grafito: #25232b;
+  --bg: #121016;
+  --bg-soft: #18151e;
+  --card: #211d28;
+  --card-2: #2a2433;
+  --line: rgba(228, 213, 242, 0.14);
+  --text: #faf7f2;
+  --muted: #b7adc4;
+  --accent: #c9a7e4;
+  --accent-strong: #b484d2;
+  --deep: #55236f;
+  --orquidea: #8b46ab;
+  --font: "Inter", system-ui, sans-serif;
+  --nav: 84px;
+  --gutter: clamp(1.25rem, 3.2vw, 4.5rem);
+  /* Contenedor de las secciones (padding incluido) y distancia del borde del viewport al contenido: la usan los
+     elementos que llegan al borde (Soluciones) para alinear lo de adentro con el resto. El 100 % se resuelve donde
+     se usa, sobre un elemento de ancho completo. */
+  --container: 1480px;
+  --edge: max(var(--gutter), (100% - var(--container)) / 2 + var(--gutter));
+  --radius: 28px;
+  --shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.7);
+  /* Texto sobre un relleno del color de `--text` (botón sólido, pestaña activa, skip link). */
+  --on-text: #1b1622;
+  --btn-bg: var(--text);
+  --btn-bg-hover: var(--text);
+  --btn-text: var(--on-text);
+  /* Canales RGB para superposiciones y tintes: cada uso pone su propio alpha, igual en ambos temas. */
+  --overlay-rgb: 250, 247, 242;
+  --tint-rgb: 180, 132, 210;
+  --card-sheen: rgba(255, 255, 255, 0.03);
+  --icon-btn-bg: rgba(250, 247, 242, 0.04);
+  /* Brillos del fondo, en canales y alpha: el body los usa como rgba y el SVG del notebook como stop-color/opacity. */
+  --glow-a-rgb: 139, 70, 171;
+  --glow-a-alpha: 0.28;
+  --glow-b-rgb: 85, 35, 111;
+  --glow-b-alpha: 0.35;
+  --nav-bg: rgba(18, 16, 22, 0.78);
+  --nav-panel-bg: rgba(18, 16, 22, 0.96);
+  --field-bg: #141118;
+  --field-border: var(--line);
+  --footer-bg: radial-gradient(520px 180px at 0% 0%, rgba(139, 70, 171, 0.2), transparent 60%), #17141d;
+  /* Tarjetas destacadas. */
+  /* Soluciones ("flujo completo"): panel de la solución, sus filas, fichas de ícono y figuras del fondo. */
+  --flujo-panel-bg:
+    radial-gradient(520px 240px at 0% 0%, rgba(139, 70, 171, 0.28), transparent 70%),
+    linear-gradient(170deg, #241d2e, #1a1622);
+  --flujo-panel-line: rgba(180, 132, 210, 0.3);
+  --flujo-item-bg: rgba(250, 247, 242, 0.03);
+  --flujo-tile-bg: rgba(180, 132, 210, 0.16);
+  --flujo-badge-bg: #faf7f2;
+  --flujo-shape: rgba(228, 213, 242, 0.07);
+  --laptop-shadow: 0 50px 90px -45px rgba(0, 0, 0, 0.85);
+  --metric-lead-bg:
+    radial-gradient(420px 220px at 0% 100%, rgba(139, 70, 171, 0.4), transparent 70%),
+    linear-gradient(165deg, #3a2750, #24182f 70%);
+  --platform-feature-bg: linear-gradient(165deg, #6d3b8e, #24182f 74%);
+  --case-feature-bg:
+    radial-gradient(520px 200px at 100% 0%, rgba(180, 132, 210, 0.28), transparent 60%),
+    linear-gradient(110deg, #4e316c, #24182f 70%);
+  --reason-lead-bg: linear-gradient(165deg, #6d3b8e, #24182f 72%);
+  /* Hero: el fondo de adentro (se ve por la pantalla del notebook), la bajada y el header durante la animación. */
+  --hero-depth:
+    radial-gradient(900px 420px at 78% 0%, rgba(180, 132, 210, 0.32), transparent 62%),
+    radial-gradient(640px 360px at 0% 100%, rgba(85, 35, 111, 0.45), transparent 60%),
+    linear-gradient(115deg, #2c2340 0%, #1a1524 48%, #121016 100%);
+  --hero-lead: #ddd4ea;
+  /* Escenario de la mascota: fondo, cubierta del escritorio, sombra bajo el notebook y vidrio de la ampolleta. */
+  --mascot-stage-bg:
+    radial-gradient(60% 55% at 58% 40%, rgba(180, 132, 210, 0.2), transparent 70%),
+    linear-gradient(165deg, #2a2433, #1b1722 78%);
+  --mascot-desk-bg: linear-gradient(180deg, rgba(228, 213, 242, 0.13), rgba(228, 213, 242, 0.04));
+  --mascot-shadow: rgba(0, 0, 0, 0.6);
+  --mascot-glass: #e4d5f2;
+  color-scheme: dark;
+}
 
-  --vurp-berenjena-claro: #9d5fc1;
-  --vurp-orquidea-claro: #b484d2;
-  --vurp-lila-claro: #e4d5f2;
-
-  /* Tokens semánticos (modo claro) */
-  --bg: var(--vurp-marfil);
-  --bg-alt: #f3edf6;
-  --surface: #ffffff;
-  --text: var(--vurp-grafito);
-  --text-muted: #5e5a66;
-  --heading: var(--vurp-grafito);
-  --accent: var(--vurp-berenjena);
-  --accent-strong: var(--vurp-orquidea);
-  --accent-soft: var(--vurp-lila);
-  --border: rgba(85, 35, 111, 0.12);
-  --shadow: 0 20px 50px -24px rgba(85, 35, 111, 0.35);
-
-  /* Superficies siempre oscuras (sobre fotografía) */
-  --on-media: var(--vurp-marfil);
-  --on-media-muted: rgba(250, 247, 242, 0.72);
-  --media-overlay: linear-gradient(
-    180deg,
-    rgba(37, 35, 43, 0.55) 0%,
-    rgba(37, 35, 43, 0.72) 55%,
-    rgba(37, 35, 43, 0.95) 100%
-  );
-
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --container: 1200px;
-  --nav-height: 72px;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-
+/*
+ * Tema claro. Solo colores del manual (docs/marca.md), blanco y alpha sobre ellos. Texto Grafito, acentos Berenjena
+ * y Orquídea; los lilas nunca como texto. Lo fija el script inline de index.html antes del primer paint.
+ */
+:root[data-theme="light"] {
+  --bg: #faf7f2;
+  --card: #ffffff;
+  --card-2: color-mix(in srgb, #e4d5f2 35%, #faf7f2);
+  --line: rgba(37, 35, 43, 0.12);
+  --text: #25232b;
+  --muted: rgba(37, 35, 43, 0.72);
+  --accent: #55236f;
+  --accent-strong: #8b46ab;
+  --on-text: #faf7f2;
+  --btn-bg: #8b46ab;
+  --btn-bg-hover: #55236f;
+  --btn-text: #faf7f2;
+  --overlay-rgb: 37, 35, 43;
+  --tint-rgb: 201, 167, 228;
+  --card-sheen: transparent;
+  --icon-btn-bg: rgba(255, 255, 255, 0.8);
+  --glow-a-rgb: 201, 167, 228;
+  --glow-a-alpha: 0.22;
+  --glow-b-rgb: 228, 213, 242;
+  --glow-b-alpha: 0.5;
+  --nav-bg: rgba(250, 247, 242, 0.78);
+  --nav-panel-bg: rgba(250, 247, 242, 0.96);
+  --field-bg: #faf7f2;
+  --field-border: rgba(37, 35, 43, 0.55);
+  --footer-bg:
+    radial-gradient(520px 180px at 0% 0%, rgba(201, 167, 228, 0.3), transparent 60%),
+    color-mix(in srgb, #e4d5f2 30%, #faf7f2);
+  --feature-light: linear-gradient(165deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 72%);
+  --flujo-panel-bg:
+    radial-gradient(520px 240px at 0% 0%, rgba(201, 167, 228, 0.45), transparent 70%),
+    linear-gradient(170deg, color-mix(in srgb, #e4d5f2 45%, #ffffff), #ffffff);
+  --flujo-panel-line: rgba(139, 70, 171, 0.22);
+  --flujo-item-bg: rgba(255, 255, 255, 0.78);
+  --flujo-tile-bg: rgba(201, 167, 228, 0.35);
+  --flujo-badge-bg: #ffffff;
+  --flujo-shape: rgba(139, 70, 171, 0.07);
+  --laptop-shadow: 0 50px 90px -45px rgba(85, 35, 111, 0.45);
+  --metric-lead-bg: radial-gradient(420px 220px at 0% 100%, rgba(201, 167, 228, 0.35), transparent 70%), var(--feature-light);
+  --platform-feature-bg: var(--feature-light);
+  --case-feature-bg:
+    radial-gradient(520px 200px at 100% 0%, rgba(201, 167, 228, 0.35), transparent 60%),
+    linear-gradient(110deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 70%);
+  --reason-lead-bg: var(--feature-light);
+  /* Blanco y lavanda: la misma composición del oscuro (brillo arriba a la derecha, sombra violeta abajo a la izquierda). */
+  --hero-depth:
+    radial-gradient(900px 420px at 78% 0%, rgba(201, 167, 228, 0.5), transparent 62%),
+    radial-gradient(640px 360px at 0% 100%, rgba(139, 70, 171, 0.16), transparent 60%),
+    linear-gradient(115deg, #e4d5f2 0%, #faf7f2 48%, #ffffff 100%);
+  --hero-lead: rgba(37, 35, 43, 0.78);
+  --mascot-stage-bg:
+    radial-gradient(60% 55% at 58% 40%, rgba(201, 167, 228, 0.45), transparent 70%),
+    linear-gradient(165deg, color-mix(in srgb, #e4d5f2 55%, #ffffff), #ffffff 78%);
+  --mascot-desk-bg: linear-gradient(180deg, rgba(201, 167, 228, 0.4), rgba(201, 167, 228, 0.16));
+  --mascot-shadow: rgba(85, 35, 111, 0.3);
+  --mascot-glass: #faf7f2;
   color-scheme: light;
 }
 
-[data-theme="dark"] {
-  --bg: var(--vurp-grafito);
-  --bg-alt: #2d2a34;
-  --surface: #312e38;
-  --text: #ece8f0;
-  --text-muted: #aaa4b3;
-  --heading: var(--vurp-marfil);
-  --accent: var(--vurp-berenjena-claro);
-  --accent-strong: var(--vurp-orquidea-claro);
-  --accent-soft: var(--vurp-lila-claro);
-  --border: rgba(228, 213, 242, 0.12);
-  --shadow: 0 20px 50px -24px rgba(0, 0, 0, 0.6);
-
-  color-scheme: dark;
+/* Logos por tema: en el DOM van las dos versiones y se muestra la del tema activo (sin re-render ni parpadeo). */
+:root[data-theme="light"] [data-theme-only="dark"],
+:root:not([data-theme="light"]) [data-theme-only="light"] {
+  display: none;
 }
-/* ==========================================================================
-   Base
-   ========================================================================== */
+
+/* Cambio de tema: fundido de toda la página (también degradados y logos). Solo al usar el toggle; ver theme.ts. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.25s;
+}
+
 *,
 *::before,
 *::after {
@@ -72,29 +158,39 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: var(--nav-height);
-  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: var(--nav);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: var(--font-sans);
-  font-size: 1.125rem;
-  font-weight: 400;
-  line-height: 1.556; /* 18 / 28 */
+  font-family: var(--font);
+  font-size: 1.05rem;
+  line-height: 1.55;
   color: var(--text);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transition:
-    background-color 0.4s var(--ease-out),
-    color 0.4s var(--ease-out);
+  background:
+    radial-gradient(900px 480px at 80% -10%, rgba(var(--glow-a-rgb), var(--glow-a-alpha)), transparent 60%),
+    radial-gradient(700px 420px at -10% 20%, rgba(var(--glow-b-rgb), var(--glow-b-alpha)), transparent 55%),
+    var(--bg);
 }
 
 img {
-  display: block;
   max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
 }
 
 a {
@@ -102,13 +198,11 @@ a {
   text-decoration: none;
 }
 
-button {
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
+h1,
+h2,
+h3,
+p {
+  margin: 0;
 }
 
 ul {
@@ -117,225 +211,21 @@ ul {
   list-style: none;
 }
 
-h1,
-h2,
-h3,
-h4,
-p {
-  margin: 0;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  color: var(--heading);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-:focus-visible {
-  outline: 2px solid var(--accent-strong);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-
-::selection {
-  background: var(--vurp-lila);
-  color: var(--vurp-berenjena);
-}
-
-/* ==========================================================================
-   Tipografía (Manual de marca · 04)
-   Título 48/52 SemiBold −2% · Subtítulo 28/34 SemiBold −1%
-   Cuerpo 18/28 Regular · Etiqueta 13 Medium +12% · Botón 16 SemiBold
-   ========================================================================== */
-.display {
-  font-size: clamp(2.5rem, 2rem + 2.2vw, 3rem);
-  line-height: 1.083;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-.title {
-  font-size: clamp(1.5rem, 1.3rem + 0.9vw, 1.75rem);
-  line-height: 1.214;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.subtitle {
-  font-size: 1.125rem;
-  line-height: 1.556;
-  color: var(--text-muted);
-  max-width: 60ch;
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.eyebrow::before {
-  content: "";
-  width: 24px;
-  height: 2px;
-  border-radius: 2px;
-  background: currentColor;
-}
-
-.text-accent {
-  color: var(--accent-strong);
-}
-
-/* ==========================================================================
-   Layout
-   ========================================================================== */
-.container {
-  width: 100%;
-  max-width: var(--container);
-  margin-inline: auto;
-  padding-inline: clamp(1.25rem, 4vw, 2rem);
-}
-
-.section {
-  position: relative;
-  padding-block: clamp(5rem, 10vw, 8rem);
-}
-
-.section-header {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: clamp(2.5rem, 5vw, 4rem);
-}
-
-.section-header--center {
-  align-items: center;
-  text-align: center;
-}
-
-.section-header--center .subtitle {
-  margin-inline: auto;
-}
-
-/* Superficies sobre fotografía */
-.media-surface {
-  color: var(--on-media);
-  --heading: var(--vurp-marfil);
-  --text-muted: var(--on-media-muted);
-  --accent: var(--vurp-lila);
-  --accent-strong: var(--vurp-orquidea-claro);
-}
-
-.media-bg {
+.skip {
   position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.media-bg img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.media-overlay {
-  position: absolute;
-  inset: 0;
-  background: var(--media-overlay);
-  pointer-events: none;
-}
-
-.media-tint {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(85, 35, 111, 0.55), rgba(37, 35, 43, 0.2) 60%);
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
-
-/* ==========================================================================
-   Botones
-   ========================================================================== */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 48px;
-  padding: 0.75rem 1.5rem;
+  left: 1rem;
+  top: -4rem;
+  z-index: 20;
+  padding: 0.6rem 0.9rem;
   border-radius: 999px;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  border: 1px solid transparent;
-  transition:
-    background-color 0.25s var(--ease-out),
-    border-color 0.25s var(--ease-out),
-    color 0.25s var(--ease-out),
-    transform 0.25s var(--ease-out),
-    box-shadow 0.25s var(--ease-out);
+  background: var(--text);
+  color: var(--on-text);
 }
 
-.btn svg {
-  transition: transform 0.25s var(--ease-out);
+.skip:focus {
+  top: 1rem;
 }
 
-.btn:hover svg {
-  transform: translateX(3px);
-}
-
-.btn--primary {
-  background: var(--vurp-orquidea);
-  color: var(--vurp-marfil);
-  box-shadow: 0 10px 30px -12px rgba(139, 70, 171, 0.7);
-}
-
-.btn--primary:hover {
-  background: var(--vurp-berenjena);
-  transform: translateY(-1px);
-}
-
-.btn--ghost {
-  border-color: currentColor;
-  color: var(--text);
-}
-
-.btn--ghost:hover {
-  background: rgba(201, 167, 228, 0.16);
-}
-
-.media-surface .btn--ghost {
-  color: var(--vurp-marfil);
-  border-color: rgba(250, 247, 242, 0.5);
-}
-
-.media-surface .btn--ghost:hover {
-  border-color: var(--vurp-marfil);
-  background: rgba(250, 247, 242, 0.1);
-}
-
-.btn--light {
-  background: var(--vurp-marfil);
-  color: var(--vurp-berenjena);
-}
-
-.btn--light:hover {
-  background: var(--vurp-lila-claro);
-  transform: translateY(-1px);
-}
-
-/* ==========================================================================
-   Accesibilidad
-   ========================================================================== */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -348,20 +238,1163 @@ h4 {
   border: 0;
 }
 
+.wrap {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding: clamp(4rem, 7vw, 6.5rem) 0;
+}
+
+.eyebrow {
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.section__title {
+  max-width: 18ch;
+  font-size: clamp(2rem, 1.1rem + 2.3vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.06;
+}
+
+.section__title em,
+.hero__title em {
+  font-style: normal;
+  color: var(--accent-strong);
+}
+
+.section__lead {
+  max-width: 36rem;
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 1.125rem;
+}
+
+/* Encabezado de sección: título y bajada juntos, con un ancho de lectura acotado. */
+.intro {
+  display: grid;
+  gap: 1rem;
+  max-width: 46rem;
+  margin-bottom: clamp(2rem, 3.5vw, 3rem);
+}
+
+.intro .section__lead {
+  margin-top: 0;
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: clamp(2rem, 3.5vw, 3rem);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn--solid {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+}
+
+.btn--solid:hover {
+  background: var(--btn-bg-hover);
+}
+
+.btn--ghost {
+  border-color: rgba(var(--overlay-rgb), 0.28);
+  background: rgba(var(--overlay-rgb), 0.04);
+}
+
+.btn--small {
+  min-height: 2.5rem;
+  padding-inline: 1rem;
+  font-size: 0.95rem;
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--icon-btn-bg);
+}
+
+.icon-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0.85rem 0 0;
+}
+
+.nav__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: calc(100% - (var(--gutter) * 2));
+  margin-inline: auto;
+  padding: 0.55rem 0.7rem 0.55rem 1rem;
+  position: relative;
+  isolation: isolate;
+  border-radius: 999px;
+}
+
+/* Fondo, blur y borde en una capa propia: se apaga mientras el Hero está en animación (`data-hero-playing`).
+   Al apagarse pasa a `visibility: hidden` cuando termina el fundido, así el backdrop-filter deja de calcularse. */
+.nav__bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid var(--line);
+  border-radius: inherit;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  transition: opacity 0.35s ease, visibility 0s;
+}
+
+:root[data-hero-playing] .nav__bar::before {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+}
+
+/*
+ * En claro el fondo no se apaga: los links oscuros pasan por delante de la tapa grafito del notebook y quedarían
+ * sin contraste. Durante la animación va más opaco y sin blur (el blur sobre la escena en movimiento es caro).
+ */
+:root[data-theme="light"][data-hero-playing] .nav__bar::before {
+  opacity: 1;
+  visibility: visible;
+  background: rgba(250, 247, 242, 0.86);
+  backdrop-filter: none;
+  transition: none;
+}
+
+.nav__logo img {
+  height: 28px;
+  width: auto;
+}
+
+/* Enlaces junto al logo (a una distancia prudente); `margin-right: auto` deja el resto del header a la derecha. */
+.nav__links {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: clamp(1.25rem, 2.5vw, 2.5rem);
+  margin-right: auto;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.nav__links a:hover {
+  color: var(--text);
+}
+
+.nav__end {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav__toggle {
+  display: none;
+}
+
+/* Del alto del botón "Cotizar proyecto": la barra no crece (el layout del Hero depende de su borde inferior). */
+.theme-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.nav__panel {
+  display: none;
+}
+
+.marquee {
+  overflow: hidden;
+  width: calc(100% + (var(--gutter) * 2));
+  margin: 1.25rem calc(var(--gutter) * -1) 0;
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 0.75rem;
+  animation: ticker 36s linear infinite;
+}
+
+.chip {
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(var(--overlay-rgb), 0.03);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.flow__card,
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--card-sheen), transparent 40%), var(--card);
+}
+
+/* Proceso: cuatro pasos en fila dentro del contenedor (2 × 2 en tablet, uno bajo otro en móvil). */
+.flow__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow__card {
+  padding: 1.35rem;
+}
+
+/* El último paso, la seguridad, cierra con el tinte de la marca. */
+.flow__card:last-child {
+  background:
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.14), transparent 46%),
+    var(--card);
+}
+
+.flow__card svg,
+.platform__card svg {
+  color: var(--accent);
+}
+
+.kicker {
+  display: block;
+  margin-top: 1.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.flow__card h3,
+.card h3 {
+  margin-top: 0.35rem;
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+}
+
+.flow__card p,
+.card p,
+.case p {
+  margin-top: 0.55rem;
+  color: var(--muted);
+}
+
+/*
+ * Soluciones con el tratamiento "flujo completo": encabezado centrado con pestañas; abajo, el panel alineado con el
+ * contenedor y, en la columna derecha (que llega al borde del viewport), el notebook con sus figuras y fichas.
+ * `clip` evita el scroll horizontal que podrían causar las figuras, sin crear un contenedor de scroll.
+ */
+.flujo {
+  overflow-x: clip;
+}
+
+.flujo__head {
+  display: grid;
+  justify-items: center;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  text-align: center;
+}
+
+.flujo__head .section__title {
+  max-width: 22ch;
+}
+
+.tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 1.75rem;
+  padding: 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(var(--overlay-rgb), 0.04);
+}
+
+.tab {
+  padding: 0.6rem 1.15rem;
+  border-radius: 999px;
+  color: var(--muted);
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab[aria-selected="true"] {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  font-weight: 600;
+}
+
+.flujo__body {
+  display: grid;
+  grid-template-columns: minmax(0, clamp(26rem, 40vw, 34rem)) minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 4.5rem);
+  align-items: center;
+  padding-left: var(--edge);
+}
+
+.flujo__panel {
+  padding: 1rem;
+  border: 1px solid var(--flujo-panel-line);
+  border-radius: var(--radius);
+  background: var(--flujo-panel-bg);
+}
+
+.flujo__panel-head {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.35rem 0.35rem 1rem;
+}
+
+.flujo__icon,
+.flujo__tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+}
+
+.flujo__icon {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 16px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+}
+
+.flujo__panel-head h3 {
+  font-size: clamp(1.2rem, 1rem + 0.6vw, 1.45rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.flujo__panel-head p {
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+
+.flujo__list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.flujo__item {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--flujo-item-bg);
+}
+
+.flujo__tile {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 12px;
+  background: var(--flujo-tile-bg);
+  color: var(--accent);
+}
+
+.flujo__item h4 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.flujo__item p {
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.97rem;
+}
+
+.flujo__visual {
+  position: relative;
+  isolation: isolate;
+  margin: 0;
+  padding-top: 3rem;
+  text-align: center;
+}
+
+.flujo__visual figcaption {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* Figuras de fondo: cuadrados redondeados girados, en el tinte de la marca. */
+.flujo__shape {
+  position: absolute;
+  z-index: -1;
+  aspect-ratio: 1;
+  border: clamp(14px, 1.6vw, 26px) solid var(--flujo-shape);
+  border-radius: 30%;
+  transform: rotate(45deg);
+}
+
+.flujo__shape--a {
+  top: -1rem;
+  right: 16%;
+  width: clamp(8rem, 15vw, 15rem);
+}
+
+.flujo__shape--b {
+  top: -2.5rem;
+  right: 3%;
+  width: clamp(5rem, 8vw, 8rem);
+}
+
+/* Notebook centrado en su columna, a ~73 % del tamaño que llegaba al borde: entra completo en pantalla. */
+.laptop {
+  position: relative;
+  width: clamp(26rem, calc((100% + 6vw) * 0.73), 50rem);
+  margin-inline: auto;
+  text-align: left;
+}
+
+.laptop__lid {
+  padding: 1.4% 1.4% 2%;
+  border-radius: 22px 22px 8px 8px;
+  background: linear-gradient(160deg, #3a3542, #1f1c25 60%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    var(--laptop-shadow);
+}
+
+.laptop__screen {
+  position: relative;
+  aspect-ratio: 1792 / 1120;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #faf7f2;
+}
+
+.laptop__screen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.laptop__screen img.is-on {
+  opacity: 1;
+}
+
+.laptop__base {
+  position: relative;
+  height: clamp(12px, 1.5vw, 22px);
+  margin-inline: -6%;
+  border-radius: 2px 2px 40px 40px / 2px 2px 100% 100%;
+  background: linear-gradient(180deg, #ece8f0, #b3adbb 45%, #6f6a78);
+}
+
+.laptop__base::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 16%;
+  height: 45%;
+  border-radius: 0 0 12px 12px;
+  background: rgba(37, 35, 43, 0.22);
+  transform: translateX(-50%);
+}
+
+/* Fichas flotantes con íconos de la solución: cambian con la pestaña. */
+.flujo__badge {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 18px;
+  background: var(--flujo-badge-bg);
+  box-shadow:
+    0 0 0 1px rgba(85, 35, 111, 0.08),
+    0 18px 40px -18px rgba(37, 35, 43, 0.6);
+  color: var(--orquidea);
+  transform: rotate(var(--r));
+}
+
+/* Sobre el borde de la tapa y a la izquierda del notebook, sin tapar la pantalla de ejemplo. */
+.flujo__badge--1 {
+  --r: -8deg;
+  top: -3.4rem;
+  left: 7%;
+}
+
+.flujo__badge--2 {
+  --r: 7deg;
+  bottom: 8%;
+  left: -2.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Al cambiar de pestaña el panel se monta de nuevo: entra con un leve desplazamiento, fila por fila. */
+  .flujo__panel-head,
+  .flujo__item {
+    animation: flujo-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .flujo__item:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+
+  .flujo__item:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .flujo__item:nth-child(3) {
+    animation-delay: 0.15s;
+  }
+
+  .flujo__item:nth-child(4) {
+    animation-delay: 0.2s;
+  }
+
+  .flujo__badge {
+    animation: flujo-badge-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+  }
+
+  .laptop__screen img {
+    transform: scale(1.015);
+    transition:
+      opacity 0.45s ease,
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .laptop__screen img.is-on {
+    transform: none;
+  }
+}
+
+@keyframes flujo-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes flujo-badge-in {
+  from {
+    opacity: 0;
+    transform: rotate(var(--r)) scale(0.6);
+  }
+}
+
+.metrics__grid,
+.cases__grid,
+.footer__grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.metric,
+.reason,
+.case,
+.form {
+  padding: 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+/* Cómo trabajamos: cuatro tarjetas en fila y, debajo, los resultados como lista tipográfica. */
+.metrics__grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.metric--lead {
+  background: var(--metric-lead-bg);
+}
+
+.metric .kicker {
+  margin-top: 0;
+}
+
+.metric strong {
+  display: block;
+  margin: 0.25rem 0 0.5rem;
+  font-size: clamp(1.5rem, 1.15rem + 1vw, 2.1rem);
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.metric p {
+  color: var(--muted);
+}
+
+.outcomes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem 2rem;
+  margin-top: clamp(2rem, 3.5vw, 3rem);
+}
+
+.outcomes li {
+  padding-top: 1rem;
+  border-top: 2px solid rgba(var(--tint-rgb), 0.45);
+}
+
+.outcomes h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.outcomes p {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.97rem;
+}
+
+/* Plataforma: un solo panel en tres columnas separadas por líneas; la del medio, destacada. */
+.platform__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.12), transparent 42%),
+    var(--card);
+}
+
+.platform__card {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.35rem, 2.2vw, 2rem);
+}
+
+.platform__card + .platform__card {
+  border-left: 1px solid var(--line);
+}
+
+.platform__card:nth-child(2) {
+  background: var(--platform-feature-bg);
+}
+
+.platform__card p {
+  margin-top: 0.55rem;
+  color: var(--muted);
+}
+
+.platform__card a {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Entrega: encabezado a la izquierda y los tres puntos como lista con líneas, sin tarjetas. */
+.studio {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 2rem clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.studio .intro {
+  margin-bottom: 0;
+}
+
+.studio__list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.1rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.studio__list li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.studio__list svg {
+  color: var(--accent);
+}
+
+.studio__list h3 {
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.studio__list p {
+  margin-top: 0.35rem;
+  max-width: 40rem;
+  color: var(--muted);
+}
+
+/* Casos: el primero, destacado a la izquierda a lo alto de los otros dos. Altura según el contenido. */
+.cases__grid {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+}
+
+.case {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--card-2);
+}
+
+.case:first-child {
+  grid-row: span 2;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.35rem, 2.5vw, 2.25rem);
+  background: var(--case-feature-bg);
+}
+
+.case__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 14px;
+  background: rgba(var(--tint-rgb), 0.18);
+  color: var(--accent);
+}
+
+.case .kicker {
+  margin-top: 0;
+}
+
+.case h3 {
+  margin-top: 0.25rem;
+  font-size: clamp(1.2rem, 1rem + 0.5vw, 1.4rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.case:first-child h3 {
+  font-size: clamp(1.5rem, 1.1rem + 1.1vw, 2.1rem);
+}
+
+.case:first-child p:last-child {
+  max-width: 34rem;
+}
+
+/* Razones: bento de cinco, dos arriba (60/40) y tres abajo, en una grilla de 15 columnas. */
+.reasons__grid {
+  display: grid;
+  grid-template-columns: repeat(15, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.reason {
+  position: relative;
+  grid-column: span 5;
+  padding: clamp(1.35rem, 2vw, 1.75rem);
+}
+
+.reason--lead {
+  grid-column: span 9;
+  background: var(--reason-lead-bg);
+}
+
+.reason:nth-child(2) {
+  grid-column: span 6;
+  background:
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.14), transparent 55%),
+    var(--card);
+}
+
+.reason h3 {
+  padding-right: 2.5rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.reason--lead h3,
+.reason:nth-child(2) h3 {
+  font-size: clamp(1.35rem, 1.1rem + 0.6vw, 1.6rem);
+}
+
+.reason p {
+  max-width: 36rem;
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+/* Número discreto, arriba a la derecha. */
+.reason__num {
+  position: absolute;
+  top: clamp(1.35rem, 2vw, 1.75rem);
+  right: clamp(1.35rem, 2vw, 1.75rem);
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.25rem;
+}
+
+/* Contacto: formulario a la izquierda y Walter a la derecha; en tablet y móvil Walter va arriba, en una franja baja. */
+.contact {
+  display: grid;
+  grid-template-columns: minmax(0, 48rem) minmax(0, 1fr);
+  gap: 1.5rem clamp(2rem, 4vw, 4rem);
+  align-items: center;
+}
+
+.contact .walter {
+  justify-self: center;
+}
+
+/* Formulario: nombre y correo lado a lado; el mensaje y el envío, a todo el ancho. */
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  max-width: 48rem;
+  padding: clamp(1.35rem, 2.5vw, 2rem);
+}
+
+.field--wide,
+.form__end {
+  grid-column: 1 / -1;
+}
+
+.form__end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
+  color: var(--text);
+}
+
+.field textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.form__note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Fondo y borde de ancho completo; el contenido, en el contenedor. */
+.footer {
+  padding: 0;
+  border-top: 1px solid var(--line);
+  background: var(--footer-bg);
+}
+
+.footer__panel {
+  padding: clamp(2rem, 4vw, 3.5rem) 0 1.5rem;
+}
+
+.footer__brand {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.footer__brand img {
+  height: 36px;
+  width: auto;
+}
+
+.footer__grid {
+  grid-template-columns: 1.3fr 1fr 0.8fr;
+}
+
+.footer h2 {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.footer a {
+  display: block;
+  padding: 0.3rem 0;
+  color: var(--muted);
+}
+
+.footer a:hover {
+  color: var(--text);
+}
+
+.footer__base {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 8;
+  transition: opacity 0.35s ease, visibility 0s;
+}
+
+/* Mientras el Hero está en animación el botón quedaría encima de la escena. */
+:root[data-hero-playing] .top {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 980px) {
+  .nav__links,
+  .nav__end .btn {
+    display: none;
+  }
+
+  .nav__toggle {
+    display: grid;
+  }
+
+  .theme-toggle {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .nav__panel {
+    display: grid;
+    gap: 0.8rem;
+    width: calc(100% - (var(--gutter) * 2));
+    margin: 0.6rem auto 0;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--nav-panel-bg);
+  }
+
+  .nav__panel[hidden] {
+    display: none;
+  }
+
+  .platform__grid,
+  .studio,
+  .contact,
+  .footer__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contact .walter {
+    order: -1;
+    justify-self: stretch;
+  }
+
+  /* Plataforma apilada: las líneas divisorias pasan de verticales a horizontales. */
+  .platform__card + .platform__card {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .metrics__grid,
+  .outcomes,
+  .reasons__grid,
+  .cases__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .reason,
+  .reason:nth-child(2) {
+    grid-column: auto;
+  }
+
+  .reason--lead,
+  .case:first-child {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .head,
+  .footer__brand,
+  .footer__base {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .flow__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/*
+ * Soluciones apilado (bajo 1180 px el panel lado a lado queda angosto y largo): funcionalidades en dos columnas y
+ * el notebook centrado, dentro de los márgenes del contenedor.
+ */
+@media (max-width: 1180px) {
+  .flujo__body {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: var(--edge);
+  }
+
+  .flujo__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .laptop {
+    width: min(100%, 41rem);
+  }
+
+  .laptop__base {
+    margin-inline: -3%;
+  }
+
+  .flujo__badge--2 {
+    left: -1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .flow__grid,
+  .form,
+  .flujo__list,
+  .metrics__grid,
+  .outcomes,
+  .reasons__grid,
+  .cases__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .flujo__panel-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Las tres pestañas a lo ancho; una etiqueta larga pasa a dos líneas. */
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    border-radius: 20px;
+  }
+
+  .tab {
+    padding: 0.55rem 0.3rem;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    line-height: 1.2;
+  }
+
+  .flujo__badge {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 14px;
+  }
+
+  .flujo__badge--1 {
+    top: -2.6rem;
+  }
+
+  .flujo__badge--2 {
+    left: -0.5rem;
+  }
+
+  .flujo__badge svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .marquee__track {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto;
+    justify-content: center;
   }
 
-  [data-parallax] {
-    transform: none !important;
+  .btn:hover {
+    transform: none;
   }
 }

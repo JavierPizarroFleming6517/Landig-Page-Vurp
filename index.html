@@ -8,24 +8,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Vurp desarrolla software a medida, chatbots y automatización con ciberseguridad integrada. Sistemas que ordenan tu empresa."
+      content="Vurp diseña software a medida, automatización y ciberseguridad para ordenar la operación de tu empresa. Coquimbo, Chile."
     />
-    <meta name="theme-color" content="#25232B" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://images.unsplash.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="theme-color" content="#121016" />
     <script>
+      // Tema antes del primer paint: ?debug&theme= (no se guarda), la elección guardada o la preferencia del sistema.
       (function () {
-        var stored = localStorage.getItem("vurp-theme");
-        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        document.documentElement.dataset.theme =
-          stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
+        var theme;
+        try {
+          var params = new URLSearchParams(location.search);
+          if (params.has("debug")) theme = params.get("theme");
+          if (theme !== "light" && theme !== "dark") theme = localStorage.getItem("vurp-theme");
+        } catch (error) {}
+        if (theme !== "light" && theme !== "dark")
+          theme = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.dataset.theme = theme;
+        if (theme === "light") document.querySelector('meta[name="theme-color"]').content = "#faf7f2";
       })();
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <title>Vurp · Software & Cybersecurity</title>
   </head>
   <body>

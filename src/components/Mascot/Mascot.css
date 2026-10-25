@@ -1,0 +1,476 @@
+/*
+ * Walter junto al formulario de contacto. Solo se anima transform y opacity. Las animaciones continuas corren con el
+ * escenario en pantalla (`data-live`); con movimiento reducido no hay entrada, inclinación, saltos ni respiración:
+ * los estados se ven igual, con fundidos.
+ */
+
+/* Escenario de alto fijo (aspect-ratio): cambiar de mensaje o de pose nunca empuja el formulario. */
+.walter {
+  /* Alto del escritorio y ancho de la mascota, en % del escenario. */
+  --desk: 15%;
+  --figure-w: 58%;
+  position: relative;
+  width: 100%;
+  max-width: 34rem;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--mascot-stage-bg);
+  pointer-events: none;
+}
+
+/* Grilla de puntos arriba a la derecha, desvanecida hacia el centro. */
+.walter::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  width: 46%;
+  height: 50%;
+  background-image: radial-gradient(rgba(var(--overlay-rgb), 0.18) 1.2px, transparent 1.7px);
+  background-size: 16px 16px;
+  mask-image: radial-gradient(100% 100% at 100% 0%, #000 15%, transparent 75%);
+}
+
+.walter__orb {
+  position: absolute;
+  z-index: -1;
+  right: 2%;
+  bottom: 8%;
+  width: 62%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, rgba(var(--tint-rgb), 0.34), rgba(var(--tint-rgb), 0.08) 72%);
+}
+
+.walter__desk {
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--desk);
+  border-top: 1px solid rgba(var(--tint-rgb), 0.5);
+  background: var(--mascot-desk-bg);
+}
+
+/* La mascota: abajo a la derecha, con el corte inferior del dibujo apoyado en el escritorio. */
+.walter__figure {
+  position: absolute;
+  z-index: 1;
+  right: 3%;
+  bottom: var(--desk);
+  width: var(--figure-w);
+  aspect-ratio: 384 / 363;
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Globo arriba a la izquierda, con la cola hacia la cara de Walter. */
+.walter__bubble {
+  position: absolute;
+  z-index: 3;
+  top: 6%;
+  left: 5%;
+  max-width: 55%;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: 0 14px 30px -18px rgba(37, 35, 43, 0.5);
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.walter__bubble strong {
+  display: block;
+  font-weight: 600;
+}
+
+.walter__bubble span {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.walter__bubble::after {
+  content: "";
+  position: absolute;
+  right: 18%;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: inherit;
+  transform: rotate(45deg);
+}
+
+/* Capas de la mascota: cada una lleva un solo tipo de movimiento para que los `transform` no se pisen. */
+.mascot__body,
+.mascot__breath,
+.mascot__poses {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.mascot__body,
+.mascot__breath {
+  transform-origin: 55% 100%;
+}
+
+.mascot__pose {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  user-select: none;
+}
+
+/* La pose nueva entra encima; la anterior sigue visible debajo mientras dura el fundido y después se apaga. */
+.mascot__pose[data-pose="on"] {
+  z-index: 1;
+  opacity: 1;
+  animation: mascot-pose-in 0.26s ease-out;
+}
+
+.mascot__pose[data-pose="prev"] {
+  animation: mascot-pose-hold 0.26s;
+}
+
+/* Sombra sobre el escritorio, bajo el notebook y el cuerpo. */
+.mascot__shadow {
+  position: absolute;
+  left: 9%;
+  right: 4%;
+  bottom: -6%;
+  height: 12%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--mascot-shadow), transparent);
+}
+
+.mascot__decor {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.decor {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.mascot[data-state="idle"] .decor--idle,
+.mascot[data-state="attention"] .decor--attention,
+.mascot[data-state="greeting"] .decor--greeting,
+.mascot[data-state="idea"] .decor--idea,
+.mascot[data-state="happy"] .decor--happy {
+  opacity: 1;
+}
+
+.decor__mark,
+.decor__sparkle,
+.decor__base {
+  fill: var(--accent-strong);
+}
+
+.decor__glass {
+  fill: var(--mascot-glass);
+  stroke: var(--accent-strong);
+  stroke-width: 3;
+}
+
+.decor__filament {
+  fill: none;
+  stroke: var(--accent-strong);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.decor__glow-stop {
+  stop-color: rgb(var(--tint-rgb));
+  stop-opacity: 0.55;
+}
+
+.decor__glow-stop:last-child {
+  stop-opacity: 0;
+}
+
+.decor__mark,
+.decor__sparkle,
+.decor__bulb,
+.decor__glow {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Entrada: una sola vez, al llegar el escenario a pantalla. */
+  .walter:not([data-entered]) .walter__figure {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+
+  .walter__bubble {
+    transform-origin: 80% 100%;
+    animation: walter-bubble-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  .walter:not([data-entered]) .walter__bubble {
+    animation: none;
+    opacity: 0;
+  }
+
+  .mascot__breath {
+    animation: mascot-breathe 4s ease-in-out infinite;
+  }
+
+  .mascot__shadow {
+    animation: mascot-shadow 4s ease-in-out infinite;
+  }
+
+  .mascot__body {
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .mascot[data-state="attention"] .mascot__body {
+    transform: translateY(-2px) rotate(-2.5deg);
+  }
+
+  .mascot[data-state="idea"] .mascot__body {
+    transform: translateY(-3px) rotate(1.5deg);
+  }
+
+  .mascot[data-state="greeting"] .mascot__body {
+    animation: mascot-hop 0.7s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .mascot[data-state="happy"] .mascot__body {
+    animation: mascot-cheer 0.9s ease-in-out;
+  }
+
+  /* Tecleo: unos pocos ciclos cada vez que vuelve al trabajo; después las marcas quedan quietas. */
+  .mascot[data-state="idle"] .decor--idle .decor__mark {
+    animation: decor-type 1.4s ease-in-out calc(var(--i) * 0.18s) 4 both;
+  }
+
+  .mascot[data-state="attention"] .decor__mark,
+  .mascot[data-state="happy"] .decor__mark {
+    animation: decor-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--i) * 0.07s) both;
+  }
+
+  /* Saludo: las marcas se mecen en torno a la pata levantada. */
+  .mascot[data-state="greeting"] .decor--greeting {
+    transform-box: view-box;
+    transform-origin: 80px 205px;
+    animation: decor-wave 0.9s ease-in-out both;
+  }
+
+  .mascot[data-state="idea"] .decor__bulb {
+    animation: decor-bulb 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  .mascot[data-state="idea"] .decor__glow {
+    animation: decor-glow 0.8s ease-in-out 0.3s 2 alternate both;
+  }
+
+  .mascot[data-state="idea"] .decor__rays .decor__mark {
+    animation: decor-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.3s + var(--i) * 0.06s) both;
+  }
+
+  .mascot[data-state="happy"] .decor__sparkle {
+    animation: decor-twinkle 1s ease-in-out calc(var(--i) * 0.12s) both;
+  }
+
+  /* Fuera de pantalla todo queda en pausa (important: los `animation` de cada pose tienen más especificidad). */
+  .walter:not([data-live]) * {
+    animation-play-state: paused !important;
+  }
+}
+
+/* Tablet y móvil: Walter va arriba del formulario, en una franja baja; globo a la izquierda y mascota a la derecha. */
+@media (max-width: 980px) {
+  .walter {
+    --desk: 12%;
+    --figure-w: 40%;
+    max-width: none;
+    aspect-ratio: 2 / 1;
+  }
+
+  .walter__orb {
+    width: 40%;
+    bottom: 0;
+  }
+
+  .walter__figure {
+    right: 6%;
+  }
+
+  .walter__bubble {
+    top: 50%;
+    max-width: 50%;
+    transform-origin: 100% 50%;
+    translate: 0 -50%;
+  }
+
+  .walter__bubble::after {
+    top: calc(50% - 6px);
+    right: -7px;
+    bottom: auto;
+    border-top: 1px solid var(--line);
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .walter__bubble {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .walter__bubble span {
+    font-size: 0.78rem;
+  }
+}
+
+@keyframes walter-bubble-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+@keyframes mascot-pose-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes mascot-pose-hold {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mascot-breathe {
+  50% {
+    transform: scale(1.008, 1.016);
+  }
+}
+
+@keyframes mascot-shadow {
+  50% {
+    transform: scaleX(0.97);
+    opacity: 0.85;
+  }
+}
+
+@keyframes mascot-hop {
+  35% {
+    transform: translateY(-9px) rotate(-1deg);
+  }
+
+  65% {
+    transform: none;
+  }
+
+  82% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes mascot-cheer {
+  20% {
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  42% {
+    transform: none;
+  }
+
+  62% {
+    transform: translateY(-5px) scale(1.01);
+  }
+
+  84% {
+    transform: none;
+  }
+}
+
+@keyframes decor-type {
+  50% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes decor-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+@keyframes decor-wave {
+  0% {
+    opacity: 0;
+    transform: rotate(-14deg);
+  }
+
+  25% {
+    opacity: 1;
+    transform: rotate(8deg);
+  }
+
+  50% {
+    transform: rotate(-7deg);
+  }
+
+  75% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes decor-bulb {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.6);
+  }
+}
+
+@keyframes decor-glow {
+  from {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+
+  to {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes decor-twinkle {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-30deg);
+  }
+
+  45% {
+    opacity: 1;
+    transform: scale(1.15) rotate(0deg);
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+}

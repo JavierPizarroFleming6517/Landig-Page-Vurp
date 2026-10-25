@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Fuentes de marca (manual PDF, zip y assets originales): no se versionan
+brand-source/
