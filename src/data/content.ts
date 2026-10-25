@@ -1,302 +1,374 @@
+import type { LucideIcon } from "lucide-react";
 import {
-  Bot,
   Boxes,
-  DatabaseBackup,
-  Eye,
+  CalendarCheck,
   Fingerprint,
-  Gauge,
-  Handshake,
+  GitBranch,
   KeyRound,
+  Layers3,
   Lock,
-  Mail,
+  MessagesSquare,
   Puzzle,
-  Route,
   ScanSearch,
-  ServerCog,
   ShieldCheck,
+  Sparkles,
   Workflow,
 } from "lucide-react";
-import { GitHubIcon, InstagramIcon, LinkedInIcon } from "../components/ui/BrandIcons";
-import type {
-  ContactInfo,
-  FooterColumn,
-  HeroContent,
-  ImageAsset,
-  IntroContent,
-  NavEntry,
-  NavLink,
-  SecurityFeature,
-  SecurityStat,
-  ShowcaseScene,
-  SocialLink,
-  Solution,
-  ValueProp,
-} from "../types";
 
-const unsplash = (id: string, alt: string, width = 1920): ImageAsset => ({
-  src: `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=80`,
-  alt,
-});
+export const contact = {
+  email: "hola@vurp.com",
+  location: "Coquimbo, Chile",
+} as const;
 
-export const hero: HeroContent = {
-  eyebrow: "Software & Cybersecurity",
-  title: "Software a medida que",
-  highlight: "ordena tu empresa.",
-  description:
-    "Diseñamos sistemas, chatbots y automatizaciones pensados para tu operación real. Con la seguridad incluida desde el primer día, no como un agregado.",
-  primaryCta: { label: "Hablemos de tu proyecto", href: "#contacto" },
-  secondaryCta: { label: "Ver soluciones", href: "#soluciones" },
-  background: unsplash(
-    "photo-1550751827-4bd374c3f58b",
-    "Abstracción tecnológica con tonos morados y azules",
-  ),
-};
-
-export const intro: IntroContent = {
-  tagline: "Software & Cybersecurity",
-};
-
-export const welcomeLines = [
-  "Transformamos ideas en tecnología.",
-  "Desarrollamos soluciones para desafíos reales.",
-  "Protegemos lo que construyes.",
+export const navLinks = [
+  { label: "Soluciones", href: "#soluciones" },
+  { label: "Plataforma", href: "#plataforma" },
+  { label: "Proceso", href: "#proceso" },
+  { label: "Casos", href: "#casos" },
+  { label: "Preguntas", href: "#preguntas" },
 ] as const;
 
-export const valueProps: readonly ValueProp[] = [
+export const marquee = [
+  "Software a medida",
+  "Automatización",
+  "Ciberseguridad",
+  "Integraciones",
+  "Control de accesos",
+  "Respaldos",
+  "Chatbots",
+  "Paneles de operación",
+] as const;
+
+export interface FlowStep {
+  icon: LucideIcon;
+  title: string;
+  kicker: string;
+  text: string;
+}
+
+export const flowSteps: readonly FlowStep[] = [
   {
-    id: "orden",
+    icon: MessagesSquare,
+    kicker: "Diagnóstico",
+    title: "Escuchamos la operación",
+    text: "Recorremos cómo trabaja tu equipo hoy: planillas, correos, excepciones y lo que no puede fallar.",
+  },
+  {
     icon: Puzzle,
-    title: "Un sistema, no diez planillas",
-    description: "Centralizamos la información que hoy vive dispersa entre archivos, correos y chats.",
-    detail: "Menos doble carga, menos errores y datos en los que se puede confiar.",
+    kicker: "Diseño",
+    title: "Definimos el sistema",
+    text: "Traducimos esa operación a pantallas, datos y reglas. Tú ves el mapa antes de que escribamos el resto.",
   },
   {
-    id: "tiempo",
-    icon: Gauge,
-    title: "Tareas repetitivas, automatizadas",
-    description: "Identificamos los procesos que consumen horas y los resolvemos con software.",
-    detail: "Tu equipo se enfoca en lo que realmente necesita criterio humano.",
+    icon: Layers3,
+    kicker: "Desarrollo",
+    title: "Construimos a medida",
+    text: "El software sigue tu flujo, no una plantilla. Cada pieza existe porque tu operación la necesita.",
   },
   {
-    id: "claridad",
-    icon: Eye,
-    title: "Explicamos sin jerga",
-    description: "Cada decisión técnica se traduce a impacto concreto en tu negocio.",
-    detail: "Sabes qué estás comprando, cuánto cuesta y qué vas a obtener.",
+    icon: GitBranch,
+    kicker: "Integración",
+    title: "Conectamos lo que ya usas",
+    text: "Correo, pagos, inventario o el sistema que no vas a reemplazar. La información deja de vivir en copias.",
   },
   {
-    id: "honestidad",
-    icon: Handshake,
-    title: "No prometemos de más",
-    description: "Plazos realistas, alcance definido y entregas parciales que puedes probar.",
-    detail: "Si algo no conviene desarrollarlo, te lo decimos.",
+    icon: Lock,
+    kicker: "Seguridad",
+    title: "Cerramos los accesos",
+    text: "Roles, cifrado y respaldos entran en la misma entrega. La protección no queda para una fase posterior.",
+  },
+  {
+    icon: CalendarCheck,
+    kicker: "Acompañamiento",
+    title: "Dejamos todo andando",
+    text: "Capacitamos a tu equipo, documentamos en español claro y seguimos cerca cuando la operación cambia.",
   },
 ];
 
-export const showcaseScenes: readonly ShowcaseScene[] = [
-  {
-    id: "diagnostico",
-    step: "01",
-    title: "Diagnóstico",
-    description: "Entendemos cómo trabaja tu equipo hoy antes de escribir una sola línea de código.",
-    bullets: ["Relevamiento de procesos", "Puntos de fricción priorizados", "Propuesta con alcance claro"],
-    image: unsplash("photo-1522071820081-009f0129c71c", "Equipo de trabajo reunido frente a una laptop"),
-  },
-  {
-    id: "diseno",
-    step: "02",
-    title: "Diseño",
-    description: "Definimos la arquitectura y las pantallas junto a quienes van a usar el sistema.",
-    bullets: ["Prototipos navegables", "Arquitectura escalable", "Seguridad desde el diseño"],
-    image: unsplash("photo-1558494949-ef010cbdcc31", "Sala de servidores iluminada"),
-  },
-  {
-    id: "desarrollo",
-    step: "03",
-    title: "Desarrollo",
-    description: "Construimos por etapas, con entregas frecuentes que puedes revisar y validar.",
-    bullets: ["Entregas cada dos semanas", "Código revisado y probado", "Visibilidad total del avance"],
-    image: unsplash("photo-1555066931-4365d14bab8c", "Código fuente en un monitor oscuro"),
-  },
-  {
-    id: "soporte",
-    step: "04",
-    title: "Soporte",
-    description: "El software sigue vivo después de la entrega: lo mantenemos, medimos y mejoramos.",
-    bullets: ["Monitoreo continuo", "Actualizaciones de seguridad", "Mejoras según el uso real"],
-    image: unsplash("photo-1551288049-bebda4e38f71", "Panel de métricas y gráficos en pantalla"),
-  },
-];
+export interface SolutionFeature {
+  icon: LucideIcon;
+  title: string;
+  text: string;
+}
+
+export interface Solution {
+  id: string;
+  label: string;
+  title: string;
+  summary: string;
+  features: readonly SolutionFeature[];
+}
 
 export const solutions: readonly Solution[] = [
   {
-    id: "erp",
-    icon: Boxes,
-    name: "ERPs a medida",
-    tagline: "Toda tu operación en un solo lugar",
-    description:
-      "Stock, ventas, compras, facturación y reportes conectados entre sí y adaptados a cómo trabaja tu empresa, no al revés.",
-    benefits: [
-      "Módulos según tus procesos reales",
-      "Reportes en tiempo real para decidir mejor",
-      "Integración con sistemas que ya usas",
-      "Permisos por rol y trazabilidad de cambios",
+    id: "software",
+    label: "Software a medida",
+    title: "Un sistema para tu forma de trabajar",
+    summary: "Reemplazamos el conjunto de planillas, chats y archivos sueltos por una herramienta que tu equipo entiende.",
+    features: [
+      {
+        icon: Boxes,
+        title: "Ordena",
+        text: "Clientes, pedidos y tareas quedan en un solo lugar, con el mismo dato para todos.",
+      },
+      {
+        icon: Puzzle,
+        title: "Se adapta",
+        text: "Los pasos son los de tu operación. No tienes que doblar el negocio para entrar en un molde.",
+      },
+      {
+        icon: GitBranch,
+        title: "Integra",
+        text: "Se conecta con lo que ya funciona, en vez de obligarte a partir de cero.",
+      },
+      {
+        icon: Sparkles,
+        title: "Se entrega usable",
+        text: "Pantallas claras y una puesta en marcha con tu equipo, no un manual que nadie abre.",
+      },
     ],
-    ctaLabel: "Consultar por un ERP",
-    image: unsplash("photo-1460925895917-afdab827c52f", "Laptop mostrando un panel de gestión"),
-  },
-  {
-    id: "chatbots",
-    icon: Bot,
-    name: "Chatbots",
-    tagline: "Atención inmediata, sin perder el trato humano",
-    description:
-      "Asistentes para WhatsApp, web o canales internos que responden consultas frecuentes, toman pedidos y derivan a una persona cuando hace falta.",
-    benefits: [
-      "Disponibles las 24 horas",
-      "Conectados a tu base de datos y stock",
-      "Derivación a un agente cuando corresponde",
-      "Conversaciones registradas y auditables",
-    ],
-    ctaLabel: "Consultar por un chatbot",
-    image: unsplash("photo-1620712943543-bcc4688e7485", "Representación abstracta de inteligencia artificial"),
   },
   {
     id: "automatizacion",
+    label: "Automatización",
+    title: "Lo repetitivo deja de ocupar el día",
+    summary: "Detectamos los avisos, registros y seguimientos que hoy se hacen a mano y los encadenamos.",
+    features: [
+      {
+        icon: ScanSearch,
+        title: "Detecta",
+        text: "Miramos qué tarea se repite, quién la hace y qué se pierde cuando se olvida.",
+      },
+      {
+        icon: Workflow,
+        title: "Encadena",
+        text: "Un evento dispara el aviso, el registro o el siguiente paso, sin copiar y pegar.",
+      },
+      {
+        icon: MessagesSquare,
+        title: "Avisa",
+        text: "El equipo recibe lo que tiene que hacer, y el cliente recibe la respuesta a tiempo.",
+      },
+      {
+        icon: CalendarCheck,
+        title: "Libera tiempo",
+        text: "Las personas se quedan con las decisiones. El resto circula solo.",
+      },
+    ],
+  },
+  {
+    id: "seguridad",
+    label: "Ciberseguridad",
+    title: "Protección dentro del mismo proyecto",
+    summary: "Accesos, cifrado, respaldos y registro forman parte del sistema, no un anexo al final.",
+    features: [
+      {
+        icon: KeyRound,
+        title: "Accesos",
+        text: "Cada persona ve y cambia solo lo que le corresponde.",
+      },
+      {
+        icon: Lock,
+        title: "Datos cuidados",
+        text: "La información viaja y se guarda de forma que un tercero no pueda leerla.",
+      },
+      {
+        icon: ShieldCheck,
+        title: "Respaldos",
+        text: "Hay copias y una forma de volver atrás si algo sale mal.",
+      },
+      {
+        icon: Fingerprint,
+        title: "Registro",
+        text: "Queda constancia de quién hizo qué. Sirve para el control interno y para dormir más tranquilo.",
+      },
+    ],
+  },
+];
+
+export const metrics = [
+  { value: "A medida", label: "Nada de plantilla genérica. El sistema sigue tu operación." },
+  { value: "Día 1", label: "La seguridad entra en el diseño, no cuando el sistema ya está publicado." },
+  { value: "Coquimbo", label: "Hablas con quien construye. Estamos en Chile." },
+] as const;
+
+export const outcomes = [
+  { title: "Menos planillas", text: "Un dato, un lugar. Se acaba la versión “final_final”." },
+  { title: "Menos repetición", text: "Avisos y registros que antes dependían de que alguien se acordara." },
+  { title: "Accesos claros", text: "Cada rol ve lo suyo. El resto queda fuera." },
+  { title: "Equipo al día", text: "Entrega guiada y documentación en español, sin jerga de más." },
+] as const;
+
+export interface PlatformCard {
+  icon: LucideIcon;
+  kicker: string;
+  title: string;
+  text: string;
+  href: string;
+}
+
+export const platform: readonly PlatformCard[] = [
+  {
+    icon: Layers3,
+    kicker: "Software",
+    title: "El sistema central",
+    text: "Paneles, flujos y datos pensados para la operación diaria de tu empresa.",
+    href: "#soluciones",
+  },
+  {
     icon: Workflow,
-    name: "Automatización",
-    tagline: "Procesos que se resuelven solos",
-    description:
-      "Conectamos tus herramientas para que la información fluya sin copiar y pegar: altas, notificaciones, conciliaciones y reportes automáticos.",
-    benefits: [
-      "Menos tareas manuales y errores de carga",
-      "Flujos entre sistemas que hoy no se hablan",
-      "Alertas cuando algo requiere atención",
-      "Ahorro de horas medible desde el primer mes",
-    ],
-    ctaLabel: "Consultar por automatización",
-    image: unsplash("photo-1518770660439-4636190af475", "Primer plano de una placa de circuitos"),
+    kicker: "Automatización",
+    title: "El trabajo que circula solo",
+    text: "Seguimientos, avisos y registros que dejan de vivir en la bandeja de alguien.",
+    href: "#soluciones",
+  },
+  {
+    icon: ShieldCheck,
+    kicker: "Seguridad",
+    title: "La protección incluida",
+    text: "Roles, cifrado, respaldos y auditoría dentro de la misma entrega.",
+    href: "#soluciones",
   },
 ];
 
-/** Menú del header. Los ítems de "Soluciones" salen de `solutions`, así no se duplica el contenido. */
-export const navMenu: readonly NavEntry[] = [
+export interface Reason {
+  title: string;
+  text: string;
+  chips?: readonly string[];
+}
+
+export const reasons: readonly Reason[] = [
   {
-    kind: "group",
-    id: "soluciones",
-    label: "Soluciones",
-    items: solutions.map((solution) => ({
-      label: solution.name,
-      description: solution.tagline,
-      href: "#soluciones",
-      icon: solution.icon,
-    })),
-    footer: { label: "Ver todas las soluciones", href: "#soluciones" },
+    title: "Partimos de tu operación",
+    text: "Comercio, servicios, equipos internos o una mezcla de los tres. El sistema sale de cómo trabajas, no de un catálogo.",
+    chips: ["Comercio", "Servicios", "Operaciones", "Equipos en crecimiento"],
   },
   {
-    kind: "group",
-    id: "empresa",
-    label: "Empresa",
-    items: [
-      { label: "Propuesta de valor", description: "Sistemas que ordenan tu empresa", href: "#propuesta", icon: Puzzle },
-      { label: "Cómo trabajamos", description: "De la idea al sistema, en 4 etapas", href: "#proceso", icon: Route },
-      { label: "Contacto", description: "Primera reunión sin costo", href: "#contacto", icon: Mail },
-    ],
+    title: "Un solo equipo",
+    text: "Quien diseña, construye y protege es el mismo grupo. No hay un relevo a mitad de camino.",
   },
-  { kind: "link", label: "Seguridad", href: "#seguridad" },
+  {
+    title: "Seguridad incluida",
+    text: "No es un extra que se cotiza cuando el software ya está listo.",
+  },
+  {
+    title: "Integraciones reales",
+    text: "Conectamos lo que ya usas en vez de pedirte que lo botes todo.",
+  },
+  {
+    title: "Interfaces claras",
+    text: "Tu equipo tiene que poder usarlo el primer día, sin un curso de una semana.",
+  },
+  {
+    title: "Código revisado",
+    text: "Nada se publica sin una pasada de revisión.",
+  },
+  {
+    title: "Respaldos",
+    text: "Hay copia y una forma concreta de recuperar.",
+  },
+  {
+    title: "Después del lanzamiento",
+    text: "Seguimos cuando la operación cambia. El sistema no se queda congelado.",
+  },
+  {
+    title: "Español claro",
+    text: "La documentación y las conversaciones van en el idioma en que trabajas.",
+  },
+  {
+    title: "Sin humo",
+    text: "Te decimos qué se puede hacer, qué no, y cuándo lo vas a tener.",
+  },
 ];
 
-/** CTA principal del header (lleva a la sección de contacto). */
-export const navCta: NavLink = { label: "Cotizar proyecto", href: "#contacto" };
-
-export const securityBackground: ImageAsset = unsplash(
-  "photo-1563986768609-322da13575f3",
-  "Laptop con candado que representa seguridad informática",
-);
-
-export const securityFeatures: readonly SecurityFeature[] = [
+export const studio = [
   {
-    id: "cifrado",
-    icon: Lock,
-    title: "Datos cifrados",
-    description: "La información viaja y se guarda cifrada. Si alguien la intercepta, no puede leerla.",
+    icon: MessagesSquare,
+    title: "Entrega guiada",
+    text: "Recorremos el sistema contigo y con quien lo va a usar. Las dudas se resuelven en esa sesión, no una semana después.",
   },
   {
-    id: "accesos",
-    icon: KeyRound,
-    title: "Control de accesos",
-    description: "Cada persona ve y modifica solo lo que necesita, con autenticación robusta.",
+    icon: Puzzle,
+    title: "Ajustes con tu equipo",
+    text: "Si un flujo no calza con el día real, lo corregimos antes de darlo por cerrado.",
   },
   {
-    id: "respaldos",
-    icon: DatabaseBackup,
-    title: "Respaldos automáticos",
-    description: "Copias de seguridad periódicas y probadas para recuperar todo ante un imprevisto.",
-  },
-  {
-    id: "auditoria",
     icon: ScanSearch,
-    title: "Auditoría y registros",
-    description: "Queda registro de quién hizo qué y cuándo. Útil para control interno y cumplimiento.",
+    title: "Cuando algo cambia",
+    text: "Un proceso nuevo o una regla distinta no implica empezar otro proyecto desde cero.",
+  },
+] as const;
+
+export const cases = [
+  {
+    area: "Operación comercial",
+    title: "Un panel en vez de cinco planillas",
+    text: "Pedidos, estados y responsables viven en la misma pantalla. El equipo deja de preguntar cuál archivo es el bueno.",
   },
   {
-    id: "infraestructura",
-    icon: ServerCog,
-    title: "Infraestructura mantenida",
-    description: "Servidores actualizados y monitoreados para cerrar vulnerabilidades a tiempo.",
+    area: "Servicios con agenda",
+    title: "Menos idas y vueltas para confirmar",
+    text: "La solicitud, la hora y el recordatorio quedan encadenados. Nadie tiene que perseguir el correo.",
   },
   {
-    id: "identidad",
-    icon: Fingerprint,
-    title: "Buenas prácticas OWASP",
-    description: "Desarrollamos siguiendo estándares reconocidos para prevenir los ataques más comunes.",
+    area: "Equipo en crecimiento",
+    title: "Accesos y respaldos desde el inicio",
+    text: "Cada persona entra con su rol y la información tiene copia. Crecer no significa perder el control.",
   },
-];
+] as const;
 
-export const securityStats: readonly SecurityStat[] = [
-  { id: "revision", value: 100, suffix: "%", label: "del código revisado antes de publicarse" },
-  { id: "respaldo", value: 24, suffix: "h", label: "como máximo entre respaldos" },
-  { id: "monitoreo", value: 365, suffix: "", label: "días al año de monitoreo" },
-];
-
-export const securityBadge = {
-  icon: ShieldCheck,
-  label: "Seguridad incluida en cada proyecto",
-} as const;
-
-export const ctaBackground: ImageAsset = unsplash(
-  "photo-1531297484001-80022131f5a1",
-  "Abstracción tecnológica en tonos morados",
-);
-
-export const contactInfo: ContactInfo = {
-  email: "hola@vurp.com",
-  phone: "+56 9 0000 0000",
-  location: "Coquimbo, Chile",
-};
-
-export const footerColumns: readonly FooterColumn[] = [
+export const faqs = [
   {
-    title: "Soluciones",
+    q: "¿Trabajan con plantillas o todo es a medida?",
+    a: "A medida. Partimos de tu operación. Si algo estándar alcanza, te lo decimos; no vamos a inventar complejidad.",
+  },
+  {
+    q: "¿La seguridad se cotiza aparte?",
+    a: "No. Accesos, cuidado de los datos y respaldos forman parte del proyecto desde el diseño.",
+  },
+  {
+    q: "¿Tienen que botar los sistemas que ya usan?",
+    a: "No. Integramos lo que conviene conservar y reemplazamos solo lo que ya no da abasto.",
+  },
+  {
+    q: "¿Dónde están?",
+    a: "En Coquimbo, Chile. Las reuniones y el acompañamiento son con el equipo que construye.",
+  },
+  {
+    q: "¿Qué pasa después de la entrega?",
+    a: "Capacitamos, documentamos y seguimos disponibles cuando el proceso cambia.",
+  },
+  {
+    q: "¿Cómo parto?",
+    a: "Escríbenos qué quieres ordenar. La primera conversación sirve para ver si tiene sentido hacer el proyecto.",
+  },
+] as const;
+
+export const footerColumns = [
+  {
+    title: "Producto",
     links: [
-      { label: "ERPs a medida", href: "#soluciones" },
-      { label: "Chatbots", href: "#soluciones" },
+      { label: "Software a medida", href: "#soluciones" },
       { label: "Automatización", href: "#soluciones" },
-      { label: "Ciberseguridad", href: "#seguridad" },
+      { label: "Ciberseguridad", href: "#soluciones" },
+      { label: "Plataforma", href: "#plataforma" },
     ],
   },
   {
     title: "Empresa",
     links: [
-      { label: "Propuesta de valor", href: "#propuesta" },
-      { label: "Cómo trabajamos", href: "#proceso" },
+      { label: "Proceso", href: "#proceso" },
+      { label: "Casos de uso", href: "#casos" },
+      { label: "Preguntas", href: "#preguntas" },
       { label: "Contacto", href: "#contacto" },
     ],
   },
-];
-
-export const socialLinks: readonly SocialLink[] = [
-  { id: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/", icon: LinkedInIcon },
-  { id: "instagram", label: "Instagram", href: "https://www.instagram.com/", icon: InstagramIcon },
-  { id: "github", label: "GitHub", href: "https://github.com/", icon: GitHubIcon },
-];
+  {
+    title: "Social",
+    links: [
+      { label: "LinkedIn", href: "https://www.linkedin.com/" },
+      { label: "Instagram", href: "https://www.instagram.com/" },
+      { label: "GitHub", href: "https://github.com/" },
+    ],
+  },
+] as const;

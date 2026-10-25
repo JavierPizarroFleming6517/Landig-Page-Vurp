@@ -1,33 +1,32 @@
-import { useCallback, useState } from "react";
-import { CallToAction } from "./components/CallToAction";
-import { DynamicShowcase } from "./components/DynamicShowcase";
+import { Cases } from "./components/Cases";
+import { Contact } from "./components/Contact";
+import { Flow } from "./components/Flow";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
-import { Intro } from "./components/Intro";
+import { Metrics } from "./components/Metrics";
 import { Navbar } from "./components/Navbar";
-import { SecurityHighlight } from "./components/SecurityHighlight";
-import { Services } from "./components/Services";
-import { ValueProposition } from "./components/ValueProposition";
-import { Welcome } from "./components/Welcome/Welcome";
-import { useTheme } from "./hooks/useTheme";
+import { Platform } from "./components/Platform";
+import { Reasons } from "./components/Reasons";
+import { Solutions } from "./components/Solutions";
+import { Studio } from "./components/Studio";
 
 export default function App() {
-  const { theme, toggleTheme } = useTheme();
-  const [splashDone, setSplashDone] = useState(false);
-  const handleSplashFinish = useCallback(() => setSplashDone(true), []);
-
   return (
     <>
-      <Intro onFinish={handleSplashFinish} />
-      <Navbar theme={theme} onToggleTheme={toggleTheme} />
+      <a className="skip" href="#inicio">
+        Saltar al contenido
+      </a>
+      <Navbar />
       <main>
-        <Welcome started={splashDone} />
         <Hero />
-        <ValueProposition />
-        <DynamicShowcase />
-        <Services />
-        <SecurityHighlight />
-        <CallToAction />
+        <Flow />
+        <Solutions />
+        <Metrics />
+        <Platform />
+        <Reasons />
+        <Studio />
+        <Cases />
+        <Contact />
       </main>
       <Footer />
     </>
