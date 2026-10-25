@@ -19,19 +19,19 @@ export function Contact() {
 
   return (
     <section className="section" id="contacto">
-      <div className="wrap">
-        <div className="band" id="aviso">
-          <div className="band__panel">
-            <div className="band__copy">
-              <p className="eyebrow">Conversemos</p>
-              <h2 className="section__title">Cuéntanos qué quieres ordenar.</h2>
-              <p>La primera conversación sirve para ver el alcance. Sin compromiso y sin presentación inflada.</p>
-            </div>
-            <a className="btn btn--solid" href="#escribir">
-              Escribir a Vurp
-            </a>
+      <div className="band" id="aviso">
+        <div className="band__panel">
+          <div className="band__copy">
+            <p className="eyebrow">Conversemos</p>
+            <h2 className="section__title">Cuéntanos qué quieres ordenar.</h2>
+            <p>La primera conversación sirve para ver el alcance. Sin compromiso y sin presentación inflada.</p>
           </div>
+          <a className="btn btn--solid" href="#escribir">
+            Escribir a Vurp
+          </a>
         </div>
+      </div>
+      <div className="wrap">
         <div className="contact__grid">
           <form className="form" id="escribir" onSubmit={onSubmit}>
             <p className="eyebrow">Contacto</p>

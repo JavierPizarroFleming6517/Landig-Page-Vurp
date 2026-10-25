@@ -219,6 +219,8 @@
 }
 
 .hero > .wrap {
+  /* El marquee llega a los bordes del viewport: este contenedor no lleva el tope de ancho de las secciones. */
+  max-width: none;
   padding-bottom: 2rem;
 }
 

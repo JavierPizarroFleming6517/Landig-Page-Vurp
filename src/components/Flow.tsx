@@ -29,19 +29,19 @@ export function Flow() {
             </button>
           </div>
         </div>
-        <div className="rail" ref={rail}>
-          {flowSteps.map((step) => {
-            const Icon = step.icon;
-            return (
-              <article className="flow__card" key={step.title}>
-                <Icon size={28} />
-                <span className="kicker">{step.kicker}</span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </article>
-            );
-          })}
-        </div>
+      </div>
+      <div className="rail" ref={rail}>
+        {flowSteps.map((step) => {
+          const Icon = step.icon;
+          return (
+            <article className="flow__card" key={step.title}>
+              <Icon size={28} />
+              <span className="kicker">{step.kicker}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
