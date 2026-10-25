@@ -337,6 +337,7 @@ export interface Reason {
   chips?: readonly string[];
 }
 
+/** Cinco razones: la primera y la segunda van destacadas en la fila de arriba del bento. */
 export const reasons: readonly Reason[] = [
   {
     title: "Partimos de tu operación",
@@ -345,39 +346,19 @@ export const reasons: readonly Reason[] = [
   },
   {
     title: "Un solo equipo",
-    text: "Quien diseña, construye y protege es el mismo grupo. No hay un relevo a mitad de camino.",
+    text: "Quien diseña, construye y protege es el mismo grupo desde la planificación. No hay un relevo a mitad de camino.",
   },
   {
     title: "Seguridad incluida",
-    text: "No es un extra que se cotiza cuando el software ya está listo.",
+    text: "No es un extra que se cotiza cuando el software ya está listo. Accesos y respaldos entran desde el diseño.",
   },
   {
     title: "Integraciones reales",
-    text: "Conectamos lo que ya usas en vez de pedirte que lo botes todo.",
-  },
-  {
-    title: "Interfaces claras",
-    text: "Tu equipo tiene que poder usarlo el primer día, sin un curso de una semana.",
-  },
-  {
-    title: "Código revisado",
-    text: "Nada se publica sin una pasada de revisión.",
-  },
-  {
-    title: "Respaldos",
-    text: "Hay copia y una forma concreta de recuperar.",
+    text: "Conectamos lo que ya usas en vez de pedirte que lo botes todo: correo, pagos o inventario.",
   },
   {
     title: "Después del lanzamiento",
-    text: "Seguimos cuando la operación cambia. El sistema no se queda congelado.",
-  },
-  {
-    title: "Español claro",
-    text: "La documentación y las conversaciones van en el idioma en que trabajas.",
-  },
-  {
-    title: "Sin humo",
-    text: "Te decimos qué se puede hacer, qué no, y cuándo lo vas a tener.",
+    text: "Seguimos cuando la operación cambia, según el acompañamiento que acordemos. El sistema no se queda congelado.",
   },
 ];
 
@@ -399,18 +380,22 @@ export const studio = [
   },
 ] as const;
 
+/** Casos de uso: situaciones tipo para las que se arma el trabajo, no clientes reales. */
 export const cases = [
   {
+    icon: LayoutDashboard,
     area: "Operación comercial",
     title: "Un panel en vez de cinco planillas",
     text: "Pedidos, estados y responsables viven en la misma pantalla. El equipo deja de preguntar cuál archivo es el bueno.",
   },
   {
+    icon: CalendarCheck,
     area: "Servicios con agenda",
     title: "Menos idas y vueltas para confirmar",
     text: "La solicitud, la hora y el recordatorio quedan encadenados. Nadie tiene que perseguir el correo.",
   },
   {
+    icon: KeyRound,
     area: "Equipo en crecimiento",
     title: "Accesos y respaldos desde el inicio",
     text: "Cada persona entra con su rol y la información tiene copia. Crecer no significa perder el control.",

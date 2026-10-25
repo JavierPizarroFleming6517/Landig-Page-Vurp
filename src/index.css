@@ -40,7 +40,6 @@
   --field-bg: #141118;
   --field-border: var(--line);
   --footer-bg: radial-gradient(520px 180px at 0% 0%, rgba(139, 70, 171, 0.2), transparent 60%), #17141d;
-  --reason-num: rgba(250, 247, 242, 0.08);
   /* Tarjetas destacadas. */
   /* Soluciones ("flujo completo"): panel de la solución, sus filas, fichas de ícono y figuras del fondo. */
   --flujo-panel-bg:
@@ -55,11 +54,7 @@
   --metric-lead-bg:
     radial-gradient(420px 220px at 0% 100%, rgba(139, 70, 171, 0.4), transparent 70%),
     linear-gradient(165deg, #3a2750, #24182f 70%);
-  --metric-banner-bg:
-    radial-gradient(480px 160px at 90% 0%, rgba(180, 132, 210, 0.28), transparent 60%),
-    linear-gradient(100deg, #4a2d66, #24182f 62%);
   --platform-feature-bg: linear-gradient(165deg, #6d3b8e, #24182f 74%);
-  --studio-feature-bg: radial-gradient(360px 160px at 0% 100%, rgba(139, 70, 171, 0.35), transparent 70%), var(--card-2);
   --case-feature-bg:
     radial-gradient(520px 200px at 100% 0%, rgba(180, 132, 210, 0.28), transparent 60%),
     linear-gradient(110deg, #4e316c, #24182f 70%);
@@ -105,7 +100,6 @@
   --footer-bg:
     radial-gradient(520px 180px at 0% 0%, rgba(201, 167, 228, 0.3), transparent 60%),
     color-mix(in srgb, #e4d5f2 30%, #faf7f2);
-  --reason-num: rgba(85, 35, 111, 0.07);
   --feature-light: linear-gradient(165deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 72%);
   --flujo-panel-bg:
     radial-gradient(520px 240px at 0% 0%, rgba(201, 167, 228, 0.45), transparent 70%),
@@ -117,11 +111,7 @@
   --flujo-shape: rgba(139, 70, 171, 0.07);
   --laptop-shadow: 0 50px 90px -45px rgba(85, 35, 111, 0.45);
   --metric-lead-bg: radial-gradient(420px 220px at 0% 100%, rgba(201, 167, 228, 0.35), transparent 70%), var(--feature-light);
-  --metric-banner-bg:
-    radial-gradient(480px 160px at 90% 0%, rgba(201, 167, 228, 0.35), transparent 60%),
-    linear-gradient(100deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 62%);
   --platform-feature-bg: var(--feature-light);
-  --studio-feature-bg: radial-gradient(360px 160px at 0% 100%, rgba(201, 167, 228, 0.3), transparent 70%), var(--card-2);
   --case-feature-bg:
     radial-gradient(520px 200px at 100% 0%, rgba(201, 167, 228, 0.35), transparent 60%),
     linear-gradient(110deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 70%);
@@ -498,8 +488,7 @@ ul {
 }
 
 .flow__card svg,
-.platform__card svg,
-.studio__grid svg {
+.platform__card svg {
   color: var(--accent);
 }
 
@@ -835,22 +824,14 @@ ul {
 }
 
 .metrics__grid,
-.platform__grid,
-.studio__grid,
 .cases__grid,
 .footer__grid {
   display: grid;
   gap: 1rem;
 }
 
-.metrics__grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .metric,
-.platform__card,
 .reason,
-.studio__grid article,
 .case,
 .form {
   padding: 1.35rem;
@@ -859,158 +840,234 @@ ul {
   background: var(--card);
 }
 
+/* Cómo trabajamos: cuatro tarjetas en fila y, debajo, los resultados como lista tipográfica. */
+.metrics__grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .metric--lead {
-  grid-column: span 2;
-  grid-row: span 2;
-  min-height: 280px;
   background: var(--metric-lead-bg);
 }
 
-.metrics__grid .metric:nth-child(2),
-.metrics__grid .metric:nth-child(5) {
-  grid-column: span 2;
+.metric .kicker {
+  margin-top: 0;
 }
 
-.metric--banner {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 2rem;
-  min-height: 160px;
-  background: var(--metric-banner-bg);
-}
-
-.metric--banner p {
-  max-width: 28rem;
-}
-
-.metric strong,
-.case strong {
+.metric strong {
   display: block;
-  margin: 0.4rem 0;
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  margin: 0.25rem 0 0.5rem;
+  font-size: clamp(1.5rem, 1.15rem + 1vw, 2.1rem);
   letter-spacing: -0.04em;
+  line-height: 1.1;
 }
 
+.metric p {
+  color: var(--muted);
+}
+
+.outcomes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem 2rem;
+  margin-top: clamp(2rem, 3.5vw, 3rem);
+}
+
+.outcomes li {
+  padding-top: 1rem;
+  border-top: 2px solid rgba(var(--tint-rgb), 0.45);
+}
+
+.outcomes h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.outcomes p {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.97rem;
+}
+
+/* Plataforma: un solo panel en tres columnas separadas por líneas; la del medio, destacada. */
 .platform__grid {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-
-.platform__card:nth-child(1),
-.platform__card:nth-child(3) {
-  grid-column: span 4;
-  min-height: 230px;
-}
-
-.platform__card:nth-child(2) {
-  grid-column: span 2;
-  grid-row: span 2;
-  background: var(--platform-feature-bg);
-}
-
-.metrics__grid,
-.studio__grid {
-  margin-top: 1.75rem;
-}
-
-.studio__grid {
-  grid-template-columns: 1.2fr 0.9fr 1fr;
-}
-
-.studio__grid article:nth-child(1),
-.studio__grid article:nth-child(3) {
-  grid-column: 1 / 3;
-}
-
-.studio__grid article:nth-child(1) {
-  min-height: 220px;
-  background: var(--studio-feature-bg);
-}
-
-.studio__grid article:nth-child(2) {
-  grid-column: 3;
-  grid-row: 1 / 3;
-  background: linear-gradient(180deg, rgba(var(--tint-rgb), 0.18), transparent 40%), var(--card);
-}
-
-.cases__grid {
-  grid-template-columns: 0.85fr 1.15fr 1fr;
-}
-
-.case:nth-child(1) {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-height: 260px;
-  background: var(--case-feature-bg);
-}
-
-.case:nth-child(1) strong,
-.case:nth-child(1) p {
-  max-width: 46rem;
-}
-
-.case:nth-child(3) {
-  grid-column: span 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.12), transparent 42%),
+    var(--card);
 }
 
 .platform__card {
   display: flex;
   flex-direction: column;
-  min-height: 280px;
-  background:
-    linear-gradient(180deg, rgba(var(--tint-rgb), 0.16), transparent 42%),
-    var(--card);
+  padding: clamp(1.35rem, 2.2vw, 2rem);
+}
+
+.platform__card + .platform__card {
+  border-left: 1px solid var(--line);
+}
+
+.platform__card:nth-child(2) {
+  background: var(--platform-feature-bg);
+}
+
+.platform__card p {
+  margin-top: 0.55rem;
+  color: var(--muted);
 }
 
 .platform__card a {
   margin-top: auto;
+  padding-top: 1.25rem;
   color: var(--accent);
   font-weight: 600;
 }
 
+/* Entrega: encabezado a la izquierda y los tres puntos como lista con líneas, sin tarjetas. */
+.studio {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 2rem clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.studio .intro {
+  margin-bottom: 0;
+}
+
+.studio__list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.1rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.studio__list li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.studio__list svg {
+  color: var(--accent);
+}
+
+.studio__list h3 {
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.studio__list p {
+  margin-top: 0.35rem;
+  max-width: 40rem;
+  color: var(--muted);
+}
+
+/* Casos: el primero, destacado a la izquierda a lo alto de los otros dos. Altura según el contenido. */
+.cases__grid {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+}
+
+.case {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--card-2);
+}
+
+.case:first-child {
+  grid-row: span 2;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.35rem, 2.5vw, 2.25rem);
+  background: var(--case-feature-bg);
+}
+
+.case__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 14px;
+  background: rgba(var(--tint-rgb), 0.18);
+  color: var(--accent);
+}
+
+.case .kicker {
+  margin-top: 0;
+}
+
+.case h3 {
+  margin-top: 0.25rem;
+  font-size: clamp(1.2rem, 1rem + 0.5vw, 1.4rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.case:first-child h3 {
+  font-size: clamp(1.5rem, 1.1rem + 1.1vw, 2.1rem);
+}
+
+.case:first-child p:last-child {
+  max-width: 34rem;
+}
+
+/* Razones: bento de cinco, dos arriba (60/40) y tres abajo, en una grilla de 15 columnas. */
 .reasons__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(15, minmax(0, 1fr));
   gap: 1rem;
 }
 
 .reason {
   position: relative;
-  overflow: hidden;
-  min-height: 190px;
+  grid-column: span 5;
+  padding: clamp(1.35rem, 2vw, 1.75rem);
 }
 
 .reason--lead {
-  grid-column: span 2;
-  grid-row: span 2;
-  min-height: 320px;
+  grid-column: span 9;
   background: var(--reason-lead-bg);
 }
 
-.reason:nth-child(2),
-.reason:nth-child(6) {
-  grid-column: span 2;
-}
-
-.reason:nth-child(5) {
-  grid-row: span 2;
+.reason:nth-child(2) {
+  grid-column: span 6;
   background:
-    linear-gradient(180deg, rgba(var(--tint-rgb), 0.16), transparent 48%),
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.14), transparent 55%),
     var(--card);
 }
 
+.reason h3 {
+  padding-right: 2.5rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.reason--lead h3,
+.reason:nth-child(2) h3 {
+  font-size: clamp(1.35rem, 1.1rem + 0.6vw, 1.6rem);
+}
+
+.reason p {
+  max-width: 36rem;
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+/* Número discreto, arriba a la derecha. */
 .reason__num {
   position: absolute;
-  right: 0.8rem;
-  bottom: -0.6rem;
-  color: var(--reason-num);
-  font-size: 5.5rem;
-  font-weight: 700;
-  letter-spacing: -0.06em;
-  line-height: 1;
+  top: clamp(1.35rem, 2vw, 1.75rem);
+  right: clamp(1.35rem, 2vw, 1.75rem);
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
 }
 
 .chips {
@@ -1175,41 +1232,40 @@ ul {
     display: none;
   }
 
-  .intro,
-  .metrics__grid,
   .platform__grid,
+  .studio,
+  .contact,
+  .footer__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contact .walter {
+    order: -1;
+    justify-self: stretch;
+  }
+
+  /* Plataforma apilada: las líneas divisorias pasan de verticales a horizontales. */
+  .platform__card + .platform__card {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .metrics__grid,
+  .outcomes,
   .reasons__grid,
-  .studio__grid,
-  .cases__grid,
-  .footer__grid,
-  .case:nth-child(1) {
-    grid-template-columns: 1fr;
+  .cases__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .intro .section__lead {
-    justify-self: start;
-  }
-
-  .metric,
-  .metric--lead,
-  .metric--banner,
-  .metrics__grid .metric:nth-child(n),
   .reason,
-  .reason--lead,
-  .reason:nth-child(n),
-  .platform__card,
-  .platform__card:nth-child(n),
-  .studio__grid article,
-  .studio__grid article:nth-child(n),
-  .case,
-  .case:nth-child(n) {
+  .reason:nth-child(2) {
     grid-column: auto;
-    grid-row: auto;
   }
 
-  .metric--banner,
-  .case:nth-child(1) {
-    display: block;
+  .reason--lead,
+  .case:first-child {
+    grid-column: 1 / -1;
+    grid-row: auto;
   }
 
   .head,
@@ -1254,7 +1310,11 @@ ul {
 @media (max-width: 600px) {
   .flow__grid,
   .form,
-  .flujo__list {
+  .flujo__list,
+  .metrics__grid,
+  .outcomes,
+  .reasons__grid,
+  .cases__grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
