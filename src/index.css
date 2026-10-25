@@ -65,6 +65,13 @@
     radial-gradient(640px 360px at 0% 100%, rgba(85, 35, 111, 0.45), transparent 60%),
     linear-gradient(115deg, #2c2340 0%, #1a1524 48%, #121016 100%);
   --hero-lead: #ddd4ea;
+  /* Escenario de la mascota: fondo, cubierta del escritorio, sombra bajo el notebook y vidrio de la ampolleta. */
+  --mascot-stage-bg:
+    radial-gradient(60% 55% at 58% 40%, rgba(180, 132, 210, 0.2), transparent 70%),
+    linear-gradient(165deg, #2a2433, #1b1722 78%);
+  --mascot-desk-bg: linear-gradient(180deg, rgba(228, 213, 242, 0.13), rgba(228, 213, 242, 0.04));
+  --mascot-shadow: rgba(0, 0, 0, 0.6);
+  --mascot-glass: #e4d5f2;
   color-scheme: dark;
 }
 
@@ -122,6 +129,12 @@
     radial-gradient(640px 360px at 0% 100%, rgba(139, 70, 171, 0.16), transparent 60%),
     linear-gradient(115deg, #e4d5f2 0%, #faf7f2 48%, #ffffff 100%);
   --hero-lead: rgba(37, 35, 43, 0.78);
+  --mascot-stage-bg:
+    radial-gradient(60% 55% at 58% 40%, rgba(201, 167, 228, 0.45), transparent 70%),
+    linear-gradient(165deg, color-mix(in srgb, #e4d5f2 55%, #ffffff), #ffffff 78%);
+  --mascot-desk-bg: linear-gradient(180deg, rgba(201, 167, 228, 0.4), rgba(201, 167, 228, 0.16));
+  --mascot-shadow: rgba(85, 35, 111, 0.3);
+  --mascot-glass: #faf7f2;
   color-scheme: light;
 }
 
@@ -1077,8 +1090,16 @@ ul {
   margin-top: 1.25rem;
 }
 
-.case {
-  background: var(--card-2);
+/* Contacto: formulario a la izquierda y Walter a la derecha; en tablet y móvil Walter va arriba, en una franja baja. */
+.contact {
+  display: grid;
+  grid-template-columns: minmax(0, 48rem) minmax(0, 1fr);
+  gap: 1.5rem clamp(2rem, 4vw, 4rem);
+  align-items: center;
+}
+
+.contact .walter {
+  justify-self: center;
 }
 
 /* Formulario: nombre y correo lado a lado; el mensaje y el envío, a todo el ancho. */

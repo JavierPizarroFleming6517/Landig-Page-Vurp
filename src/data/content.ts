@@ -122,6 +122,24 @@ export const heroErp = {
   notification: { title: "Nuevo pedido #10483", meta: "Despacho a domicilio · hace 1 min" },
 } as const;
 
+/**
+ * Mensajes de Walter, la mascota, junto al formulario (las claves son sus estados; ver Mascot/walterState.ts). El
+ * formulario abre el correo del visitante (mailto): no hay confirmación de envío, así que el último mensaje dice que
+ * el correo quedó listo, nunca que la idea "fue enviada".
+ */
+export const walterMessages = {
+  welcome: { text: "¡Hola! 👋 ¿Tienes una idea? ¡Cuéntamela!" },
+  typing: { text: "¡Te escucho! 👀" },
+  contact: { text: "¡Perfecto! Vamos avanzando 💜" },
+  idea: { text: "¡Esa idea suena interesante! 💡" },
+  ready: { text: "¡Todo listo! ¿Enviamos tu idea? 🚀" },
+  missing: { text: "Me falta un dato para enviarla. ¿Lo revisamos? 👀" },
+  opened: {
+    text: "¡Tu correo está listo! 🎉",
+    note: "Solo falta que lo envíes desde tu correo. ¡Gracias por confiar en Vurp!",
+  },
+} as const;
+
 export const marquee = [
   "Software a medida",
   "Automatización",
