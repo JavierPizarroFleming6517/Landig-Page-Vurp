@@ -27,10 +27,7 @@
 .hero__depth {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(900px 420px at 78% 0%, rgba(180, 132, 210, 0.32), transparent 62%),
-    radial-gradient(640px 360px at 0% 100%, rgba(85, 35, 111, 0.45), transparent 60%),
-    linear-gradient(115deg, #2c2340 0%, #1a1524 48%, #121016 100%);
+  background: var(--hero-depth);
   transform: scale(0.85);
 }
 
@@ -40,6 +37,11 @@
   top: 0;
   max-width: none;
   transform-origin: 50% 50%;
+}
+
+.hero__logo img {
+  width: 100%;
+  height: 100%;
 }
 
 .hero__device {
@@ -64,6 +66,27 @@
 /* Notebook. Los degradados están en el SVG; aquí van los rellenos y trazos planos. */
 .notebook__room {
   fill: var(--bg);
+}
+
+/* Brillos de la habitación: los mismos del body, para que empalme con la página en ambos temas. */
+.notebook__glow-a {
+  stop-color: rgb(var(--glow-a-rgb));
+  stop-opacity: var(--glow-a-alpha);
+}
+
+.notebook__glow-b {
+  stop-color: rgb(var(--glow-b-rgb));
+  stop-opacity: var(--glow-b-alpha);
+}
+
+.notebook__glow-a-end {
+  stop-color: rgb(var(--glow-a-rgb));
+  stop-opacity: 0;
+}
+
+.notebook__glow-b-end {
+  stop-color: rgb(var(--glow-b-rgb));
+  stop-opacity: 0;
 }
 
 .notebook__edge-light {
@@ -123,9 +146,9 @@
   display: inline-flex;
   margin-bottom: clamp(0.6rem, 1.8vh, 1.1rem);
   padding: 0.4rem 0.85rem;
-  border: 1px solid rgba(250, 247, 242, 0.16);
+  border: 1px solid rgba(var(--overlay-rgb), 0.16);
   border-radius: 999px;
-  background: rgba(250, 247, 242, 0.06);
+  background: rgba(var(--overlay-rgb), 0.06);
   color: var(--accent);
   font-size: 0.78rem;
   font-weight: 600;
@@ -143,7 +166,7 @@
 .hero__lead {
   max-width: 40rem;
   margin-top: clamp(0.6rem, 1.6vh, 1.1rem);
-  color: #ddd4ea;
+  color: var(--hero-lead);
   font-size: clamp(0.95rem, min(1.4vw, 2.2vh), 1.15rem);
 }
 
@@ -210,10 +233,7 @@
   gap: clamp(1.5rem, 4vh, 2.5rem);
   height: auto;
   padding: calc(var(--nav) + clamp(0.25rem, 3.5vh, 3rem)) var(--gutter) 0;
-  background:
-    radial-gradient(900px 420px at 78% 0%, rgba(180, 132, 210, 0.32), transparent 62%),
-    radial-gradient(640px 360px at 0% 100%, rgba(85, 35, 111, 0.45), transparent 60%),
-    linear-gradient(115deg, #2c2340 0%, #1a1524 48%, #121016 100%);
+  background: var(--hero-depth);
 }
 
 .hero--static .hero__copy {

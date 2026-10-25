@@ -126,8 +126,9 @@ export const LIVE = { on: 0.72, off: 0.7 } as const;
 
 /** Símbolo en la pantalla: ancho en p = 0 (fracción del ancho de la pantalla) y cuánto crece antes de apagarse. */
 export const LOGO = {
-  src: "/brand/simbolo-blanco.svg",
-  /** Proporción ancho/alto (viewBox de simbolo-blanco.svg). */
+  /** Una versión por tema: el fondo de adentro es oscuro u claro (lavanda) según el tema. */
+  src: { dark: "/brand/simbolo-blanco.svg", light: "/brand/simbolo.svg" },
+  /** Proporción ancho/alto (viewBox de simbolo-blanco.svg y simbolo.svg). */
   aspect: 239 / 171,
   widthFraction: { wide: 0.14, compact: 0.2 },
   grow: 1.2,

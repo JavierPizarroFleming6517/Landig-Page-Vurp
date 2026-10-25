@@ -25,8 +25,11 @@
   --tint-rgb: 180, 132, 210;
   --card-sheen: rgba(255, 255, 255, 0.03);
   --icon-btn-bg: rgba(250, 247, 242, 0.04);
-  --glow-a: rgba(139, 70, 171, 0.28);
-  --glow-b: rgba(85, 35, 111, 0.35);
+  /* Brillos del fondo, en canales y alpha: el body los usa como rgba y el SVG del notebook como stop-color/opacity. */
+  --glow-a-rgb: 139, 70, 171;
+  --glow-a-alpha: 0.28;
+  --glow-b-rgb: 85, 35, 111;
+  --glow-b-alpha: 0.35;
   --nav-bg: rgba(18, 16, 22, 0.78);
   --nav-panel-bg: rgba(18, 16, 22, 0.96);
   --field-bg: #141118;
@@ -55,6 +58,12 @@
     linear-gradient(105deg, #8a56b4, #3d2358 58%, #2a1840);
   --band-eyebrow: #f6eefb;
   --band-text: #f3e9fa;
+  /* Hero: el fondo de adentro (se ve por la pantalla del notebook), la bajada y el header durante la animación. */
+  --hero-depth:
+    radial-gradient(900px 420px at 78% 0%, rgba(180, 132, 210, 0.32), transparent 62%),
+    radial-gradient(640px 360px at 0% 100%, rgba(85, 35, 111, 0.45), transparent 60%),
+    linear-gradient(115deg, #2c2340 0%, #1a1524 48%, #121016 100%);
+  --hero-lead: #ddd4ea;
   color-scheme: dark;
 }
 
@@ -79,8 +88,10 @@
   --tint-rgb: 201, 167, 228;
   --card-sheen: transparent;
   --icon-btn-bg: rgba(255, 255, 255, 0.8);
-  --glow-a: rgba(201, 167, 228, 0.22);
-  --glow-b: rgba(228, 213, 242, 0.5);
+  --glow-a-rgb: 201, 167, 228;
+  --glow-a-alpha: 0.22;
+  --glow-b-rgb: 228, 213, 242;
+  --glow-b-alpha: 0.5;
   --nav-bg: rgba(250, 247, 242, 0.78);
   --nav-panel-bg: rgba(250, 247, 242, 0.96);
   --field-bg: #faf7f2;
@@ -106,6 +117,12 @@
   --band-bg: linear-gradient(105deg, #55236f 45%, #8b46ab);
   --band-eyebrow: #e4d5f2;
   --band-text: #faf7f2;
+  /* Blanco y lavanda: la misma composición del oscuro (brillo arriba a la derecha, sombra violeta abajo a la izquierda). */
+  --hero-depth:
+    radial-gradient(900px 420px at 78% 0%, rgba(201, 167, 228, 0.5), transparent 62%),
+    radial-gradient(640px 360px at 0% 100%, rgba(139, 70, 171, 0.16), transparent 60%),
+    linear-gradient(115deg, #e4d5f2 0%, #faf7f2 48%, #ffffff 100%);
+  --hero-lead: rgba(37, 35, 43, 0.78);
   color-scheme: light;
 }
 
@@ -140,8 +157,8 @@ body {
   line-height: 1.55;
   color: var(--text);
   background:
-    radial-gradient(900px 480px at 80% -10%, var(--glow-a), transparent 60%),
-    radial-gradient(700px 420px at -10% 20%, var(--glow-b), transparent 55%),
+    radial-gradient(900px 480px at 80% -10%, rgba(var(--glow-a-rgb), var(--glow-a-alpha)), transparent 60%),
+    radial-gradient(700px 420px at -10% 20%, rgba(var(--glow-b-rgb), var(--glow-b-alpha)), transparent 55%),
     var(--bg);
 }
 
@@ -360,6 +377,18 @@ ul {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+}
+
+/*
+ * En claro el fondo no se apaga: los links oscuros pasan por delante de la tapa grafito del notebook y quedarían
+ * sin contraste. Durante la animación va más opaco y sin blur (el blur sobre la escena en movimiento es caro).
+ */
+:root[data-theme="light"][data-hero-playing] .nav__bar::before {
+  opacity: 1;
+  visibility: visible;
+  background: rgba(250, 247, 242, 0.86);
+  backdrop-filter: none;
+  transition: none;
 }
 
 .nav__logo img {

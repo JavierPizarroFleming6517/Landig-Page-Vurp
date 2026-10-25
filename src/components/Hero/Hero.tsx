@@ -116,7 +116,7 @@ function HeroScroll() {
   const stageRef = useRef<HTMLDivElement>(null);
   const deviceRef = useRef<HTMLDivElement>(null);
   const depthRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLImageElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
   const erpRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Array<HTMLElement | null>>([]);
@@ -269,14 +269,15 @@ function HeroScroll() {
         >
           <div className="hero__world">
             <div ref={depthRef} className="hero__depth" style={{ inset: depthInset }} aria-hidden="true" />
-            <img
+            {/* Las dos versiones del símbolo; se ve la del tema activo. El transform va en el contenedor. */}
+            <div
               ref={logoRef}
               className="hero__logo"
-              src={LOGO.src}
-              alt=""
-              width={layout?.logo.width}
-              height={layout?.logo.height}
-            />
+              style={layout ? { width: layout.logo.width, height: layout.logo.height } : undefined}
+            >
+              <img src={LOGO.src.dark} alt="" data-theme-only="dark" />
+              <img src={LOGO.src.light} alt="" data-theme-only="light" />
+            </div>
             <div
               ref={erpRef}
               className="hero__erp"

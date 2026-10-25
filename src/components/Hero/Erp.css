@@ -9,9 +9,9 @@
   --erp-paper: #faf7f2;
   height: 100%;
   padding: 10px;
-  border: 1px solid rgba(250, 247, 242, 0.26);
+  border: 1px solid var(--erp-frame-line, rgba(250, 247, 242, 0.26));
   border-radius: 22px;
-  background: linear-gradient(180deg, rgba(250, 247, 242, 0.2), rgba(250, 247, 242, 0.05));
+  background: var(--erp-frame, linear-gradient(180deg, rgba(250, 247, 242, 0.2), rgba(250, 247, 242, 0.05)));
   color: var(--erp-ink);
   font-size: 13px;
   line-height: 1.35;
@@ -30,6 +30,12 @@
 
 .erp strong {
   font-weight: 600;
+}
+
+/* En claro el marco Marfil translúcido no se ve sobre el fondo blanco: pasa a lavanda, con borde Berenjena tenue. */
+:root[data-theme="light"] .erp {
+  --erp-frame-line: rgba(85, 35, 111, 0.14);
+  --erp-frame: linear-gradient(180deg, rgba(201, 167, 228, 0.45), rgba(201, 167, 228, 0.18));
 }
 
 /* Barra superior */

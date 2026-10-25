@@ -53,12 +53,12 @@ export function Notebook({ layout }: { layout: HeroLayout }) {
     >
       <defs>
         <radialGradient id="nb-glow-a" gradientUnits="userSpaceOnUse" cx={layout.width * 0.8} cy={-layout.height * 0.1} r={900}>
-          <stop offset="0" stopColor="#8b46ab" stopOpacity="0.28" />
-          <stop offset="0.6" stopColor="#8b46ab" stopOpacity="0" />
+          <stop className="notebook__glow-a" offset="0" />
+          <stop className="notebook__glow-a-end" offset="0.6" />
         </radialGradient>
         <radialGradient id="nb-glow-b" gradientUnits="userSpaceOnUse" cx={-layout.width * 0.1} cy={layout.height * 0.2} r={700}>
-          <stop offset="0" stopColor="#55236f" stopOpacity="0.35" />
-          <stop offset="0.55" stopColor="#55236f" stopOpacity="0" />
+          <stop className="notebook__glow-b" offset="0" />
+          <stop className="notebook__glow-b-end" offset="0.55" />
         </radialGradient>
         <linearGradient id="nb-lid" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#3a3643" />
