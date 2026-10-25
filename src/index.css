@@ -15,7 +15,110 @@
   --gutter: clamp(1.25rem, 3.2vw, 4.5rem);
   --radius: 28px;
   --shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.7);
+  /* Texto sobre un relleno del color de `--text` (botón sólido, pestaña activa, skip link). */
+  --on-text: #1b1622;
+  --btn-bg: var(--text);
+  --btn-bg-hover: var(--text);
+  --btn-text: var(--on-text);
+  /* Canales RGB para superposiciones y tintes: cada uso pone su propio alpha, igual en ambos temas. */
+  --overlay-rgb: 250, 247, 242;
+  --tint-rgb: 180, 132, 210;
+  --card-sheen: rgba(255, 255, 255, 0.03);
+  --icon-btn-bg: rgba(250, 247, 242, 0.04);
+  --glow-a: rgba(139, 70, 171, 0.28);
+  --glow-b: rgba(85, 35, 111, 0.35);
+  --nav-bg: rgba(18, 16, 22, 0.78);
+  --nav-panel-bg: rgba(18, 16, 22, 0.96);
+  --field-bg: #141118;
+  --field-border: var(--line);
+  --footer-bg: radial-gradient(520px 180px at 0% 0%, rgba(139, 70, 171, 0.2), transparent 60%), #17141d;
+  --reason-num: rgba(250, 247, 242, 0.08);
+  /* Tarjetas destacadas. */
+  --preview-bg:
+    radial-gradient(400px 180px at 80% 0%, rgba(201, 167, 228, 0.25), transparent 60%),
+    linear-gradient(160deg, #6a3d88, #2a1840 70%);
+  --preview-item: rgba(250, 247, 242, 0.08);
+  --metric-lead-bg:
+    radial-gradient(420px 220px at 0% 100%, rgba(139, 70, 171, 0.4), transparent 70%),
+    linear-gradient(165deg, #3a2750, #24182f 70%);
+  --metric-banner-bg:
+    radial-gradient(480px 160px at 90% 0%, rgba(180, 132, 210, 0.28), transparent 60%),
+    linear-gradient(100deg, #4a2d66, #24182f 62%);
+  --platform-feature-bg: linear-gradient(165deg, #6d3b8e, #24182f 74%);
+  --studio-feature-bg: radial-gradient(360px 160px at 0% 100%, rgba(139, 70, 171, 0.35), transparent 70%), var(--card-2);
+  --case-feature-bg:
+    radial-gradient(520px 200px at 100% 0%, rgba(180, 132, 210, 0.28), transparent 60%),
+    linear-gradient(110deg, #4e316c, #24182f 70%);
+  --reason-lead-bg: linear-gradient(165deg, #6d3b8e, #24182f 72%);
+  --band-bg:
+    radial-gradient(640px 240px at 85% 0%, rgba(250, 247, 242, 0.16), transparent 58%),
+    linear-gradient(105deg, #8a56b4, #3d2358 58%, #2a1840);
+  --band-eyebrow: #f6eefb;
+  --band-text: #f3e9fa;
   color-scheme: dark;
+}
+
+/*
+ * Tema claro. Solo colores del manual (docs/marca.md), blanco y alpha sobre ellos. Texto Grafito, acentos Berenjena
+ * y Orquídea; los lilas nunca como texto. Lo fija el script inline de index.html antes del primer paint.
+ */
+:root[data-theme="light"] {
+  --bg: #faf7f2;
+  --card: #ffffff;
+  --card-2: color-mix(in srgb, #e4d5f2 35%, #faf7f2);
+  --line: rgba(37, 35, 43, 0.12);
+  --text: #25232b;
+  --muted: rgba(37, 35, 43, 0.72);
+  --accent: #55236f;
+  --accent-strong: #8b46ab;
+  --on-text: #faf7f2;
+  --btn-bg: #8b46ab;
+  --btn-bg-hover: #55236f;
+  --btn-text: #faf7f2;
+  --overlay-rgb: 37, 35, 43;
+  --tint-rgb: 201, 167, 228;
+  --card-sheen: transparent;
+  --icon-btn-bg: rgba(255, 255, 255, 0.8);
+  --glow-a: rgba(201, 167, 228, 0.22);
+  --glow-b: rgba(228, 213, 242, 0.5);
+  --nav-bg: rgba(250, 247, 242, 0.78);
+  --nav-panel-bg: rgba(250, 247, 242, 0.96);
+  --field-bg: #faf7f2;
+  --field-border: rgba(37, 35, 43, 0.55);
+  --footer-bg:
+    radial-gradient(520px 180px at 0% 0%, rgba(201, 167, 228, 0.3), transparent 60%),
+    color-mix(in srgb, #e4d5f2 30%, #faf7f2);
+  --reason-num: rgba(85, 35, 111, 0.07);
+  --feature-light: linear-gradient(165deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 72%);
+  --preview-bg: radial-gradient(400px 180px at 80% 0%, rgba(201, 167, 228, 0.35), transparent 60%), var(--feature-light);
+  --preview-item: rgba(255, 255, 255, 0.7);
+  --metric-lead-bg: radial-gradient(420px 220px at 0% 100%, rgba(201, 167, 228, 0.35), transparent 70%), var(--feature-light);
+  --metric-banner-bg:
+    radial-gradient(480px 160px at 90% 0%, rgba(201, 167, 228, 0.35), transparent 60%),
+    linear-gradient(100deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 62%);
+  --platform-feature-bg: var(--feature-light);
+  --studio-feature-bg: radial-gradient(360px 160px at 0% 100%, rgba(201, 167, 228, 0.3), transparent 70%), var(--card-2);
+  --case-feature-bg:
+    radial-gradient(520px 200px at 100% 0%, rgba(201, 167, 228, 0.35), transparent 60%),
+    linear-gradient(110deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 70%);
+  --reason-lead-bg: var(--feature-light);
+  /* La banda de contacto queda en Berenjena (el texto va sobre ella) hacia Orquídea: el acento fuerte de la página. */
+  --band-bg: linear-gradient(105deg, #55236f 45%, #8b46ab);
+  --band-eyebrow: #e4d5f2;
+  --band-text: #faf7f2;
+  color-scheme: light;
+}
+
+/* Logos por tema: en el DOM van las dos versiones y se muestra la del tema activo (sin re-render ni parpadeo). */
+:root[data-theme="light"] [data-theme-only="dark"],
+:root:not([data-theme="light"]) [data-theme-only="light"] {
+  display: none;
+}
+
+/* Cambio de tema: fundido de toda la página (también degradados y logos). Solo al usar el toggle; ver theme.ts. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.25s;
 }
 
 *,
@@ -37,8 +140,8 @@ body {
   line-height: 1.55;
   color: var(--text);
   background:
-    radial-gradient(900px 480px at 80% -10%, rgba(139, 70, 171, 0.28), transparent 60%),
-    radial-gradient(700px 420px at -10% 20%, rgba(85, 35, 111, 0.35), transparent 55%),
+    radial-gradient(900px 480px at 80% -10%, var(--glow-a), transparent 60%),
+    radial-gradient(700px 420px at -10% 20%, var(--glow-b), transparent 55%),
     var(--bg);
 }
 
@@ -87,7 +190,7 @@ ul {
   padding: 0.6rem 0.9rem;
   border-radius: 999px;
   background: var(--text);
-  color: #1a1520;
+  color: var(--on-text);
 }
 
 .skip:focus {
@@ -183,13 +286,17 @@ ul {
 }
 
 .btn--solid {
-  background: var(--text);
-  color: #1b1622;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+}
+
+.btn--solid:hover {
+  background: var(--btn-bg-hover);
 }
 
 .btn--ghost {
-  border-color: rgba(250, 247, 242, 0.28);
-  background: rgba(250, 247, 242, 0.04);
+  border-color: rgba(var(--overlay-rgb), 0.28);
+  background: rgba(var(--overlay-rgb), 0.04);
 }
 
 .btn--small {
@@ -205,7 +312,7 @@ ul {
   height: 2.75rem;
   border-radius: 999px;
   border: 1px solid var(--line);
-  background: rgba(250, 247, 242, 0.04);
+  background: var(--icon-btn-bg);
 }
 
 .icon-btn:disabled {
@@ -244,7 +351,7 @@ ul {
   z-index: -1;
   border: 1px solid var(--line);
   border-radius: inherit;
-  background: rgba(18, 16, 22, 0.78);
+  background: var(--nav-bg);
   backdrop-filter: blur(16px);
   transition: opacity 0.35s ease, visibility 0s;
 }
@@ -281,6 +388,12 @@ ul {
   display: none;
 }
 
+/* Del alto del botón "Cotizar proyecto": la barra no crece (el layout del Hero depende de su borde inferior). */
+.theme-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
 .nav__panel {
   display: none;
 }
@@ -303,7 +416,7 @@ ul {
   padding: 0.55rem 0.9rem;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(250, 247, 242, 0.03);
+  background: rgba(var(--overlay-rgb), 0.03);
   color: var(--muted);
   white-space: nowrap;
 }
@@ -344,7 +457,7 @@ ul {
 .card {
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 40%), var(--card);
+  background: linear-gradient(180deg, var(--card-sheen), transparent 40%), var(--card);
 }
 
 .flow__card {
@@ -361,7 +474,7 @@ ul {
 
 .flow__card:nth-child(3n) {
   background:
-    linear-gradient(180deg, rgba(180, 132, 210, 0.14), transparent 46%),
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.14), transparent 46%),
     var(--card);
 }
 
@@ -417,7 +530,7 @@ ul {
 
 .pill.is-on {
   background: var(--text);
-  color: #1b1622;
+  color: var(--on-text);
   border-color: transparent;
 }
 
@@ -452,7 +565,7 @@ ul {
   width: 2.6rem;
   height: 2.6rem;
   border-radius: 14px;
-  background: rgba(180, 132, 210, 0.16);
+  background: rgba(var(--tint-rgb), 0.16);
   color: var(--accent);
 }
 
@@ -463,7 +576,7 @@ ul {
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: rgba(250, 247, 242, 0.03);
+  background: rgba(var(--overlay-rgb), 0.03);
 }
 
 .solution__preview {
@@ -476,9 +589,7 @@ ul {
   min-height: 100%;
   padding: 1.35rem;
   border-radius: var(--radius);
-  background:
-    radial-gradient(400px 180px at 80% 0%, rgba(201, 167, 228, 0.25), transparent 60%),
-    linear-gradient(160deg, #6a3d88, #2a1840 70%);
+  background: var(--preview-bg);
 }
 
 .preview__window ol {
@@ -492,7 +603,7 @@ ul {
 .preview__window li {
   padding: 0.8rem 0.9rem;
   border-radius: 14px;
-  background: rgba(250, 247, 242, 0.08);
+  background: var(--preview-item);
 }
 
 .metrics__grid,
@@ -526,9 +637,7 @@ ul {
   grid-column: span 2;
   grid-row: span 2;
   min-height: 280px;
-  background:
-    radial-gradient(420px 220px at 0% 100%, rgba(139, 70, 171, 0.4), transparent 70%),
-    linear-gradient(165deg, #3a2750, #24182f 70%);
+  background: var(--metric-lead-bg);
 }
 
 .metrics__grid .metric:nth-child(2),
@@ -543,9 +652,7 @@ ul {
   justify-content: space-between;
   gap: 2rem;
   min-height: 160px;
-  background:
-    radial-gradient(480px 160px at 90% 0%, rgba(180, 132, 210, 0.28), transparent 60%),
-    linear-gradient(100deg, #4a2d66, #24182f 62%);
+  background: var(--metric-banner-bg);
 }
 
 .metric--banner p {
@@ -573,7 +680,7 @@ ul {
 .platform__card:nth-child(2) {
   grid-column: span 2;
   grid-row: span 2;
-  background: linear-gradient(165deg, #6d3b8e, #24182f 74%);
+  background: var(--platform-feature-bg);
 }
 
 .metrics__grid,
@@ -592,15 +699,13 @@ ul {
 
 .studio__grid article:nth-child(1) {
   min-height: 220px;
-  background:
-    radial-gradient(360px 160px at 0% 100%, rgba(139, 70, 171, 0.35), transparent 70%),
-    var(--card-2);
+  background: var(--studio-feature-bg);
 }
 
 .studio__grid article:nth-child(2) {
   grid-column: 3;
   grid-row: 1 / 3;
-  background: linear-gradient(180deg, rgba(180, 132, 210, 0.18), transparent 40%), var(--card);
+  background: linear-gradient(180deg, rgba(var(--tint-rgb), 0.18), transparent 40%), var(--card);
 }
 
 .cases__grid {
@@ -613,9 +718,7 @@ ul {
   flex-direction: column;
   justify-content: flex-end;
   min-height: 260px;
-  background:
-    radial-gradient(520px 200px at 100% 0%, rgba(180, 132, 210, 0.28), transparent 60%),
-    linear-gradient(110deg, #4e316c, #24182f 70%);
+  background: var(--case-feature-bg);
 }
 
 .case:nth-child(1) strong,
@@ -632,7 +735,7 @@ ul {
   flex-direction: column;
   min-height: 280px;
   background:
-    linear-gradient(180deg, rgba(180, 132, 210, 0.16), transparent 42%),
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.16), transparent 42%),
     var(--card);
 }
 
@@ -658,7 +761,7 @@ ul {
   grid-column: span 2;
   grid-row: span 2;
   min-height: 320px;
-  background: linear-gradient(165deg, #6d3b8e, #24182f 72%);
+  background: var(--reason-lead-bg);
 }
 
 .reason:nth-child(2),
@@ -669,7 +772,7 @@ ul {
 .reason:nth-child(5) {
   grid-row: span 2;
   background:
-    linear-gradient(180deg, rgba(180, 132, 210, 0.16), transparent 48%),
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.16), transparent 48%),
     var(--card);
 }
 
@@ -677,7 +780,7 @@ ul {
   position: absolute;
   right: 0.8rem;
   bottom: -0.6rem;
-  color: rgba(250, 247, 242, 0.08);
+  color: var(--reason-num);
   font-size: 5.5rem;
   font-weight: 700;
   letter-spacing: -0.06em;
@@ -716,19 +819,28 @@ ul {
   align-items: end;
   padding: clamp(2.5rem, 5vw, 4.5rem) var(--gutter);
   text-align: left;
-  background:
-    radial-gradient(640px 240px at 85% 0%, rgba(250, 247, 242, 0.16), transparent 58%),
-    linear-gradient(105deg, #8a56b4, #3d2358 58%, #2a1840);
+  background: var(--band-bg);
 }
 
 .band .eyebrow {
-  color: #f6eefb;
+  color: var(--band-eyebrow);
+}
+
+/* En claro la banda sigue en Berenjena: su texto, foco y botón usan los valores para fondo oscuro. */
+:root[data-theme="light"] .band__panel {
+  --text: #faf7f2;
+  --accent: #e4d5f2;
+  --accent-strong: #e4d5f2;
+  --btn-bg: #faf7f2;
+  --btn-bg-hover: #e4d5f2;
+  --btn-text: #55236f;
+  color: var(--text);
 }
 
 .band__copy p:last-child {
   max-width: 42rem;
   margin-top: 0.9rem;
-  color: #f3e9fa;
+  color: var(--band-text);
 }
 
 .band__panel .section__title {
@@ -742,7 +854,7 @@ ul {
 
 .faq {
   background:
-    linear-gradient(180deg, rgba(180, 132, 210, 0.08), transparent 28%),
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.08), transparent 28%),
     var(--card);
 }
 
@@ -764,8 +876,8 @@ ul {
   width: 100%;
   padding: 0.85rem 0.95rem;
   border-radius: 14px;
-  border: 1px solid var(--line);
-  background: #141118;
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
   color: var(--text);
 }
 
@@ -808,9 +920,7 @@ ul {
 .footer__panel {
   padding: clamp(2rem, 4vw, 3.5rem) var(--gutter) 1.5rem;
   border-top: 1px solid var(--line);
-  background:
-    radial-gradient(520px 180px at 0% 0%, rgba(139, 70, 171, 0.2), transparent 60%),
-    #17141d;
+  background: var(--footer-bg);
 }
 
 .footer__brand {
@@ -885,6 +995,11 @@ ul {
     display: grid;
   }
 
+  .theme-toggle {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
   .nav__panel {
     display: grid;
     gap: 0.8rem;
@@ -893,7 +1008,7 @@ ul {
     padding: 1rem;
     border: 1px solid var(--line);
     border-radius: 24px;
-    background: rgba(18, 16, 22, 0.96);
+    background: var(--nav-panel-bg);
   }
 
   .nav__panel[hidden] {

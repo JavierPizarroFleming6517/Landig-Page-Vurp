@@ -1,6 +1,7 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { navLinks } from "../data/content";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -11,7 +12,8 @@ export function Navbar() {
     <header className="nav">
       <div className="nav__bar">
         <a className="nav__logo" href="#inicio" onClick={close}>
-          <img src="/brand/logo-horizontal-blanco.svg" alt="Vurp" />
+          <img src="/brand/logo-horizontal-blanco.svg" alt="Vurp" data-theme-only="dark" />
+          <img src="/brand/logo-horizontal.svg" alt="Vurp" data-theme-only="light" />
         </a>
         <nav className="nav__links" aria-label="Secciones">
           {navLinks.map((link) => (
@@ -21,6 +23,7 @@ export function Navbar() {
           ))}
         </nav>
         <div className="nav__end">
+          <ThemeToggle />
           <a className="btn btn--solid btn--small" href="#contacto">
             Cotizar proyecto
           </a>

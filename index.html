@@ -11,6 +11,21 @@
       content="Vurp diseña software a medida, automatización y ciberseguridad para ordenar la operación de tu empresa. Coquimbo, Chile."
     />
     <meta name="theme-color" content="#121016" />
+    <script>
+      // Tema antes del primer paint: ?debug&theme= (no se guarda), la elección guardada o la preferencia del sistema.
+      (function () {
+        var theme;
+        try {
+          var params = new URLSearchParams(location.search);
+          if (params.has("debug")) theme = params.get("theme");
+          if (theme !== "light" && theme !== "dark") theme = localStorage.getItem("vurp-theme");
+        } catch (error) {}
+        if (theme !== "light" && theme !== "dark")
+          theme = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.dataset.theme = theme;
+        if (theme === "light") document.querySelector('meta[name="theme-color"]').content = "#faf7f2";
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

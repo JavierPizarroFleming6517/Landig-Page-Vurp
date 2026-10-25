@@ -7,7 +7,8 @@ export function Footer() {
       <div className="wrap">
         <div className="footer__panel">
           <div className="footer__brand">
-            <img src="/brand/logo-completo-oscuro.svg" alt="Vurp · Software & Cybersecurity" />
+            <img src="/brand/logo-completo-oscuro.svg" alt="Vurp · Software & Cybersecurity" data-theme-only="dark" />
+            <img src="/brand/logo-completo.svg" alt="Vurp · Software & Cybersecurity" data-theme-only="light" />
             <p>
               {contact.location}
               <br />
