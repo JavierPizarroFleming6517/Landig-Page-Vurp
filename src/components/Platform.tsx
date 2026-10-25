@@ -4,12 +4,16 @@ export function Platform() {
   return (
     <section className="section" id="plataforma">
       <div className="wrap">
-        <p className="eyebrow">Una plataforma</p>
-        <h2 className="section__title">
-          Tres piezas. <em>Un solo proyecto.</em>
-        </h2>
-        <p className="section__lead">Software, automatización y seguridad se entregan juntos.</p>
-        <div className="platform__grid" style={{ marginTop: "2rem" }}>
+        <div className="intro">
+          <div>
+            <p className="eyebrow">Una plataforma</p>
+            <h2 className="section__title">
+              Tres piezas. <em>Un solo proyecto.</em>
+            </h2>
+          </div>
+          <p className="section__lead">Software, automatización y seguridad se entregan juntos.</p>
+        </div>
+        <div className="platform__grid">
           {platform.map((item) => {
             const Icon = item.icon;
             return (

@@ -7,6 +7,7 @@ export function Hero() {
     <section className="hero" id="inicio">
       <div className="wrap">
         <div className="hero__panel">
+          <div className="hero__layout">
           <div className="hero__copy">
             <p className="hero__badge">Software a medida y ciberseguridad</p>
             <h1 className="hero__title">
@@ -73,6 +74,7 @@ export function Hero() {
                 </div>
               </article>
             </div>
+          </div>
           </div>
         </div>
         <div className="marquee" aria-label="Qué construye Vurp">

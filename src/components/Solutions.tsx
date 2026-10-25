@@ -9,10 +9,13 @@ export function Solutions() {
   return (
     <section className="section" id="soluciones">
       <div className="wrap">
-        <p className="eyebrow">Para cada parte de tu empresa</p>
-        <h2 className="section__title">
-          Tenemos una forma de <em>ordenarlo.</em>
-        </h2>
+        <div className="intro">
+          <div>
+            <p className="eyebrow">Para cada parte de tu empresa</p>
+            <h2 className="section__title">
+              Tenemos una forma de <em>ordenarlo.</em>
+            </h2>
+          </div>
         <div className="pills" role="tablist" aria-label="Soluciones">
           {solutions.map((item) => (
             <button
@@ -26,6 +29,7 @@ export function Solutions() {
               {item.label}
             </button>
           ))}
+        </div>
         </div>
         <div className="solution">
           <div className="card solution__list">

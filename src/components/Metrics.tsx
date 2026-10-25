@@ -8,7 +8,7 @@ export function Metrics() {
         <h2 className="section__title" id="metricas-titulo">
           Criterios que se notan <em>en el resultado.</em>
         </h2>
-        <div className="metrics__grid" style={{ marginTop: "2rem" }}>
+        <div className="metrics__grid">
           <article className="metric metric--lead">
             <p className="kicker">La base</p>
             <strong>Hecho para tu operación</strong>
@@ -20,12 +20,15 @@ export function Metrics() {
               <p>{item.label}</p>
             </article>
           ))}
-        </div>
-        <div className="outcomes">
-          {outcomes.map((item) => (
-            <article className="metric" key={item.title}>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
+          {outcomes.map((item, index) => (
+            <article
+              className={index === outcomes.length - 1 ? "metric metric--banner" : "metric"}
+              key={item.title}
+            >
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
             </article>
           ))}
         </div>

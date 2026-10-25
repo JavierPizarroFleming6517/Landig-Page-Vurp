@@ -8,7 +8,7 @@ export function Studio() {
         <h2 className="section__title" id="entrega-titulo">
           Lo dejamos en <em>tus manos.</em>
         </h2>
-        <div className="studio__grid" style={{ marginTop: "2rem" }}>
+        <div className="studio__grid">
           {studio.map((item) => {
             const Icon = item.icon;
             return (

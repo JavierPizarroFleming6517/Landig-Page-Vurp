@@ -22,11 +22,11 @@ export function Contact() {
       <div className="wrap">
         <div className="band" id="aviso">
           <div className="band__panel">
-            <p className="eyebrow">Conversemos</p>
-            <h2 className="section__title" style={{ marginInline: "auto" }}>
-              Cuéntanos qué quieres ordenar.
-            </h2>
-            <p>La primera conversación sirve para ver el alcance. Sin compromiso y sin presentación inflada.</p>
+            <div className="band__copy">
+              <p className="eyebrow">Conversemos</p>
+              <h2 className="section__title">Cuéntanos qué quieres ordenar.</h2>
+              <p>La primera conversación sirve para ver el alcance. Sin compromiso y sin presentación inflada.</p>
+            </div>
             <a className="btn btn--solid" href="#escribir">
               Escribir a Vurp
             </a>
@@ -35,9 +35,7 @@ export function Contact() {
         <div className="contact__grid">
           <form className="form" id="escribir" onSubmit={onSubmit}>
             <p className="eyebrow">Contacto</p>
-            <h2 className="section__title" style={{ fontSize: "2.2rem" }}>
-              Escríbenos.
-            </h2>
+            <h2 className="card-title">Escríbenos.</h2>
             <label className="field">
               Nombre
               <input name="nombre" required autoComplete="name" />
@@ -61,9 +59,7 @@ export function Contact() {
           </form>
           <div className="faq" id="preguntas">
             <p className="eyebrow">Preguntas frecuentes</p>
-            <h2 className="section__title" style={{ fontSize: "2.2rem" }}>
-              Lo que suele preguntarse.
-            </h2>
+            <h2 className="card-title">Lo que suele preguntarse.</h2>
             {faqs.map((item, index) => {
               const expanded = open === index;
               return (
