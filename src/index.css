@@ -409,9 +409,12 @@ ul {
   width: auto;
 }
 
+/* Enlaces junto al logo (a una distancia prudente); `margin-right: auto` deja el resto del header a la derecha. */
 .nav__links {
   display: flex;
   gap: 1.25rem;
+  margin-left: clamp(1.25rem, 2.5vw, 2.5rem);
+  margin-right: auto;
   color: var(--muted);
   font-size: 0.95rem;
 }
