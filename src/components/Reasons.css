@@ -1,0 +1,184 @@
+.why__intro {
+  max-width: 40rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.why__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr) minmax(0, 1fr);
+  grid-template-areas:
+    "one two three"
+    "one four five";
+  gap: 0.9rem;
+  align-items: stretch;
+}
+
+.why__card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: var(--card);
+}
+
+.why__card--01 {
+  grid-area: one;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 22rem;
+  color: #faf7f2;
+  background:
+    radial-gradient(320px 180px at 0% 0%, rgba(180, 132, 210, 0.35), transparent 70%),
+    linear-gradient(165deg, #55236f, #24182f 70%);
+  border-color: transparent;
+}
+
+.why__card--02 { grid-area: two; margin-top: 1.4rem; }
+.why__card--03 { grid-area: three; }
+.why__card--04 {
+  grid-area: four;
+  background:
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.16), transparent 50%),
+    var(--card);
+}
+.why__card--05 {
+  grid-area: five;
+  margin-top: 1.6rem;
+  background: var(--card-2);
+}
+
+.why__num {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: color-mix(in srgb, var(--accent) 62%, transparent);
+  font-size: clamp(2.4rem, 4vw, 4.2rem);
+  font-weight: 600;
+  letter-spacing: -0.06em;
+  line-height: 0.85;
+}
+
+.why__card--01 .why__num {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.15rem;
+  margin: 0;
+  color: rgba(250, 247, 242, 0.28);
+  font-size: clamp(4.5rem, 8vw, 7.5rem);
+}
+
+.why__card h3 {
+  margin: 0;
+  max-width: 16ch;
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.why__card--01 h3 {
+  max-width: 12ch;
+  font-size: clamp(1.8rem, 2vw, 2.4rem);
+}
+
+.why__card p {
+  max-width: 36rem;
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+}
+
+.why__card--01 p {
+  color: #e4d5f2;
+}
+
+.why__place {
+  margin-top: 1.1rem;
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.why__links {
+  display: flex;
+  gap: 1.35rem;
+  align-items: center;
+  margin-top: 1.15rem;
+}
+
+.why__links i {
+  position: relative;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--accent-strong);
+}
+
+.why__links i:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 1.35rem;
+  height: 2px;
+  background: rgba(var(--tint-rgb), 0.7);
+  transform: translateY(-50%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .why:not(.is-in) .why__card {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  .why.is-in .why__card {
+    animation: why-in 0.7s ease both;
+  }
+
+  .why.is-in .why__card--02 { animation-delay: 80ms; }
+  .why.is-in .why__card--03 { animation-delay: 140ms; }
+  .why.is-in .why__card--04 { animation-delay: 180ms; }
+  .why.is-in .why__card--05 { animation-delay: 240ms; }
+}
+
+@keyframes why-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .why__grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "one one"
+      "two three"
+      "four five";
+  }
+
+  .why__card--01 {
+    min-height: 0;
+  }
+
+  .why__card--02,
+  .why__card--05 {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .why__grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .why__card--01 h3 {
+    font-size: 1.7rem;
+  }
+}

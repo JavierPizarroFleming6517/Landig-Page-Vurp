@@ -11,6 +11,11 @@
   --deep: #55236f;
   --orquidea: #8b46ab;
   --font: "Inter", system-ui, sans-serif;
+  /* Tonos de la intro: el fondo es siempre Grafito, así que el símbolo usa la versión clara del manual. */
+  --vurp-grafito: #25232b;
+  --vurp-berenjena-claro: #9d5fc1;
+  --vurp-orquidea-claro: #b484d2;
+  --vurp-lila-claro: #e4d5f2;
   --nav: 84px;
   --gutter: clamp(1.25rem, 3.2vw, 4.5rem);
   /* Contenedor de las secciones (padding incluido) y distancia del borde del viewport al contenido: la usan los
@@ -35,11 +40,16 @@
   --glow-a-alpha: 0.28;
   --glow-b-rgb: 85, 35, 111;
   --glow-b-alpha: 0.35;
+  /* Fondo de la página. El body lo usa tal cual; los brillos del notebook salen de los mismos canales. */
+  --page-bg:
+    radial-gradient(900px 480px at 80% -10%, rgba(var(--glow-a-rgb), var(--glow-a-alpha)), transparent 60%),
+    radial-gradient(700px 420px at -10% 20%, rgba(var(--glow-b-rgb), var(--glow-b-alpha)), transparent 55%),
+    var(--bg);
   --nav-bg: rgba(18, 16, 22, 0.78);
   --nav-panel-bg: rgba(18, 16, 22, 0.96);
   --field-bg: #141118;
   --field-border: var(--line);
-  --footer-bg: radial-gradient(520px 180px at 0% 0%, rgba(139, 70, 171, 0.2), transparent 60%), #17141d;
+  --footer-bg: #0e0c12;
   /* Tarjetas destacadas. */
   /* Soluciones ("flujo completo"): panel de la solución, sus filas, fichas de ícono y figuras del fondo. */
   --flujo-panel-bg:
@@ -51,14 +61,6 @@
   --flujo-badge-bg: #faf7f2;
   --flujo-shape: rgba(228, 213, 242, 0.07);
   --laptop-shadow: 0 50px 90px -45px rgba(0, 0, 0, 0.85);
-  --metric-lead-bg:
-    radial-gradient(420px 220px at 0% 100%, rgba(139, 70, 171, 0.4), transparent 70%),
-    linear-gradient(165deg, #3a2750, #24182f 70%);
-  --platform-feature-bg: linear-gradient(165deg, #6d3b8e, #24182f 74%);
-  --case-feature-bg:
-    radial-gradient(520px 200px at 100% 0%, rgba(180, 132, 210, 0.28), transparent 60%),
-    linear-gradient(110deg, #4e316c, #24182f 70%);
-  --reason-lead-bg: linear-gradient(165deg, #6d3b8e, #24182f 72%);
   /* Hero: el fondo de adentro (se ve por la pantalla del notebook), la bajada y el header durante la animación. */
   --hero-depth:
     radial-gradient(900px 420px at 78% 0%, rgba(180, 132, 210, 0.32), transparent 62%),
@@ -107,7 +109,6 @@
   --footer-bg:
     radial-gradient(520px 180px at 0% 0%, rgba(201, 167, 228, 0.3), transparent 60%),
     color-mix(in srgb, #e4d5f2 30%, #faf7f2);
-  --feature-light: linear-gradient(165deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 72%);
   --flujo-panel-bg:
     radial-gradient(520px 240px at 0% 0%, rgba(201, 167, 228, 0.45), transparent 70%),
     linear-gradient(170deg, color-mix(in srgb, #e4d5f2 45%, #ffffff), #ffffff);
@@ -117,12 +118,6 @@
   --flujo-badge-bg: #ffffff;
   --flujo-shape: rgba(139, 70, 171, 0.07);
   --laptop-shadow: 0 50px 90px -45px rgba(85, 35, 111, 0.45);
-  --metric-lead-bg: radial-gradient(420px 220px at 0% 100%, rgba(201, 167, 228, 0.35), transparent 70%), var(--feature-light);
-  --platform-feature-bg: var(--feature-light);
-  --case-feature-bg:
-    radial-gradient(520px 200px at 100% 0%, rgba(201, 167, 228, 0.35), transparent 60%),
-    linear-gradient(110deg, #e4d5f2, color-mix(in srgb, #e4d5f2 25%, #ffffff) 70%);
-  --reason-lead-bg: var(--feature-light);
   /* Blanco y lavanda: la misma composición del oscuro (brillo arriba a la derecha, sombra violeta abajo a la izquierda). */
   --hero-depth:
     radial-gradient(900px 420px at 78% 0%, rgba(201, 167, 228, 0.5), transparent 62%),
@@ -168,10 +163,7 @@ body {
   font-size: 1.05rem;
   line-height: 1.55;
   color: var(--text);
-  background:
-    radial-gradient(900px 480px at 80% -10%, rgba(var(--glow-a-rgb), var(--glow-a-alpha)), transparent 60%),
-    radial-gradient(700px 420px at -10% 20%, rgba(var(--glow-b-rgb), var(--glow-b-alpha)), transparent 55%),
-    var(--bg);
+  background: var(--page-bg);
 }
 
 img {
@@ -473,60 +465,6 @@ ul {
   to {
     transform: translateX(-50%);
   }
-}
-
-.flow__card,
-.card {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: linear-gradient(180deg, var(--card-sheen), transparent 40%), var(--card);
-}
-
-/* Proceso: cuatro pasos en fila dentro del contenedor (2 × 2 en tablet, uno bajo otro en móvil). */
-.flow__grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.flow__card {
-  padding: 1.35rem;
-}
-
-/* El último paso, la seguridad, cierra con el tinte de la marca. */
-.flow__card:last-child {
-  background:
-    linear-gradient(180deg, rgba(var(--tint-rgb), 0.14), transparent 46%),
-    var(--card);
-}
-
-.flow__card svg,
-.platform__card svg {
-  color: var(--accent);
-}
-
-.kicker {
-  display: block;
-  margin-top: 1.5rem;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
-.flow__card h3,
-.card h3 {
-  margin-top: 0.35rem;
-  font-size: 1.35rem;
-  letter-spacing: -0.03em;
-}
-
-.flow__card p,
-.card p,
-.case p {
-  margin-top: 0.55rem;
-  color: var(--muted);
 }
 
 /*
@@ -839,258 +777,10 @@ ul {
   }
 }
 
-.metrics__grid,
-.cases__grid,
-.footer__grid {
-  display: grid;
-  gap: 1rem;
-}
-
-.metric,
-.reason,
-.case,
 .form {
-  padding: 1.35rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
-}
-
-/* Cómo trabajamos: cuatro tarjetas en fila y, debajo, los resultados como lista tipográfica. */
-.metrics__grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.metric--lead {
-  background: var(--metric-lead-bg);
-}
-
-.metric .kicker {
-  margin-top: 0;
-}
-
-.metric strong {
-  display: block;
-  margin: 0.25rem 0 0.5rem;
-  font-size: clamp(1.5rem, 1.15rem + 1vw, 2.1rem);
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-}
-
-.metric p {
-  color: var(--muted);
-}
-
-.outcomes {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.5rem 2rem;
-  margin-top: clamp(2rem, 3.5vw, 3rem);
-}
-
-.outcomes li {
-  padding-top: 1rem;
-  border-top: 2px solid rgba(var(--tint-rgb), 0.45);
-}
-
-.outcomes h3 {
-  font-size: 1.1rem;
-  letter-spacing: -0.02em;
-}
-
-.outcomes p {
-  margin-top: 0.35rem;
-  color: var(--muted);
-  font-size: 0.97rem;
-}
-
-/* Plataforma: un solo panel en tres columnas separadas por líneas; la del medio, destacada. */
-.platform__grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background:
-    linear-gradient(180deg, rgba(var(--tint-rgb), 0.12), transparent 42%),
-    var(--card);
-}
-
-.platform__card {
-  display: flex;
-  flex-direction: column;
-  padding: clamp(1.35rem, 2.2vw, 2rem);
-}
-
-.platform__card + .platform__card {
-  border-left: 1px solid var(--line);
-}
-
-.platform__card:nth-child(2) {
-  background: var(--platform-feature-bg);
-}
-
-.platform__card p {
-  margin-top: 0.55rem;
-  color: var(--muted);
-}
-
-.platform__card a {
-  margin-top: auto;
-  padding-top: 1.25rem;
-  color: var(--accent);
-  font-weight: 600;
-}
-
-/* Entrega: encabezado a la izquierda y los tres puntos como lista con líneas, sin tarjetas. */
-.studio {
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: 2rem clamp(2rem, 5vw, 5rem);
-  align-items: start;
-}
-
-.studio .intro {
-  margin-bottom: 0;
-}
-
-.studio__list li {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 1.1rem;
-  padding: 1.5rem 0;
-  border-top: 1px solid var(--line);
-}
-
-.studio__list li:last-child {
-  border-bottom: 1px solid var(--line);
-}
-
-.studio__list svg {
-  color: var(--accent);
-}
-
-.studio__list h3 {
-  font-size: 1.2rem;
-  letter-spacing: -0.02em;
-}
-
-.studio__list p {
-  margin-top: 0.35rem;
-  max-width: 40rem;
-  color: var(--muted);
-}
-
-/* Casos: el primero, destacado a la izquierda a lo alto de los otros dos. Altura según el contenido. */
-.cases__grid {
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-}
-
-.case {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  background: var(--card-2);
-}
-
-.case:first-child {
-  grid-row: span 2;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: clamp(1.35rem, 2.5vw, 2.25rem);
-  background: var(--case-feature-bg);
-}
-
-.case__icon {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 14px;
-  background: rgba(var(--tint-rgb), 0.18);
-  color: var(--accent);
-}
-
-.case .kicker {
-  margin-top: 0;
-}
-
-.case h3 {
-  margin-top: 0.25rem;
-  font-size: clamp(1.2rem, 1rem + 0.5vw, 1.4rem);
-  letter-spacing: -0.03em;
-  line-height: 1.2;
-}
-
-.case:first-child h3 {
-  font-size: clamp(1.5rem, 1.1rem + 1.1vw, 2.1rem);
-}
-
-.case:first-child p:last-child {
-  max-width: 34rem;
-}
-
-/* Razones: bento de cinco, dos arriba (60/40) y tres abajo, en una grilla de 15 columnas. */
-.reasons__grid {
-  display: grid;
-  grid-template-columns: repeat(15, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.reason {
-  position: relative;
-  grid-column: span 5;
-  padding: clamp(1.35rem, 2vw, 1.75rem);
-}
-
-.reason--lead {
-  grid-column: span 9;
-  background: var(--reason-lead-bg);
-}
-
-.reason:nth-child(2) {
-  grid-column: span 6;
-  background:
-    linear-gradient(180deg, rgba(var(--tint-rgb), 0.14), transparent 55%),
-    var(--card);
-}
-
-.reason h3 {
-  padding-right: 2.5rem;
-  font-size: 1.2rem;
-  letter-spacing: -0.02em;
-}
-
-.reason--lead h3,
-.reason:nth-child(2) h3 {
-  font-size: clamp(1.35rem, 1.1rem + 0.6vw, 1.6rem);
-}
-
-.reason p {
-  max-width: 36rem;
-  margin-top: 0.5rem;
-  color: var(--muted);
-}
-
-/* Número discreto, arriba a la derecha. */
-.reason__num {
-  position: absolute;
-  top: clamp(1.35rem, 2vw, 1.75rem);
-  right: clamp(1.35rem, 2vw, 1.75rem);
-  color: var(--muted);
-  font-size: 0.85rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em;
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-top: 1.25rem;
 }
 
 /* Contacto: formulario a la izquierda y Walter a la derecha; en tablet y móvil Walter va arriba, en una franja baja. */
@@ -1153,62 +843,183 @@ ul {
   font-size: 0.9rem;
 }
 
-/* Fondo y borde de ancho completo; el contenido, en el contenedor. */
+/* Pie a ancho completo: columnas arriba, domicilio al centro y franja de sellos abajo. */
 .footer {
-  padding: 0;
+  padding: clamp(3rem, 6vw, 4.5rem) 0 1.5rem;
   border-top: 1px solid var(--line);
   background: var(--footer-bg);
+  color: var(--muted);
 }
 
-.footer__panel {
-  padding: clamp(2rem, 4vw, 3.5rem) 0 1.5rem;
+.footer__top {
+  display: grid;
+  grid-template-columns: minmax(16rem, 1.45fr) minmax(8rem, 0.7fr) minmax(9rem, 0.85fr) minmax(10rem, 0.85fr);
+  gap: clamp(1.75rem, 4vw, 4.5rem);
+  align-items: start;
 }
 
-.footer__brand {
+.footer__identity {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem 1.15rem;
+  margin-bottom: 1.25rem;
 }
 
-.footer__brand img {
-  height: 36px;
+.footer__logo img {
+  height: 30px;
   width: auto;
 }
 
-.footer__grid {
-  grid-template-columns: 1.3fr 1fr 0.8fr;
+.footer__picks {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding-left: 0.85rem;
+  border-left: 1px solid var(--line);
 }
 
-.footer h2 {
-  margin-bottom: 0.75rem;
+.pick {
+  position: relative;
+}
+
+.pick__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.45rem;
+  color: var(--text);
   font-size: 0.95rem;
 }
 
-.footer a {
-  display: block;
-  padding: 0.3rem 0;
-  color: var(--muted);
+.pick__menu {
+  position: absolute;
+  z-index: 3;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  min-width: 9.5rem;
+  margin: 0;
+  padding: 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: var(--shadow);
 }
 
-.footer a:hover {
+.pick__menu[hidden] {
+  display: none;
+}
+
+.pick__menu button {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  color: var(--text);
+  text-align: left;
+}
+
+.pick__menu button[aria-selected="true"] {
+  background: rgba(var(--tint-rgb), 0.18);
+}
+
+.flag {
+  display: block;
+  border-radius: 2px;
+}
+
+.footer__blurb {
+  max-width: 34rem;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.footer__col h2 {
+  margin-bottom: 0.95rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.footer__links a,
+.footer__social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.32rem 0;
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.footer__social svg {
+  width: 1rem;
+  height: 1rem;
   color: var(--text);
 }
 
-.footer__base {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.9rem;
+.footer a:hover,
+.footer__social a:hover svg {
+  color: var(--accent);
 }
 
-.footer__contact img {
-  width: 120px;
-  height: auto;
+.footer__soon {
+  display: inline-flex;
+  padding: 0.32rem 0;
+  color: var(--muted);
+}
+
+.footer__address {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  justify-self: center;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.footer__address img {
+  height: 16px;
+  width: auto;
+  opacity: 0.75;
+}
+
+.footer__address a {
+  color: inherit;
+}
+
+.footer__legal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-top: 2.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.footer__legal > p:first-child {
+  justify-self: start;
+}
+
+.footer__legal-links {
+  display: flex;
+  justify-self: end;
+  gap: 1.5rem;
+}
+
+.footer__legal .footer__soon {
+  padding: 0;
 }
 
 .top {
@@ -1261,11 +1072,16 @@ ul {
     display: none;
   }
 
-  .platform__grid,
-  .studio,
-  .contact,
-  .footer__grid {
+  .contact {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footer__top {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer__brand {
+    grid-column: 1 / -1;
   }
 
   .contact .walter {
@@ -1273,39 +1089,11 @@ ul {
     justify-self: stretch;
   }
 
-  /* Plataforma apilada: las líneas divisorias pasan de verticales a horizontales. */
-  .platform__card + .platform__card {
-    border-top: 1px solid var(--line);
-    border-left: 0;
-  }
-
-  .metrics__grid,
-  .outcomes,
-  .reasons__grid,
-  .cases__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .reason,
-  .reason:nth-child(2) {
-    grid-column: auto;
-  }
-
-  .reason--lead,
-  .case:first-child {
-    grid-column: 1 / -1;
-    grid-row: auto;
-  }
-
   .head,
   .footer__brand,
   .footer__base {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .flow__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1337,19 +1125,35 @@ ul {
 }
 
 @media (max-width: 600px) {
-  .flow__grid,
+  .footer__top,
   .form,
-  .flujo__list,
-  .metrics__grid,
-  .outcomes,
-  .reasons__grid,
-  .cases__grid {
+  .flujo__list {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footer__legal {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    text-align: center;
+  }
+
+  .footer__legal > p:first-child,
+  .footer__legal-links,
+  .footer__address {
+    justify-self: center;
+  }
+
+  .footer__address {
+    white-space: normal;
   }
 
   .flujo__panel-head {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .footer__brand {
+    grid-column: auto;
   }
 
   /* Las tres pestañas a lo ancho; una etiqueta larga pasa a dos líneas. */
