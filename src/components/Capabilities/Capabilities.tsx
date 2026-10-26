@@ -45,7 +45,8 @@ export function Capabilities() {
         <div className="intro cap__intro">
           <p className="eyebrow">Qué hacemos</p>
           <h2 className="section__title" id="que-hacemos-titulo">
-            Ideas que toman forma. Procesos que fluyen. <em>Sistemas más seguros.</em>
+            Ideas que toman forma. Procesos que fluyen.
+            <em className="cap__title-line">Sistemas más seguros.</em>
           </h2>
           <p className="section__lead">
             Desarrollamos, conectamos y protegemos tecnología según lo que cada proyecto necesita.

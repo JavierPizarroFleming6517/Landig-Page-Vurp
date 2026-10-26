@@ -124,7 +124,7 @@
   height: 1rem;
 }
 
-@container (max-width: 300px) {
+@container (max-width: 340px) {
   .scene--sync {
     gap: 0.35rem;
     padding-inline: 0.55rem;
