@@ -1,19 +1,9 @@
 import { Tag } from "lucide-react";
-import { useState, type ReactNode } from "react";
-import { Dot, Fork, Lane, Merge } from "./Graph";
-import {
-  BRANCH_H,
-  FORK_H,
-  FORK_STAGE,
-  MAIN_COLOR,
-  MERGE_H,
-  MERGE_HASH,
-  MERGE_Y,
-  branches,
-  graphRows,
-  stageHashes,
-  vars,
-} from "./graphData";
+import { useEffect, useRef, useState, type RefObject } from "react";
+import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
+import { Dot, Lane, type PulseSpan } from "./Graph";
+import { DOT, PULSE_SPEED, vars } from "./graphData";
+import { useDraw } from "./useDraw";
 import "./Process.css";
 
 const stages = [
@@ -39,26 +29,55 @@ const stages = [
   },
 ] as const;
 
-/** Referencias junto al hash (como en `git log --decorate`): el commit de ajuste y el tag de la entrega. */
-const stageRefs: Record<number, ReactNode> = {
-  3: <span className="proc__ref proc__ref--plain">ajuste</span>,
-  4: (
-    <span className="proc__ref proc__ref--tag">
-      <Tag strokeWidth={2.5} />
-      v1.0
-    </span>
-  ),
-};
+/** Tag de la entrega, junto al título de la última etapa (como `git tag`). */
+const RELEASE_TAG = (
+  <span className="proc__ref proc__ref--tag" aria-hidden="true">
+    <Tag strokeWidth={2.5} />
+    v1.0
+  </span>
+);
 
-const DOT_Y = "var(--dot-y)";
-const LAST_STAGE = stages.length - 1;
+/** Tramo de cada etapa sobre el eje del grafo (px): `top`/`height` en vertical, `left`/`width` en horizontal. */
+type Span = { start: number; size: number };
 
 export function Process() {
+  const list = useRef<HTMLOListElement>(null);
+  const reduced = usePrefersReducedMotion();
+  const draw = useDraw(list, reduced);
+  const spans = useStageSpans(list);
   const [active, setActive] = useState(0);
+  // Cada selección vuelve a lanzar el pulso; 0 = todavía no hay interacción (el HTML inicial no lleva pulso).
+  const [pulseKey, setPulseKey] = useState(0);
+
+  const select = (stage: number, replay = false) => {
+    if (stage === active && !replay) return;
+    setActive(stage);
+    setPulseKey((key) => key + 1);
+  };
+
+  // Punta del dibujo en px a lo largo del grafo. Sin medidas (prerender) las etapas no reciben `--tip` y el CSS
+  // las muestra completas.
+  const last = spans?.[spans.length - 1];
+  const drawPx = last ? draw * (last.start + last.size) : 0;
+
+  // Pulso desde el primer commit hasta la etapa seleccionada: cada etapa anima su tramo en su turno.
+  const pulseOf = (index: number, laneStart: number): PulseSpan | undefined => {
+    const span = spans?.[index];
+    if (!pulseKey || !span || index > active) return undefined;
+    const isEnd = index === active;
+    const length = isEnd ? DOT - laneStart : span.size - laneStart;
+    if (length <= 0) return undefined;
+    return {
+      delay: (span.start + laneStart - DOT) / PULSE_SPEED,
+      duration: length / PULSE_SPEED,
+      length: isEnd ? length : undefined,
+    };
+  };
+  const arriveAt = spans?.[active] ? spans[active].start / PULSE_SPEED : undefined;
 
   return (
     <section className="section proc" id="proceso" aria-labelledby="proceso-titulo">
-      <div className="wrap proc__layout">
+      <div className="wrap">
         <div className="intro proc__intro">
           <p className="eyebrow">Cómo trabajamos</p>
           <h2 className="section__title" id="proceso-titulo">
@@ -70,95 +89,44 @@ export function Process() {
           </p>
         </div>
 
-        <ol className="proc__graph">
-          {graphRows.map((row, index) => {
-            const style = vars({ "--row": index });
-
-            if (row.kind === "branch") {
-              const branch = branches[row.branch];
-              if (!branch) return null;
-              return (
-                <li className="proc__row proc__row--decor" key={branch.name} style={style} aria-hidden="true">
-                  <span className="proc__cell" style={vars({ height: `${BRANCH_H}px` })}>
-                    <Lane lane={0} color={MAIN_COLOR} />
-                    {branches.map(({ lane, color }) => (
-                      <Lane key={lane} lane={lane} color={color} />
-                    ))}
-                    <Dot lane={branch.lane} color={branch.color} top="50%" />
-                  </span>
-                  <p className="proc__meta">
-                    <code>{branch.hash}</code>
-                    <span className="proc__ref" style={vars({ "--c": branch.color })}>
-                      {branch.name}
-                    </span>
-                    <span className="proc__msg">{branch.message}</span>
-                  </p>
-                </li>
-              );
-            }
-
-            if (row.kind === "merge") {
-              return (
-                <li className="proc__row proc__row--decor proc__row--merge" key="merge" style={style} aria-hidden="true">
-                  <span className="proc__cell" style={vars({ height: `${MERGE_H}px` })}>
-                    <Lane lane={0} color={MAIN_COLOR} />
-                    <Merge />
-                    <Dot lane={0} color={MAIN_COLOR} top={`${MERGE_Y}px`} merge />
-                  </span>
-                  <p className="proc__meta" style={vars({ "--meta-y": `${MERGE_Y}px` })}>
-                    <code>{MERGE_HASH}</code>
-                    <span className="proc__msg">merge de las 3 ramas en main</span>
-                  </p>
-                </li>
-              );
-            }
-
-            const stage = stages[row.stage];
-            if (!stage) return null;
-            const selected = active === row.stage;
-            const fork = row.stage === FORK_STAGE;
+        <ol className="proc__graph" ref={list}>
+          {stages.map((stage, index) => {
+            const span = spans?.[index];
+            const tip = span ? Math.min(span.size, Math.max(0, drawPx - span.start)) : undefined;
+            const selected = active === index;
+            const laneStart = index === 0 ? DOT : 0;
+            const state = `${selected ? " is-selected" : ""}${index > active ? " is-after" : ""}`;
             return (
               <li
-                className={selected ? "proc__row proc__row--stage is-selected" : "proc__row proc__row--stage"}
+                className={`proc__row${state}`}
                 key={stage.title}
-                style={style}
+                style={tip === undefined ? undefined : vars({ "--tip": tip })}
               >
                 <span className="proc__cell" aria-hidden="true">
-                  <Lane
-                    lane={0}
-                    color={MAIN_COLOR}
-                    top={row.stage === 0 ? DOT_Y : "0px"}
-                    bottom={row.stage === LAST_STAGE ? `calc(100% - ${DOT_Y})` : "0px"}
+                  <Lane key={pulseKey} start={laneStart} pulse={pulseOf(index, laneStart)} />
+                  <Dot
+                    key={selected ? `dot-${pulseKey}` : "dot"}
+                    on={tip === undefined || tip >= DOT}
+                    label={String(index + 1).padStart(2, "0")}
+                    arrive={selected && pulseKey ? arriveAt : undefined}
                   />
-                  {fork && (
-                    <>
-                      <Fork />
-                      {branches.map(({ lane, color }) => (
-                        <Lane key={lane} lane={lane} color={color} top={`calc(${DOT_Y} + ${FORK_H}px)`} />
-                      ))}
-                    </>
-                  )}
-                  <Dot lane={0} color={MAIN_COLOR} top={DOT_Y} />
                 </span>
                 <div className="proc__commit">
-                  <p className="proc__meta" aria-hidden="true">
-                    <code>{stageHashes[row.stage]}</code>
-                    {stageRefs[row.stage]}
-                  </p>
                   <h3>
                     <button
                       className="proc__select"
                       type="button"
                       aria-pressed={selected}
-                      aria-describedby={`proceso-texto-${row.stage}`}
-                      onMouseEnter={() => setActive(row.stage)}
-                      onFocus={() => setActive(row.stage)}
-                      onClick={() => setActive(row.stage)}
+                      aria-describedby={`proceso-texto-${index}`}
+                      onMouseEnter={() => select(index)}
+                      onFocus={() => select(index)}
+                      onClick={() => select(index, true)}
                     >
                       {stage.title}
                     </button>
+                    {index === stages.length - 1 && RELEASE_TAG}
                   </h3>
-                  <p className="proc__text" id={`proceso-texto-${row.stage}`}>
+                  <p className="proc__text" id={`proceso-texto-${index}`}>
                     {stage.text}
                   </p>
                 </div>
@@ -169,4 +137,31 @@ export function Process() {
       </div>
     </section>
   );
+}
+
+/**
+ * Tramo de cada etapa sobre el eje del grafo, medido del DOM: horizontal si las etapas quedan en una fila
+ * (escritorio), vertical si no. `null` hasta medir.
+ */
+function useStageSpans(ref: RefObject<HTMLOListElement | null>) {
+  const [spans, setSpans] = useState<Span[] | null>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const measure = () => {
+      const rows = [...element.children] as HTMLElement[];
+      const horizontal = rows.length > 1 && rows[0]?.offsetTop === rows[1]?.offsetTop;
+      setSpans(
+        rows.map((row) =>
+          horizontal ? { start: row.offsetLeft, size: row.offsetWidth } : { start: row.offsetTop, size: row.offsetHeight },
+        ),
+      );
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return spans;
 }

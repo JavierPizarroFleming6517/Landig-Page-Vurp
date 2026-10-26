@@ -75,11 +75,8 @@
   --mascot-shadow: rgba(0, 0, 0, 0.6);
   --mascot-glass: #e4d5f2;
 
-  /* Grafo de "Cómo trabajamos": main neutro y una rama por disciplina, con los tonos aclarados. */
+  /* Línea del grafo de "Cómo trabajamos". */
   --graph-main: #b7adc4;
-  --graph-software: #9d5fc1;
-  --graph-auto: #b484d2;
-  --graph-sec: #e4d5f2;
   color-scheme: dark;
 }
 
@@ -137,9 +134,6 @@
   --mascot-shadow: rgba(85, 35, 111, 0.3);
   --mascot-glass: #faf7f2;
   --graph-main: #25232b;
-  --graph-software: #55236f;
-  --graph-auto: #8b46ab;
-  --graph-sec: #c9a7e4;
   color-scheme: light;
 }
 
