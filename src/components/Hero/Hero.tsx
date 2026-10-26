@@ -29,6 +29,9 @@ const setPlaying = (playing: boolean) => {
  * `p` fija el progreso.
  */
 function readDebugParams() {
+  if (typeof window === "undefined") {
+    return { debug: false, widthFraction: undefined, tiltDeg: undefined, progress: undefined };
+  }
   const params = new URLSearchParams(window.location.search);
   const debug = params.has("debug");
   const read = (key: string, min: number, max: number) => {

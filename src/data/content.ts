@@ -281,23 +281,20 @@ export const footerColumns = [
   {
     title: "Servicios",
     links: [
-      { label: "Software a medida", href: "#soluciones" },
-      { label: "Automatización", href: "#soluciones" },
-      { label: "Ciberseguridad", href: "#soluciones" },
+      { label: "Software a medida", href: "/servicios/desarrollo-software-medida/" },
+      { label: "Automatización", href: "/servicios/automatizacion-procesos/" },
+      { label: "Ciberseguridad", href: "/servicios/ciberseguridad/" },
     ],
   },
   {
     title: "Empresa",
     links: [
-      { label: "Qué hacemos", href: "#que-hacemos" },
-      { label: "Proceso", href: "#proceso" },
-      { label: "Por qué Vurp", href: "#por-que-vurp" },
-      { label: "Contacto", href: "#contacto" },
+      { label: "Qué hacemos", href: "/#que-hacemos" },
+      { label: "Proceso", href: "/#proceso" },
+      { label: "Por qué Vurp", href: "/#por-que-vurp" },
+      { label: "Contacto", href: "/#contacto" },
     ],
   },
 ] as const;
 
-export const footerSocial = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/" },
-  { label: "Facebook", href: "https://www.facebook.com/" },
-] as const;
+export const footerSocial = [] as const;

@@ -1,23 +1,6 @@
 import { ArrowUp, ChevronDown } from "lucide-react";
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { contact, footerBrand, footerColumns, footerSocial } from "../data/content";
-
-const socialPaths: Record<(typeof footerSocial)[number]["label"], ReactNode> = {
-  LinkedIn: (
-    <path d="M4.98 3.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM.5 8.5h4V24h-4V8.5zM8.5 8.5h3.8v2.1h.06c.53-1 1.84-2.1 3.79-2.1 4.05 0 4.8 2.67 4.8 6.14V24h-4v-7.7c0-1.84-.03-4.2-2.56-4.2-2.56 0-2.95 2-2.95 4.06V24h-4V8.5z" />
-  ),
-  Facebook: (
-    <path d="M15.1 8.5h2.4V5.2h-2.4c-2.5 0-4.2 1.8-4.2 4.4v2.1H8.2V15h2.7v7.5h3.3V15h2.7l.7-3.3h-3.4v-1.6c0-.8.5-1.6 1.6-1.6z" />
-  ),
-};
-
-function SocialIcon({ name }: { name: keyof typeof socialPaths }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-      {socialPaths[name]}
-    </svg>
-  );
-}
+import { useEffect, useId, useRef, useState } from "react";
+import { contact, footerBrand, footerColumns } from "../data/content";
 
 function ChileFlag() {
   return (
@@ -125,21 +108,7 @@ export function Footer() {
 
           <div className="footer__col">
             <h2>Redes sociales</h2>
-            <ul className="footer__links footer__social">
-              {footerSocial.map((item) => (
-                <li key={item.label}>
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${item.label}, sitio general`}
-                  >
-                    <SocialIcon name={item.label} />
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <span className="footer__soon">Próximamente</span>
           </div>
         </div>
 
