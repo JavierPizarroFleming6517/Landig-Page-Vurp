@@ -3,7 +3,7 @@ import { EMPTY_FORM, SETTLE_MS, readForm, walterFromForm, type WalterState } fro
 
 /**
  * Conecta a Walter con el formulario: `formHandlers` va en el <form> (solo escucha, no cambia validaciones ni envío)
- * y `onSubmitted` se llama cuando el envío existente ya se ejecutó.
+ * y `onSubmitted` se llama solo cuando el proveedor ya aceptó el envío.
  */
 export function useWalter() {
   const [form, setForm] = useState(EMPTY_FORM);

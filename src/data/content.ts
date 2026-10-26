@@ -135,8 +135,8 @@ export const walterMessages = {
   ready: { text: "¡Todo listo! ¿Enviamos tu idea? 🚀" },
   missing: { text: "Me falta un dato para enviarla. ¿Lo revisamos? 👀" },
   opened: {
-    text: "¡Tu correo está listo! 🎉",
-    note: "Solo falta que lo envíes desde tu correo. ¡Gracias por confiar en Vurp!",
+    text: "¡Recibimos tu mensaje! 🎉",
+    note: "Gracias por confiar en Vurp. Te contactamos pronto.",
   },
 } as const;
 
