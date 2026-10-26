@@ -1,0 +1,278 @@
+.scene--sync {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+}
+
+.sync__desk {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  max-width: 15rem;
+  height: 86%;
+  overflow: hidden;
+}
+
+.sync__bar {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.4rem 0.55rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.sync__bar i {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: rgba(var(--tint-rgb), 0.45);
+}
+
+.sync__screen {
+  display: grid;
+  align-content: center;
+  gap: 0.45rem;
+  flex: 1;
+  padding: 0.5rem 0.65rem;
+}
+
+.sync__line {
+  height: 0.4rem;
+  border-radius: 999px;
+  background: rgba(var(--tint-rgb), 0.22);
+}
+
+.sync__line--short {
+  width: 60%;
+}
+
+.sync__phone {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: 6.6rem;
+  height: 100%;
+  padding: 0.35rem 0.45rem;
+  border-radius: 16px;
+}
+
+.sync__notch {
+  align-self: center;
+  width: 1.6rem;
+  height: 0.3rem;
+  margin-bottom: auto;
+  border-radius: 999px;
+  background: rgba(var(--tint-rgb), 0.35);
+}
+
+.sync__phone .sync__order {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  margin-bottom: auto;
+}
+
+.sync__order {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.sync__order strong {
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sync__phone .sync__order strong {
+  font-size: 0.72rem;
+}
+
+.sync__phone .scene-chip {
+  padding-inline: 0.4rem;
+  font-size: 0.64rem;
+}
+
+/* Los dos estados del chip se apilan; sin animar se ve el final ("Despachado"). */
+.sync__status {
+  display: grid;
+}
+
+.sync__status > * {
+  grid-area: 1 / 1;
+}
+
+.sync__before {
+  opacity: 0;
+}
+
+.sync__link {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  color: var(--card);
+}
+
+.sync__link svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+@container (max-width: 340px) {
+  .scene--sync {
+    gap: 0.35rem;
+    padding-inline: 0.55rem;
+  }
+
+  .sync__screen .sync__order {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .sync__line {
+    display: none;
+  }
+}
+
+.sync__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent-strong);
+  opacity: 0;
+}
+
+.sync__link {
+  position: relative;
+}
+
+/*
+ * Loop (8 s): el pedido se despacha en el escritorio (22–28 %), la sincronía late y gira (30–46 %) y el celular se
+ * actualiza (50–54 %). Pausa con los dos al día hasta el 92 %; luego vuelven a "Pendiente" para el siguiente ciclo.
+ * Cada cambio de chip es secuencial (sale uno y después entra el otro) para que los textos no se superpongan.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .cap.is-in .sync__desk .sync__before {
+    animation: sync-desk-before var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__desk .sync__after {
+    animation: sync-desk-after var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__phone .sync__before {
+    animation: sync-phone-before var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__phone .sync__after {
+    animation: sync-phone-after var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__link svg {
+    animation: sync-spin var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__link::after {
+    animation: sync-ping var(--loop) ease-out infinite both;
+  }
+}
+
+@keyframes sync-desk-before {
+  0%,
+  22% {
+    opacity: 1;
+  }
+  24%,
+  97% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes sync-desk-after {
+  0%,
+  24% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  28%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes sync-phone-before {
+  0%,
+  48% {
+    opacity: 1;
+  }
+  50%,
+  97% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes sync-phone-after {
+  0%,
+  50% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  54%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes sync-spin {
+  0%,
+  30% {
+    transform: none;
+  }
+  46%,
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes sync-ping {
+  0%,
+  30% {
+    opacity: 0;
+    transform: none;
+  }
+  32% {
+    opacity: 0.9;
+    transform: none;
+  }
+  48%,
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}

@@ -1,5 +1,13 @@
 import { useRef, type CSSProperties } from "react";
-import { useInView } from "./Mascot/useInView";
+import { useInView } from "../Mascot/useInView";
+// Primero la base común: las escenas la sobrescriben con su propio CSS.
+import "./art/scene.css";
+import { AdaptScene } from "./art/AdaptScene";
+import { ChatScene } from "./art/ChatScene";
+import { ControlsScene } from "./art/ControlsScene";
+import { FlowScene } from "./art/FlowScene";
+import { ScanScene } from "./art/ScanScene";
+import { SyncScene } from "./art/SyncScene";
 import "./Capabilities.css";
 
 const cards = [
@@ -11,13 +19,24 @@ const cards = [
   { id: "iso", area: "Ciberseguridad", title: "Seguridad con estructura", art: "controls" },
 ] as const;
 
+const scenes = {
+  app: AdaptScene,
+  modules: SyncScene,
+  flow: FlowScene,
+  chat: ChatScene,
+  audit: ScanScene,
+  controls: ControlsScene,
+} as const;
+
 export function Capabilities() {
   const ref = useRef<HTMLElement>(null);
-  const { entered } = useInView(ref, 0);
+  const { inView, entered } = useInView(ref, 0);
+  // `is-in`: entrada (una vez). `is-playing`: los loops de las escenas corren solo con la sección en pantalla.
+  const state = `${entered ? " is-in" : ""}${inView ? " is-playing" : ""}`;
 
   return (
     <section
-      className={entered ? "section cap is-in" : "section cap"}
+      className={`section cap${state}`}
       id="que-hacemos"
       ref={ref}
       aria-labelledby="que-hacemos-titulo"
@@ -26,7 +45,8 @@ export function Capabilities() {
         <div className="intro cap__intro">
           <p className="eyebrow">Qué hacemos</p>
           <h2 className="section__title" id="que-hacemos-titulo">
-            Ideas que toman forma. Procesos que fluyen. <em>Sistemas más seguros.</em>
+            Ideas que toman forma. Procesos que fluyen.
+            <em className="cap__title-line">Sistemas más seguros.</em>
           </h2>
           <p className="section__lead">
             Desarrollamos, conectamos y protegemos tecnología según lo que cada proyecto necesita.
@@ -42,9 +62,9 @@ export function Capabilities() {
 
           {cards.map((card, index) => (
             <article className={`cap__card cap__card--${card.id}`} key={card.id} style={{ "--i": index + 1 } as CSSProperties}>
-              <Art kind={card.art} />
               <p className="cap__area">{card.area}</p>
               <h3>{card.title}</h3>
+              <Art kind={card.art} />
             </article>
           ))}
         </div>
@@ -53,14 +73,25 @@ export function Capabilities() {
   );
 }
 
+/** Del símbolo hacia cada disciplina: Software, Automatización y Ciberseguridad. */
+const ECO_PATHS = [
+  "M140 108 C140 48, 52 48, 52 28",
+  "M140 108 C140 48, 228 48, 228 28",
+  "M140 124 C140 176, 140 176, 140 196",
+] as const;
+
 function Ecosystem() {
   return (
     <div className="cap__eco" aria-hidden="true">
       <div className="cap__orbit">
         <svg className="cap__eco-lines" viewBox="0 0 280 220">
-          <path d="M140 108 C140 48, 52 48, 52 28" />
-          <path d="M140 108 C140 48, 228 48, 228 28" />
-          <path d="M140 124 C140 176, 140 176, 140 196" />
+          {ECO_PATHS.map((d) => (
+            <path key={d} d={d} />
+          ))}
+          {/* Pulsos que viajan desde cada disciplina hasta el símbolo (solo con movimiento). */}
+          {ECO_PATHS.map((d, index) => (
+            <path key={`pulse-${d}`} className="cap__eco-pulse" d={d} pathLength={1} style={{ ["--p" as string]: index }} />
+          ))}
         </svg>
         <img className="cap__mark" src="/brand/simbolo-blanco.svg" alt="" />
         <span className="cap__node cap__node--soft">Software</span>
@@ -72,92 +103,6 @@ function Ecosystem() {
 }
 
 function Art({ kind }: { kind: (typeof cards)[number]["art"] }) {
-  if (kind === "app") return <AppArt />;
-  if (kind === "modules") return <ModulesArt />;
-  if (kind === "flow") return <FlowArt />;
-  if (kind === "chat") return <ChatArt />;
-  if (kind === "audit") return <AuditArt />;
-  return <ControlsArt />;
-}
-
-function AppArt() {
-  return (
-    <div className="art art--app" aria-hidden="true">
-      <span className="art__side" />
-      <span className="art__main">
-        <i />
-        <i />
-        <i />
-      </span>
-    </div>
-  );
-}
-
-function ModulesArt() {
-  return (
-    <div className="art art--modules" aria-hidden="true">
-      <span />
-      <span />
-      <span />
-      <span />
-    </div>
-  );
-}
-
-function FlowArt() {
-  return (
-    <svg className="art art--flow" viewBox="0 0 280 96" aria-hidden="true">
-      <path className="art__dash" d="M28 48 H108 L132 28 H196 L220 48 H252" />
-      <circle cx="28" cy="48" r="7" />
-      <circle cx="132" cy="28" r="7" />
-      <circle cx="220" cy="48" r="7" />
-    </svg>
-  );
-}
-
-function ChatArt() {
-  return (
-    <div className="art art--chat" aria-hidden="true">
-      <span className="art__bubble">Pedido recibido</span>
-      <span className="art__bubble art__bubble--me">Aviso a bodega</span>
-      <span className="art__apps">
-        <i />
-        <i />
-        <i />
-      </span>
-    </div>
-  );
-}
-
-function AuditArt() {
-  return (
-    <ul className="art art--audit" aria-hidden="true">
-      <li>
-        <b>Accesos</b>
-        <em>Revisar</em>
-      </li>
-      <li>
-        <b>Respaldos</b>
-        <em className="is-ok">En orden</em>
-      </li>
-      <li>
-        <b>Exposición</b>
-        <em>Hallazgo</em>
-      </li>
-    </ul>
-  );
-}
-
-function ControlsArt() {
-  return (
-    <div className="art art--docs" aria-hidden="true">
-      <span />
-      <span />
-      <span>
-        <i />
-        <i />
-        <i />
-      </span>
-    </div>
-  );
+  const Scene = scenes[kind];
+  return <Scene />;
 }

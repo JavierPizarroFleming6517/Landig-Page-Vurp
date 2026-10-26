@@ -1,0 +1,409 @@
+/*
+ * Grafo estilo `git log --graph`: main con un commit por etapa. Vertical en móvil y tablet; horizontal en escritorio,
+ * a todo el ancho y con el intro arriba. La celda del grafo dibuja el tramo de main de cada etapa y su nodo; al lado
+ * (o debajo) va el texto real del commit.
+ *
+ * Dibujo con el scroll: cada etapa recibe `--tip`, los px que ya recorrió la línea dentro de ella (sin `--tip`, como
+ * en el prerender, se ve completa). El tramo sabe dónde empieza (`--t`, px) y se pinta hasta ahí.
+ */
+.proc__graph {
+  --dot: 22px; /* DOT de graphData.ts */
+  --stroke: 4px;
+  --tip: 100000;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.proc__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(var(--dot) * 2) minmax(0, 1fr);
+  column-gap: 0.4rem;
+  transition: opacity 0.3s ease;
+}
+
+.proc__cell {
+  position: relative;
+}
+
+/* Tramo vertical: de borde a borde de la etapa; la primera parte en su nodo y la última termina en el suyo. Riel
+   tenue y color encima, recortado hasta la punta del dibujo. Se solapan 1 px para no dejar costuras. */
+.proc__lane {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--dot) - var(--stroke) / 2);
+  width: var(--stroke);
+  margin-block: -1px;
+  background: var(--line);
+}
+
+.proc__row:first-child .proc__lane {
+  top: var(--dot);
+}
+
+.proc__row:last-child .proc__lane {
+  bottom: calc(100% - var(--dot));
+}
+
+.proc__lane::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--graph-main);
+  clip-path: inset(0 0 max(0px, calc(100% - (var(--tip) - var(--t)) * 1px)) 0);
+}
+
+/* Nodo: apagado (anillo tenue) hasta que la línea lo alcanza; encendido, con color, halo y un pop. */
+.proc__dot {
+  --size: 32px;
+  position: absolute;
+  left: calc(var(--dot) - var(--size) / 2);
+  top: calc(var(--dot) - var(--size) / 2);
+  display: grid;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+  border: 3px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    border-color 0.35s ease,
+    background 0.35s ease,
+    color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.proc__dot.is-on {
+  border-color: var(--graph-main);
+  background: var(--graph-main);
+  color: var(--bg);
+  box-shadow: 0 0 0 5px rgba(var(--tint-rgb), 0.14);
+}
+
+.proc__row.is-selected .proc__dot.is-on {
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
+  box-shadow:
+    0 0 0 5px rgba(var(--tint-rgb), 0.22),
+    0 0 22px 2px rgba(var(--tint-rgb), 0.45);
+}
+
+/* Tag de la entrega, al lado del título de la última etapa. */
+.proc__ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--accent-strong) 60%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-strong) 18%, transparent);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.proc__ref svg {
+  width: 0.78rem;
+  height: 0.78rem;
+}
+
+.proc__ref--tag {
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
+  color: var(--bg);
+}
+
+/* El commit es una tarjeta suave que se ve al seleccionarlo. En vertical, la primera línea del título queda a la
+   altura del nodo (su alto de línea es ~1.4rem). */
+.proc__commit {
+  margin-bottom: 0.75rem;
+  padding: calc(var(--dot) - 0.7rem) 1rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.proc__row:last-child .proc__commit {
+  margin-bottom: 0;
+}
+
+.proc__row.is-selected .proc__commit {
+  border-color: var(--line);
+  background:
+    linear-gradient(165deg, rgba(var(--tint-rgb), 0.12), transparent 60%),
+    var(--card);
+}
+
+.proc__commit h3 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  margin: 0;
+  font-size: 1.12rem;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+/* El botón cubre toda la etapa: hover, foco y clic sobre cualquier parte de ella la seleccionan. */
+.proc__select {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.proc__select::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.proc__select:focus-visible {
+  outline: none;
+}
+
+.proc__select:focus-visible::after {
+  border-radius: 18px;
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+}
+
+.proc__row.is-selected .proc__select {
+  color: var(--accent);
+}
+
+.proc__text {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+/* Camino: con el puntero o el foco en el grafo, las etapas después de la seleccionada se atenúan. En pantallas
+   táctiles solo con el foco: ahí el :hover queda pegado después de tocar. */
+.proc__graph:focus-within .proc__row.is-after {
+  opacity: 0.35;
+}
+
+@media (hover: hover) {
+  .proc__graph:hover .proc__row.is-after {
+    opacity: 0.35;
+  }
+}
+
+/* El pulso: un "carro" del largo del tramo con el destello en su borde inicial; transform(0 → 100 %) lo lleva de
+   punta a punta. Cada etapa lo lanza en su turno (--delay) para que recorra el camino de corrido. */
+.proc__pulse {
+  --pulse-to: translateY(100%);
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--stop, 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.proc__pulse::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -46px;
+  width: 12px;
+  height: 46px;
+  margin-left: -6px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, transparent, var(--accent-strong) 70%, var(--card));
+  box-shadow: 0 10px 18px 2px rgba(var(--tint-rgb), 0.7);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .proc__dot.is-on {
+    animation: proc-pop 0.5s ease-out;
+  }
+
+  .proc__pulse {
+    animation: proc-pulse var(--duration) linear var(--delay) both;
+  }
+
+  /* Llegada del pulso a la etapa seleccionada: un anillo que se expande. */
+  .proc__dot.is-arriving::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border: 2px solid var(--accent-strong);
+    border-radius: 50%;
+    opacity: 0;
+    animation: proc-arrive 0.8s ease-out var(--arrive) both;
+  }
+}
+
+@keyframes proc-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes proc-pulse {
+  0% {
+    opacity: 0;
+    transform: none;
+  }
+  0.1%,
+  99.9% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: var(--pulse-to);
+  }
+}
+
+@keyframes proc-arrive {
+  0% {
+    opacity: 0.9;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proc__dot,
+  .proc__commit,
+  .proc__select {
+    transition: none;
+  }
+
+  .proc__pulse {
+    display: none;
+  }
+}
+
+/* Escritorio: intro en dos columnas (título | bajada) y el grafo horizontal debajo, una etapa por columna. */
+@media (min-width: 1100px) {
+  .proc .proc__intro {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    align-items: end;
+    max-width: none;
+  }
+
+  .proc__intro .eyebrow {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  .proc__intro .section__title {
+    max-width: 28ch;
+  }
+
+  .proc__intro .section__lead {
+    margin-bottom: 0.4rem;
+  }
+
+  .proc__graph {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .proc__row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .proc__cell {
+    height: calc(var(--dot) * 2);
+  }
+
+  /* Tramo horizontal: misma lógica que en vertical, sobre el eje x. */
+  .proc__lane {
+    top: calc(var(--dot) - var(--stroke) / 2);
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: var(--stroke);
+    margin: 0 -1px;
+  }
+
+  .proc__row:first-child .proc__lane {
+    top: calc(var(--dot) - var(--stroke) / 2);
+    left: var(--dot);
+  }
+
+  .proc__row:last-child .proc__lane {
+    bottom: auto;
+    right: calc(100% - var(--dot));
+  }
+
+  .proc__lane::after {
+    clip-path: inset(0 max(0px, calc(100% - (var(--tip) - var(--t)) * 1px)) 0 0);
+  }
+
+  .proc__pulse {
+    --pulse-to: translateX(100%);
+    top: 0;
+    bottom: 0;
+    right: auto;
+    width: var(--stop, 100%);
+    height: auto;
+  }
+
+  .proc__pulse::before {
+    left: -46px;
+    top: 50%;
+    width: 46px;
+    height: 12px;
+    margin: -6px 0 0;
+    background: linear-gradient(90deg, transparent, var(--accent-strong) 70%, var(--card));
+    box-shadow: 10px 0 18px 2px rgba(var(--tint-rgb), 0.7);
+  }
+
+  .proc__commit {
+    flex: 1;
+    margin: 0.5rem 0.75rem 0 0;
+    padding: 0.75rem 0.9rem 0.9rem;
+  }
+
+  .proc__row:last-child .proc__commit {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .proc__commit {
+    padding-inline: 0.75rem;
+  }
+
+  .proc__commit h3 {
+    font-size: 1.05rem;
+  }
+}

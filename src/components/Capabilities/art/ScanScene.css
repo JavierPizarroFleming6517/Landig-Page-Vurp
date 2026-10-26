@@ -1,0 +1,235 @@
+.scene--scan {
+  padding: 0.6rem;
+}
+
+.scan__panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+  padding: 0.3rem 0.6rem;
+}
+
+.scan__list {
+  display: grid;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scan__list li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.42rem 0.15rem;
+}
+
+.scan__list li + li {
+  border-top: 1px solid var(--line);
+}
+
+.scan__icon {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  color: var(--accent-strong);
+}
+
+.scan__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Fotograma final: el hallazgo queda a la vista, atenuado, junto a "Corregido". */
+.scan__severity {
+  opacity: 0.6;
+}
+
+/* Como el pulso del flujo: un "carro" del alto del panel con la línea en su borde superior. */
+.scan__beam {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scan__beam::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: var(--accent-strong);
+  box-shadow: 0 0 12px 2px rgba(var(--tint-rgb), 0.55);
+}
+
+@container (max-width: 300px) {
+  .scan__icon {
+    display: none;
+  }
+}
+
+/*
+ * Loop (8 s): la línea barre la lista (4–40 %) y marca los hallazgos al pasar (Alta 12 %, Media 24 %, el tercero
+ * limpio 36 %). Después se corrigen (52 % y 62 %) y el hallazgo queda atenuado. Pausa hasta el 93 %.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .cap.is-in .scan__beam {
+    animation: scan-beam var(--loop) linear infinite both;
+  }
+
+  .cap.is-in .scan__row--0 .scan__severity {
+    animation: scan-severity-0 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .scan__row--1 .scan__severity {
+    animation: scan-severity-1 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .scan__row--0 .scan__fixed {
+    animation: scan-fixed-0 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .scan__row--1 .scan__fixed {
+    animation: scan-fixed-1 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .scan__clean {
+    animation: scan-clean var(--loop) ease-out infinite both;
+  }
+}
+
+@keyframes scan-beam {
+  0%,
+  3% {
+    opacity: 0;
+    transform: none;
+  }
+  6% {
+    opacity: 1;
+    transform: none;
+  }
+  38% {
+    opacity: 1;
+    transform: translateY(100%);
+  }
+  42%,
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes scan-severity-0 {
+  0%,
+  11% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  14% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  17%,
+  52% {
+    opacity: 1;
+    transform: none;
+  }
+  56%,
+  93% {
+    opacity: 0.6;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes scan-severity-1 {
+  0%,
+  23% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  26% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  29%,
+  62% {
+    opacity: 1;
+    transform: none;
+  }
+  66%,
+  93% {
+    opacity: 0.6;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes scan-fixed-0 {
+  0%,
+  51% {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  56%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes scan-fixed-1 {
+  0%,
+  61% {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  66%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes scan-clean {
+  0%,
+  35% {
+    opacity: 0;
+  }
+  39%,
+  93% {
+    opacity: 1;
+  }
+  97%,
+  100% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,192 @@
+.scene--adapt {
+  padding: 0.6rem;
+}
+
+.adapt__win {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.adapt__side {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+  flex: none;
+  width: 2.4rem;
+  padding: 0.6rem 0.55rem;
+  border-right: 1px solid var(--line);
+}
+
+.adapt__side i {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: rgba(var(--tint-rgb), 0.35);
+}
+
+.adapt__side i.is-active {
+  background: var(--accent-strong);
+}
+
+.adapt__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.5rem 0.6rem;
+}
+
+.adapt__title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.adapt__table {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+}
+
+.adapt__row {
+  display: contents;
+}
+
+.adapt__th,
+.adapt__td {
+  overflow: hidden;
+  padding: 0.3rem 0.4rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.adapt__th {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.adapt__td {
+  border-top: 1px solid var(--line);
+  font-size: 0.76rem;
+  font-weight: 500;
+}
+
+/* La columna nueva queda marcada: es la parte del software que se adaptó al proceso. */
+.adapt__new {
+  background: rgba(var(--tint-rgb), 0.16);
+}
+
+.adapt__th.adapt__new {
+  border-radius: 8px 8px 0 0;
+  color: var(--accent);
+}
+
+.adapt__row:last-child .adapt__new {
+  border-radius: 0 0 8px 8px;
+}
+
+.adapt__td.adapt__moved {
+  padding-block: 0.22rem;
+}
+
+@container (max-width: 340px) {
+  .adapt__side {
+    display: none;
+  }
+}
+
+@container (max-height: 8.5rem) {
+  .adapt__title {
+    display: none;
+  }
+}
+
+.adapt__fill {
+  display: inline-block;
+  font-weight: inherit;
+}
+
+/*
+ * Loop (8 s): aparece la columna "Entrega" al final (8–18 %), se reordena delante de "Estado" (28–40 %), sus
+ * celdas se llenan fila a fila (48–60 %) y queda quieta hasta el 92 %. El reinicio se hace con la columna oculta.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .cap.is-in .adapt__new {
+    animation: adapt-new var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .adapt__moved {
+    animation: adapt-moved var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .adapt__fill {
+    animation: adapt-fill var(--loop) ease-out infinite both;
+    animation-delay: calc(var(--r) * 0.32s);
+  }
+}
+
+@keyframes adapt-new {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translateX(100%) scaleY(0.4);
+  }
+  18%,
+  28% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+  40%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes adapt-moved {
+  0%,
+  28% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+  40%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  96% {
+    opacity: 0;
+    transform: none;
+  }
+  97% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+/* Con el retraso por fila, el salto a 0 cae en el inicio del ciclo siguiente, con la columna aún oculta. */
+@keyframes adapt-fill {
+  0%,
+  46% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  52%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}

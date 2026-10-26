@@ -74,6 +74,9 @@
   --mascot-desk-bg: linear-gradient(180deg, rgba(228, 213, 242, 0.13), rgba(228, 213, 242, 0.04));
   --mascot-shadow: rgba(0, 0, 0, 0.6);
   --mascot-glass: #e4d5f2;
+
+  /* Línea del grafo de "Cómo trabajamos". */
+  --graph-main: #b7adc4;
   color-scheme: dark;
 }
 
@@ -130,6 +133,7 @@
   --mascot-desk-bg: linear-gradient(180deg, rgba(201, 167, 228, 0.4), rgba(201, 167, 228, 0.16));
   --mascot-shadow: rgba(85, 35, 111, 0.3);
   --mascot-glass: #faf7f2;
+  --graph-main: #25232b;
   color-scheme: light;
 }
 

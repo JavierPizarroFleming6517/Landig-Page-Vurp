@@ -1,10 +1,10 @@
-import { Capabilities } from "./components/Capabilities";
+import { Capabilities } from "./components/Capabilities/Capabilities";
 import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero/Hero";
 import { Intro } from "./components/Intro";
 import { Navbar } from "./components/Navbar";
-import { Process } from "./components/Process";
+import { Process } from "./components/Process/Process";
 import { Reasons } from "./components/Reasons";
 import { Solutions } from "./components/Solutions";
 import { ServicePage } from "./components/ServicePage";
