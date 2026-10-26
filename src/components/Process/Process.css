@@ -354,14 +354,20 @@
     margin: 0 -1px;
   }
 
+  /* La línea parte en el nodo de la primera etapa y termina en el de la última. */
   .proc__row:first-child .proc__lane {
     top: calc(var(--dot) - var(--stroke) / 2);
-    left: var(--dot);
+    left: 50%;
   }
 
   .proc__row:last-child .proc__lane {
     bottom: auto;
-    right: calc(100% - var(--dot));
+    right: 50%;
+  }
+
+  /* Cada nodo va al centro de su tarjeta (y de su columna); así quedan repartidos a igual distancia. */
+  .proc__dot {
+    left: calc(50% - var(--size) / 2);
   }
 
   .proc__lane::after {
@@ -387,14 +393,11 @@
     box-shadow: 10px 0 18px 2px rgba(var(--tint-rgb), 0.7);
   }
 
+  /* Margen simétrico: la tarjeta queda centrada en su columna, justo bajo su nodo. */
   .proc__commit {
     flex: 1;
-    margin: 0.5rem 0.75rem 0 0;
+    margin: 0.5rem 0.375rem 0;
     padding: 0.75rem 0.9rem 0.9rem;
-  }
-
-  .proc__row:last-child .proc__commit {
-    margin-right: 0;
   }
 }
 

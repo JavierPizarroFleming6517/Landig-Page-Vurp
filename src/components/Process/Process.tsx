@@ -37,8 +37,11 @@ const RELEASE_TAG = (
   </span>
 );
 
-/** Tramo de cada etapa sobre el eje del grafo (px): `top`/`height` en vertical, `left`/`width` en horizontal. */
-type Span = { start: number; size: number };
+/**
+ * Tramo de cada etapa sobre el eje del grafo (px): `top`/`height` en vertical, `left`/`width` en horizontal. `dot`
+ * es dónde está su nodo dentro del tramo: a la altura del título en vertical, al centro de la tarjeta en horizontal.
+ */
+type Span = { start: number; size: number; dot: number };
 
 export function Process() {
   const list = useRef<HTMLOListElement>(null);
@@ -59,21 +62,23 @@ export function Process() {
   // las muestra completas.
   const last = spans?.[spans.length - 1];
   const drawPx = last ? draw * (last.start + last.size) : 0;
+  const firstDot = spans?.[0]?.dot ?? DOT;
 
   // Pulso desde el primer commit hasta la etapa seleccionada: cada etapa anima su tramo en su turno.
   const pulseOf = (index: number, laneStart: number): PulseSpan | undefined => {
     const span = spans?.[index];
     if (!pulseKey || !span || index > active) return undefined;
     const isEnd = index === active;
-    const length = isEnd ? DOT - laneStart : span.size - laneStart;
+    const length = isEnd ? span.dot - laneStart : span.size - laneStart;
     if (length <= 0) return undefined;
     return {
-      delay: (span.start + laneStart - DOT) / PULSE_SPEED,
+      delay: (span.start + laneStart - firstDot) / PULSE_SPEED,
       duration: length / PULSE_SPEED,
       length: isEnd ? length : undefined,
     };
   };
-  const arriveAt = spans?.[active] ? spans[active].start / PULSE_SPEED : undefined;
+  const target = spans?.[active];
+  const arriveAt = target ? (target.start + target.dot - firstDot) / PULSE_SPEED : undefined;
 
   return (
     <section className="section proc" id="proceso" aria-labelledby="proceso-titulo">
@@ -94,7 +99,8 @@ export function Process() {
             const span = spans?.[index];
             const tip = span ? Math.min(span.size, Math.max(0, drawPx - span.start)) : undefined;
             const selected = active === index;
-            const laneStart = index === 0 ? DOT : 0;
+            const dot = span?.dot ?? DOT;
+            const laneStart = index === 0 ? dot : 0;
             const state = `${selected ? " is-selected" : ""}${index > active ? " is-after" : ""}`;
             return (
               <li
@@ -106,7 +112,7 @@ export function Process() {
                   <Lane key={pulseKey} start={laneStart} pulse={pulseOf(index, laneStart)} />
                   <Dot
                     key={selected ? `dot-${pulseKey}` : "dot"}
-                    on={tip === undefined || tip >= DOT}
+                    on={tip === undefined || tip >= dot}
                     label={String(index + 1).padStart(2, "0")}
                     arrive={selected && pulseKey ? arriveAt : undefined}
                   />
@@ -154,7 +160,9 @@ function useStageSpans(ref: RefObject<HTMLOListElement | null>) {
       const horizontal = rows.length > 1 && rows[0]?.offsetTop === rows[1]?.offsetTop;
       setSpans(
         rows.map((row) =>
-          horizontal ? { start: row.offsetLeft, size: row.offsetWidth } : { start: row.offsetTop, size: row.offsetHeight },
+          horizontal
+            ? { start: row.offsetLeft, size: row.offsetWidth, dot: row.offsetWidth / 2 }
+            : { start: row.offsetTop, size: row.offsetHeight, dot: DOT },
         ),
       );
     };
