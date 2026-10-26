@@ -108,6 +108,7 @@ Símbolo de tres piezas (la V) + logotipo. Se usan juntos o por separado, **sin 
 | `simbolo-blanco.svg` | Solo Marfil | Berenjena / monocromo |
 | `simbolo-negro.svg` | Solo Grafito | Monocromo |
 | `wordmark-oscuro.svg` | Solo Marfil (logotipo sin símbolo) | Oscuro. El manual no lo describe |
+| `wordmark.svg` | Solo Grafito (el mismo trazado, con el color del logotipo en `logo-horizontal.svg`) | Claro: splash de carga |
 | `app-icon-claro.svg` | Color sobre `#EFE6F7` | "Ícono claro": perfiles y avatares sobre fondos claros |
 
 Favicon: en tamaños chicos va solo el símbolo, sobre Grafito, con los tonos aclarados.

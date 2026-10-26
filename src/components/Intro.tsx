@@ -11,6 +11,10 @@ const TAGLINE = "Software & Cybersecurity";
 const ease = [0.22, 1, 0.36, 1] as const;
 const DURATION_MS = 3000;
 const REDUCED_DURATION_MS = 1200;
+const WORDMARKS = [
+  { theme: "dark", src: "/brand/wordmark-oscuro.svg" },
+  { theme: "light", src: "/brand/wordmark.svg" },
+] as const;
 
 const piece = (x: number, y: number, delay: number) => ({
   initial: { opacity: 0, x, y },
@@ -54,24 +58,29 @@ export function Intro({ onFinish }: IntroProps) {
                 <g transform={`translate(${SYMBOL_OFFSET.x} ${SYMBOL_OFFSET.y})`}>
                   <motion.path
                     d={SYMBOL_PATHS.left}
-                    fill="var(--vurp-berenjena-claro)"
-                    stroke="var(--vurp-berenjena-claro)"
+                    fill="var(--intro-a)"
+                    stroke="var(--intro-a)"
                     strokeWidth={1.4}
                     strokeLinejoin="round"
                     {...piece(-28, -28, 0.2)}
                   />
-                  <motion.path d={SYMBOL_PATHS.middle} fill="var(--vurp-orquidea-claro)" {...piece(0, 34, 0.38)} />
-                  <motion.path d={SYMBOL_PATHS.top} fill="var(--vurp-lila-claro)" {...piece(28, -28, 0.56)} />
+                  <motion.path d={SYMBOL_PATHS.middle} fill="var(--intro-b)" {...piece(0, 34, 0.38)} />
+                  <motion.path d={SYMBOL_PATHS.top} fill="var(--intro-c)" {...piece(28, -28, 0.56)} />
                 </g>
               </svg>
-              <motion.img
-                className="intro__wordmark"
-                src="/brand/wordmark-oscuro.svg"
-                alt=""
-                initial={{ clipPath: "inset(0 100% 0 0)", x: -16 }}
-                animate={{ clipPath: "inset(0 0% 0 0)", x: 0 }}
-                transition={{ duration: 0.9, delay: 0.95, ease }}
-              />
+              {/* Las dos versiones del logotipo; se muestra la del tema activo (ver index.css). */}
+              {WORDMARKS.map(({ theme, src }) => (
+                <motion.img
+                  key={theme}
+                  className="intro__wordmark"
+                  src={src}
+                  alt=""
+                  data-theme-only={theme}
+                  initial={{ clipPath: "inset(0 100% 0 0)", x: -16 }}
+                  animate={{ clipPath: "inset(0 0% 0 0)", x: 0 }}
+                  transition={{ duration: 0.9, delay: 0.95, ease }}
+                />
+              ))}
             </div>
 
             <motion.span
