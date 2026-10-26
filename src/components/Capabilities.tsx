@@ -3,48 +3,12 @@ import { useInView } from "./Mascot/useInView";
 import "./Capabilities.css";
 
 const cards = [
-  {
-    id: "sistemas",
-    area: "Software",
-    title: "Software que calza contigo",
-    text: "Aplicaciones, ERP y herramientas internas diseñadas alrededor de tus necesidades.",
-    art: "app",
-  },
-  {
-    id: "paneles",
-    area: "Software",
-    title: "Todo donde lo necesitas",
-    text: "Paneles y plataformas para trabajar con información clara, procesos conectados y menos herramientas dispersas.",
-    art: "modules",
-  },
-  {
-    id: "flujos",
-    area: "Automatización",
-    title: "Menos tareas repetitivas",
-    text: "Creamos flujos automáticos para reducir trabajo manual, conectar acciones y mantener los procesos avanzando.",
-    art: "flow",
-  },
-  {
-    id: "chat",
-    area: "Automatización",
-    title: "Herramientas que conversan",
-    text: "Conectamos servicios y desarrollamos chatbots para que la información y las tareas no queden aisladas.",
-    art: "chat",
-  },
-  {
-    id: "audit",
-    area: "Ciberseguridad",
-    title: "Encuentra los riesgos antes",
-    text: "Realizamos auditorías, pentesting y análisis de vulnerabilidades para identificar debilidades y oportunidades de mejora.",
-    art: "audit",
-  },
-  {
-    id: "iso",
-    area: "Ciberseguridad",
-    title: "Seguridad con estructura",
-    text: "Apoyamos la evaluación de controles, la protección de datos y la preparación de sistemas de gestión de seguridad de la información.",
-    art: "controls",
-  },
+  { id: "sistemas", area: "Software", title: "Software que calza contigo", art: "app" },
+  { id: "paneles", area: "Software", title: "Todo donde lo necesitas", art: "modules" },
+  { id: "flujos", area: "Automatización", title: "Menos tareas repetitivas", art: "flow" },
+  { id: "chat", area: "Automatización", title: "Herramientas que conversan", art: "chat" },
+  { id: "audit", area: "Ciberseguridad", title: "Encuentra los riesgos antes", art: "audit" },
+  { id: "iso", area: "Ciberseguridad", title: "Seguridad con estructura", art: "controls" },
 ] as const;
 
 export function Capabilities() {
@@ -81,7 +45,6 @@ export function Capabilities() {
               <Art kind={card.art} />
               <p className="cap__area">{card.area}</p>
               <h3>{card.title}</h3>
-              <p>{card.text}</p>
             </article>
           ))}
         </div>
