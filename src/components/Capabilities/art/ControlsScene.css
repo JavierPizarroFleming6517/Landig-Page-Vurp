@@ -1,0 +1,94 @@
+.scene--controls {
+  padding: 0.6rem;
+}
+
+.ctrl__panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.55rem;
+  height: 100%;
+  padding: 0.55rem 0.75rem;
+}
+
+.ctrl__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 500;
+}
+
+.ctrl__head strong {
+  display: inline-flex;
+  color: var(--text);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.ctrl__ticker {
+  display: inline-block;
+  height: 1.2em;
+  overflow: hidden;
+  color: var(--accent);
+}
+
+.ctrl__strip {
+  display: grid;
+  transform: translateY(calc(var(--n) * -1.2em));
+}
+
+.ctrl__bar {
+  display: block;
+  height: 0.45rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(var(--tint-rgb), 0.22);
+}
+
+.ctrl__bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent-strong);
+  transform: scaleX(var(--p));
+  transform-origin: left;
+}
+
+.ctrl__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ctrl__list li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.ctrl__check {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 5px;
+  background: var(--deep);
+  color: #faf7f2;
+}
+
+.ctrl__check svg {
+  width: 0.7rem;
+  height: 0.7rem;
+}

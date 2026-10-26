@@ -1,0 +1,71 @@
+/*
+ * Base de las mini-escenas de "Qué hacemos". El CSS sin animar es el fotograma final: es lo que se ve con
+ * reduced-motion y en el HTML prerenderizado. Los loops viven en el CSS de cada escena, dentro de
+ * `prefers-reduced-motion: no-preference`, y corren solo con la sección en pantalla (`.cap.is-playing`).
+ */
+.scene {
+  --loop: 8s;
+  position: relative;
+  container-type: size;
+  height: var(--scene-h, 10rem);
+  overflow: hidden;
+  border-radius: 16px;
+  background: rgba(var(--tint-rgb), 0.1);
+  color: var(--text);
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+/* Superficie de "app" dentro de la escena (ventana, celular, panel de chat). */
+.scene-panel {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.scene-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  width: fit-content;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.scene-chip svg {
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.scene-chip--ok {
+  background: rgba(var(--tint-rgb), 0.24);
+  color: var(--accent);
+}
+
+.scene-chip--high {
+  background: var(--deep);
+  color: #faf7f2;
+}
+
+.scene-chip--mid {
+  background: rgba(var(--tint-rgb), 0.4);
+  color: var(--text);
+}
+
+.scene-chip--soft {
+  background: rgba(var(--overlay-rgb), 0.06);
+  color: var(--muted);
+}
+
+/* Especificidad mayor que la de los loops: el shorthand `animation` reinicia animation-play-state. */
+.cap:not(.is-playing) .cap__grid .scene *,
+.cap:not(.is-playing) .cap__grid .scene *::before,
+.cap:not(.is-playing) .cap__grid .scene *::after {
+  animation-play-state: paused;
+}

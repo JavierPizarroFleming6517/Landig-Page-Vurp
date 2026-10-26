@@ -1,0 +1,137 @@
+.scene--flow {
+  --node: 2.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 0.7rem 0.6rem;
+}
+
+.flow__steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* La línea va de centro a centro de los nodos extremos. */
+.flow__track {
+  position: absolute;
+  left: calc(100% / 6);
+  right: calc(100% / 6);
+  top: calc(var(--node) / 2 - 1px);
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(var(--tint-rgb), 0.55);
+}
+
+.flow__pulse {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin: -0.35rem 0 0 -0.35rem;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  box-shadow: 0 0 0 4px rgba(var(--tint-rgb), 0.3);
+  opacity: 0;
+}
+
+.flow__step {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.flow__node {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--node);
+  height: var(--node);
+  border: 2px solid var(--accent-strong);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--accent-strong);
+}
+
+.flow__node > svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.flow__check {
+  position: absolute;
+  right: -0.3rem;
+  top: -0.3rem;
+  display: grid;
+  place-items: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  background: var(--deep);
+  color: #faf7f2;
+}
+
+.flow__check svg {
+  width: 0.65rem;
+  height: 0.65rem;
+}
+
+.flow__label {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.flow__count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 500;
+}
+
+.flow__ticker {
+  display: inline-block;
+  height: 1.2em;
+  overflow: hidden;
+  padding: 0.1rem 0.5rem;
+  box-sizing: content-box;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--accent);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.flow__strip {
+  display: grid;
+  transform: translateY(calc(var(--n) * -1.2em));
+}
+
+@container (max-width: 300px) {
+  .scene--flow {
+    --node: 2.2rem;
+    padding-inline: 0.3rem;
+  }
+
+  .flow__label {
+    font-size: 0.68rem;
+  }
+
+  .flow__count {
+    font-size: 0.68rem;
+  }
+}

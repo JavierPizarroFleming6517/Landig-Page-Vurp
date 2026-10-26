@@ -1,5 +1,12 @@
 import { useRef, type CSSProperties } from "react";
-import { useInView } from "./Mascot/useInView";
+import { useInView } from "../Mascot/useInView";
+import { AdaptScene } from "./art/AdaptScene";
+import { ChatScene } from "./art/ChatScene";
+import { ControlsScene } from "./art/ControlsScene";
+import { FlowScene } from "./art/FlowScene";
+import { ScanScene } from "./art/ScanScene";
+import { SyncScene } from "./art/SyncScene";
+import "./art/scene.css";
 import "./Capabilities.css";
 
 const cards = [
@@ -11,13 +18,24 @@ const cards = [
   { id: "iso", area: "Ciberseguridad", title: "Seguridad con estructura", art: "controls" },
 ] as const;
 
+const scenes = {
+  app: AdaptScene,
+  modules: SyncScene,
+  flow: FlowScene,
+  chat: ChatScene,
+  audit: ScanScene,
+  controls: ControlsScene,
+} as const;
+
 export function Capabilities() {
   const ref = useRef<HTMLElement>(null);
-  const { entered } = useInView(ref, 0);
+  const { inView, entered } = useInView(ref, 0);
+  // `is-in`: entrada (una vez). `is-playing`: los loops de las escenas corren solo con la sección en pantalla.
+  const state = `${entered ? " is-in" : ""}${inView ? " is-playing" : ""}`;
 
   return (
     <section
-      className={entered ? "section cap is-in" : "section cap"}
+      className={`section cap${state}`}
       id="que-hacemos"
       ref={ref}
       aria-labelledby="que-hacemos-titulo"
@@ -72,92 +90,6 @@ function Ecosystem() {
 }
 
 function Art({ kind }: { kind: (typeof cards)[number]["art"] }) {
-  if (kind === "app") return <AppArt />;
-  if (kind === "modules") return <ModulesArt />;
-  if (kind === "flow") return <FlowArt />;
-  if (kind === "chat") return <ChatArt />;
-  if (kind === "audit") return <AuditArt />;
-  return <ControlsArt />;
-}
-
-function AppArt() {
-  return (
-    <div className="art art--app" aria-hidden="true">
-      <span className="art__side" />
-      <span className="art__main">
-        <i />
-        <i />
-        <i />
-      </span>
-    </div>
-  );
-}
-
-function ModulesArt() {
-  return (
-    <div className="art art--modules" aria-hidden="true">
-      <span />
-      <span />
-      <span />
-      <span />
-    </div>
-  );
-}
-
-function FlowArt() {
-  return (
-    <svg className="art art--flow" viewBox="0 0 280 96" aria-hidden="true">
-      <path className="art__dash" d="M28 48 H108 L132 28 H196 L220 48 H252" />
-      <circle cx="28" cy="48" r="7" />
-      <circle cx="132" cy="28" r="7" />
-      <circle cx="220" cy="48" r="7" />
-    </svg>
-  );
-}
-
-function ChatArt() {
-  return (
-    <div className="art art--chat" aria-hidden="true">
-      <span className="art__bubble">Pedido recibido</span>
-      <span className="art__bubble art__bubble--me">Aviso a bodega</span>
-      <span className="art__apps">
-        <i />
-        <i />
-        <i />
-      </span>
-    </div>
-  );
-}
-
-function AuditArt() {
-  return (
-    <ul className="art art--audit" aria-hidden="true">
-      <li>
-        <b>Accesos</b>
-        <em>Revisar</em>
-      </li>
-      <li>
-        <b>Respaldos</b>
-        <em className="is-ok">En orden</em>
-      </li>
-      <li>
-        <b>Exposición</b>
-        <em>Hallazgo</em>
-      </li>
-    </ul>
-  );
-}
-
-function ControlsArt() {
-  return (
-    <div className="art art--docs" aria-hidden="true">
-      <span />
-      <span />
-      <span>
-        <i />
-        <i />
-        <i />
-      </span>
-    </div>
-  );
+  const Scene = scenes[kind];
+  return <Scene />;
 }

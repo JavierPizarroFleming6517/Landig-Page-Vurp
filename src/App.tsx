@@ -1,4 +1,4 @@
-import { Capabilities } from "./components/Capabilities";
+import { Capabilities } from "./components/Capabilities/Capabilities";
 import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero/Hero";
