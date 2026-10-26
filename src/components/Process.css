@@ -1,0 +1,243 @@
+.proc__intro {
+  max-width: 44rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.proc__board {
+  position: relative;
+  height: 13.5rem;
+}
+
+.proc__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.proc__rail {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.proc__rail--base {
+  stroke: var(--line);
+}
+
+.proc__rail--main,
+.proc__rail--branch {
+  stroke: var(--accent-strong);
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--draw, 0));
+}
+
+.proc__rail--branch {
+  stroke-dashoffset: calc(1 - max(0, (var(--draw, 0) - 0.28) / 0.72));
+}
+
+.proc__rail--late {
+  stroke-dashoffset: calc(1 - max(0, (var(--draw, 0) - 0.55) / 0.45));
+}
+
+.proc__twig {
+  fill: var(--accent-strong);
+  opacity: clamp(0, (var(--draw, 0) - 0.34) * 4, 1);
+}
+
+.proc__twig--late {
+  opacity: clamp(0, (var(--draw, 0) - 0.62) * 4, 1);
+}
+
+.proc__note {
+  position: absolute;
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.proc__note--up {
+  left: 31%;
+  top: 0.15rem;
+}
+
+.proc__note--down {
+  left: 64%;
+  bottom: 0.2rem;
+}
+
+.proc__steps,
+.proc__copy {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.proc__steps {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.proc__steps li {
+  display: grid;
+  justify-items: center;
+}
+
+.proc__dot {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.proc__dot::before {
+  content: "";
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 0 0 6px var(--bg);
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    background 0.35s ease;
+}
+
+.proc__steps li.is-on .proc__dot::before,
+.proc__dot.is-selected::before {
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
+}
+
+.proc__dot.is-selected::before {
+  transform: scale(1.18);
+}
+
+.proc__copy {
+  margin-top: 0.25rem;
+}
+
+.proc__copy li {
+  padding: 0.85rem 0.7rem 0;
+  border-top: 1px solid transparent;
+}
+
+.proc__copy li.is-selected {
+  border-top-color: var(--accent-strong);
+}
+
+.proc__index {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.proc__copy h3 {
+  margin: 0.3rem 0 0;
+  font-size: 1.02rem;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.proc__copy p:last-child {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proc__rail--main,
+  .proc__rail--branch,
+  .proc__rail--late {
+    stroke-dashoffset: 0;
+  }
+
+  .proc__twig,
+  .proc__twig--late {
+    opacity: 1;
+  }
+
+  .proc__dot::before {
+    transition: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .proc__board {
+    height: auto;
+  }
+
+  .proc__svg,
+  .proc__note {
+    display: none;
+  }
+
+  .proc__steps {
+    position: static;
+    display: none;
+  }
+
+  .proc__copy {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin: 0;
+    padding-left: 1.6rem;
+  }
+
+  .proc__copy::before,
+  .proc__copy::after {
+    content: "";
+    position: absolute;
+    left: 0.28rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 2px;
+  }
+
+  .proc__copy::before {
+    background: var(--line);
+  }
+
+  .proc__copy::after {
+    bottom: auto;
+    height: calc((100% - 0.8rem) * var(--draw, 1));
+    background: var(--accent-strong);
+  }
+
+  .proc__copy li {
+    position: relative;
+    padding: 0 0 1.35rem 0.35rem;
+    border-top-color: transparent;
+  }
+
+  .proc__copy li::before {
+    content: "";
+    position: absolute;
+    left: -1.48rem;
+    top: 0.28rem;
+    width: 0.85rem;
+    height: 0.85rem;
+    border: 2px solid var(--accent-strong);
+    border-radius: 50%;
+    background: var(--bg);
+  }
+}

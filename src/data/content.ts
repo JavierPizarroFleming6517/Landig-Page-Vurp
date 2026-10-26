@@ -27,9 +27,9 @@ export const contact = {
 
 export const navLinks = [
   { label: "Soluciones", href: "#soluciones" },
-  { label: "Plataforma", href: "#plataforma" },
+  { label: "Qué hacemos", href: "#que-hacemos" },
   { label: "Proceso", href: "#proceso" },
-  { label: "Casos", href: "#casos" },
+  { label: "Por qué Vurp", href: "#por-que-vurp" },
 ] as const;
 
 export const hero = {
@@ -135,8 +135,8 @@ export const walterMessages = {
   ready: { text: "¡Todo listo! ¿Enviamos tu idea? 🚀" },
   missing: { text: "Me falta un dato para enviarla. ¿Lo revisamos? 👀" },
   opened: {
-    text: "¡Tu correo está listo! 🎉",
-    note: "Solo falta que lo envíes desde tu correo. ¡Gracias por confiar en Vurp!",
+    text: "¡Recibimos tu mensaje! 🎉",
+    note: "Gracias por confiar en Vurp. Te contactamos pronto.",
   },
 } as const;
 
@@ -150,40 +150,6 @@ export const marquee = [
   "Chatbots",
   "Paneles de operación",
 ] as const;
-
-export interface FlowStep {
-  icon: LucideIcon;
-  title: string;
-  kicker: string;
-  text: string;
-}
-
-export const flowSteps: readonly FlowStep[] = [
-  {
-    icon: MessagesSquare,
-    kicker: "Diagnóstico",
-    title: "Escuchamos la operación",
-    text: "Recorremos cómo trabaja tu equipo hoy: planillas, correos, excepciones y lo que no puede fallar.",
-  },
-  {
-    icon: Puzzle,
-    kicker: "Diseño",
-    title: "Definimos el sistema",
-    text: "Traducimos esa operación a pantallas, datos y reglas. Tú ves el mapa antes de que escribamos el resto.",
-  },
-  {
-    icon: Layers3,
-    kicker: "Desarrollo",
-    title: "Construimos a medida",
-    text: "El software sigue tu flujo, no una plantilla, y se conecta con lo que ya usas: correo, pagos o inventario.",
-  },
-  {
-    icon: Lock,
-    kicker: "Seguridad",
-    title: "Cerramos los accesos",
-    text: "Roles, cifrado y respaldos entran en la misma entrega. La protección no queda para una fase posterior.",
-  },
-];
 
 export interface SolutionFeature {
   icon: LucideIcon;
@@ -304,145 +270,34 @@ export const solutions: readonly Solution[] = [
   },
 ];
 
-export const metrics = [
-  { value: "A medida", label: "Nada de plantilla genérica. El sistema sigue tu operación." },
-  { value: "Día 1", label: "La seguridad entra en el diseño, no cuando el sistema ya está publicado." },
-  { value: "Coquimbo", label: "Hablas con quien construye. Estamos en Chile." },
-] as const;
-
-export const outcomes = [
-  { title: "Menos planillas", text: "Un dato, un lugar. Se acaba la versión “final_final”." },
-  { title: "Menos repetición", text: "Avisos y registros que antes dependían de que alguien se acordara." },
-  { title: "Accesos claros", text: "Cada rol ve lo suyo. El resto queda fuera." },
-  { title: "Equipo al día", text: "Entrega guiada y documentación en español, sin jerga de más." },
-] as const;
-
-export interface PlatformCard {
-  icon: LucideIcon;
-  kicker: string;
-  title: string;
-  text: string;
-  href: string;
-}
-
-export const platform: readonly PlatformCard[] = [
-  {
-    icon: Layers3,
-    kicker: "Software",
-    title: "El sistema central",
-    text: "Paneles, flujos y datos pensados para la operación diaria de tu empresa.",
-    href: "#soluciones",
-  },
-  {
-    icon: Workflow,
-    kicker: "Automatización",
-    title: "El trabajo que circula solo",
-    text: "Seguimientos, avisos y registros que dejan de vivir en la bandeja de alguien.",
-    href: "#soluciones",
-  },
-  {
-    icon: ShieldCheck,
-    kicker: "Seguridad",
-    title: "La protección incluida",
-    text: "Roles, cifrado, respaldos y auditoría dentro de la misma entrega.",
-    href: "#soluciones",
-  },
-];
-
-export interface Reason {
-  title: string;
-  text: string;
-  chips?: readonly string[];
-}
-
-/** Cinco razones: la primera y la segunda van destacadas en la fila de arriba del bento. */
-export const reasons: readonly Reason[] = [
-  {
-    title: "Partimos de tu operación",
-    text: "Comercio, servicios, equipos internos o una mezcla de los tres. El sistema sale de cómo trabajas, no de un catálogo.",
-    chips: ["Comercio", "Servicios", "Operaciones", "Equipos en crecimiento"],
-  },
-  {
-    title: "Un solo equipo",
-    text: "Quien diseña, construye y protege es el mismo grupo desde la planificación. No hay un relevo a mitad de camino.",
-  },
-  {
-    title: "Seguridad incluida",
-    text: "No es un extra que se cotiza cuando el software ya está listo. Accesos y respaldos entran desde el diseño.",
-  },
-  {
-    title: "Integraciones reales",
-    text: "Conectamos lo que ya usas en vez de pedirte que lo botes todo: correo, pagos o inventario.",
-  },
-  {
-    title: "Después del lanzamiento",
-    text: "Seguimos cuando la operación cambia, según el acompañamiento que acordemos. El sistema no se queda congelado.",
-  },
-];
-
-export const studio = [
-  {
-    icon: MessagesSquare,
-    title: "Entrega guiada",
-    text: "Recorremos el sistema contigo y con quien lo va a usar. Las dudas se resuelven en esa sesión, no una semana después.",
-  },
-  {
-    icon: Puzzle,
-    title: "Ajustes con tu equipo",
-    text: "Si un flujo no calza con el día real, lo corregimos antes de darlo por cerrado.",
-  },
-  {
-    icon: ScanSearch,
-    title: "Cuando algo cambia",
-    text: "Un proceso nuevo o una regla distinta no implica empezar otro proyecto desde cero.",
-  },
-] as const;
-
-/** Casos de uso: situaciones tipo para las que se arma el trabajo, no clientes reales. */
-export const cases = [
-  {
-    icon: LayoutDashboard,
-    area: "Operación comercial",
-    title: "Un panel en vez de cinco planillas",
-    text: "Pedidos, estados y responsables viven en la misma pantalla. El equipo deja de preguntar cuál archivo es el bueno.",
-  },
-  {
-    icon: CalendarCheck,
-    area: "Servicios con agenda",
-    title: "Menos idas y vueltas para confirmar",
-    text: "La solicitud, la hora y el recordatorio quedan encadenados. Nadie tiene que perseguir el correo.",
-  },
-  {
-    icon: KeyRound,
-    area: "Equipo en crecimiento",
-    title: "Accesos y respaldos desde el inicio",
-    text: "Cada persona entra con su rol y la información tiene copia. Crecer no significa perder el control.",
-  },
-] as const;
+export const footerBrand = {
+  blurb:
+    "Desarrollamos software a medida, automatizaciones y ciberseguridad. Cada servicio se contrata según lo que el proyecto necesita.",
+  region: "Chile",
+  language: "Español",
+} as const;
 
 export const footerColumns = [
   {
-    title: "Producto",
+    title: "Servicios",
     links: [
-      { label: "Software a medida", href: "#soluciones" },
-      { label: "Automatización", href: "#soluciones" },
-      { label: "Ciberseguridad", href: "#soluciones" },
-      { label: "Plataforma", href: "#plataforma" },
+      { label: "Software a medida", href: "/servicios/desarrollo-software-medida/" },
+      { label: "Automatización", href: "/servicios/automatizacion-procesos/" },
+      { label: "Ciberseguridad", href: "/servicios/ciberseguridad/" },
     ],
   },
   {
     title: "Empresa",
     links: [
-      { label: "Proceso", href: "#proceso" },
-      { label: "Casos de uso", href: "#casos" },
-      { label: "Contacto", href: "#contacto" },
+      { label: "Qué hacemos", href: "/#que-hacemos" },
+      { label: "Proceso", href: "/#proceso" },
+      { label: "Por qué Vurp", href: "/#por-que-vurp" },
+      { label: "Contacto", href: "/#contacto" },
     ],
   },
-  {
-    title: "Social",
-    links: [
-      { label: "LinkedIn", href: "https://www.linkedin.com/" },
-      { label: "Facebook", href: "https://www.facebook.com/" },
-    ],
-  },
+] as const;
+
+export const footerSocial = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/vurpspa" },
+  { label: "Facebook", href: "https://www.facebook.com/vurpspa" },
 ] as const;
