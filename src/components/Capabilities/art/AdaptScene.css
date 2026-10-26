@@ -104,3 +104,89 @@
     display: none;
   }
 }
+
+.adapt__fill {
+  display: inline-block;
+  font-weight: inherit;
+}
+
+/*
+ * Loop (8 s): aparece la columna "Entrega" al final (8–18 %), se reordena delante de "Estado" (28–40 %), sus
+ * celdas se llenan fila a fila (48–60 %) y queda quieta hasta el 92 %. El reinicio se hace con la columna oculta.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .cap.is-in .adapt__new {
+    animation: adapt-new var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .adapt__moved {
+    animation: adapt-moved var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .adapt__fill {
+    animation: adapt-fill var(--loop) ease-out infinite both;
+    animation-delay: calc(var(--r) * 0.32s);
+  }
+}
+
+@keyframes adapt-new {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translateX(100%) scaleY(0.4);
+  }
+  18%,
+  28% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+  40%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes adapt-moved {
+  0%,
+  28% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+  40%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  96% {
+    opacity: 0;
+    transform: none;
+  }
+  97% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+/* Con el retraso por fila, el salto a 0 cae en el inicio del ciclo siguiente, con la columna aún oculta. */
+@keyframes adapt-fill {
+  0%,
+  46% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  52%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}

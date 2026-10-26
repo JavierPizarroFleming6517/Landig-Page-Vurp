@@ -1,12 +1,13 @@
 import { useRef, type CSSProperties } from "react";
 import { useInView } from "../Mascot/useInView";
+// Primero la base común: las escenas la sobrescriben con su propio CSS.
+import "./art/scene.css";
 import { AdaptScene } from "./art/AdaptScene";
 import { ChatScene } from "./art/ChatScene";
 import { ControlsScene } from "./art/ControlsScene";
 import { FlowScene } from "./art/FlowScene";
 import { ScanScene } from "./art/ScanScene";
 import { SyncScene } from "./art/SyncScene";
-import "./art/scene.css";
 import "./Capabilities.css";
 
 const cards = [
@@ -60,9 +61,9 @@ export function Capabilities() {
 
           {cards.map((card, index) => (
             <article className={`cap__card cap__card--${card.id}`} key={card.id} style={{ "--i": index + 1 } as CSSProperties}>
-              <Art kind={card.art} />
               <p className="cap__area">{card.area}</p>
               <h3>{card.title}</h3>
+              <Art kind={card.art} />
             </article>
           ))}
         </div>
@@ -71,14 +72,25 @@ export function Capabilities() {
   );
 }
 
+/** Del símbolo hacia cada disciplina: Software, Automatización y Ciberseguridad. */
+const ECO_PATHS = [
+  "M140 108 C140 48, 52 48, 52 28",
+  "M140 108 C140 48, 228 48, 228 28",
+  "M140 124 C140 176, 140 176, 140 196",
+] as const;
+
 function Ecosystem() {
   return (
     <div className="cap__eco" aria-hidden="true">
       <div className="cap__orbit">
         <svg className="cap__eco-lines" viewBox="0 0 280 220">
-          <path d="M140 108 C140 48, 52 48, 52 28" />
-          <path d="M140 108 C140 48, 228 48, 228 28" />
-          <path d="M140 124 C140 176, 140 176, 140 196" />
+          {ECO_PATHS.map((d) => (
+            <path key={d} d={d} />
+          ))}
+          {/* Pulsos que viajan desde cada disciplina hasta el símbolo (solo con movimiento). */}
+          {ECO_PATHS.map((d, index) => (
+            <path key={`pulse-${d}`} className="cap__eco-pulse" d={d} pathLength={1} style={{ ["--p" as string]: index }} />
+          ))}
         </svg>
         <img className="cap__mark" src="/brand/simbolo-blanco.svg" alt="" />
         <span className="cap__node cap__node--soft">Software</span>

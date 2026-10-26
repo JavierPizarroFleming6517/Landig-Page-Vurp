@@ -89,7 +89,7 @@
 }
 
 .cap__area {
-  margin: 0.35rem 0 0.28rem;
+  margin: 0.1rem 0 0.28rem;
   color: var(--accent-strong);
   font-size: 0.7rem;
   font-weight: 600;
@@ -111,6 +111,11 @@
 
 .cap__center h3 {
   max-width: 16ch;
+}
+
+/* El título va arriba; la escena lo ilustra debajo. */
+.cap__card .scene {
+  margin-top: 0.65rem;
 }
 
 .cap__eco {
@@ -141,6 +146,14 @@
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-dasharray: 5 7;
+}
+
+/* Sin movimiento no se ven; con movimiento, un tramo corto recorre cada línea hacia el símbolo. */
+.cap__eco-lines .cap__eco-pulse {
+  stroke: #e4d5f2;
+  stroke-width: 2.6;
+  stroke-dasharray: 0.09 1;
+  opacity: 0;
 }
 
 .cap__mark {
@@ -184,6 +197,11 @@
   .cap.is-in .cap__eco-lines path {
     animation: cap-dash 2.8s linear infinite;
   }
+
+  .cap.is-in .cap__eco-lines .cap__eco-pulse {
+    animation: cap-pulse 3s ease-in infinite;
+    animation-delay: calc(var(--p) * -1s);
+  }
 }
 
 @keyframes cap-in {
@@ -194,6 +212,22 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes cap-pulse {
+  0% {
+    opacity: 1;
+    stroke-dashoffset: -1;
+  }
+  55% {
+    opacity: 1;
+    stroke-dashoffset: 0.09;
+  }
+  56%,
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 0.09;
   }
 }
 

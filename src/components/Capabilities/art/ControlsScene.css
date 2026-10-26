@@ -77,18 +77,208 @@
   font-weight: 600;
 }
 
+/* Casilla vacía (borde) con el tick relleno encima: el loop solo anima el tick. */
 .ctrl__check {
   display: grid;
-  place-items: center;
   flex: none;
   width: 1.05rem;
   height: 1.05rem;
+  border: 1.5px solid rgba(var(--tint-rgb), 0.6);
+  border-radius: 5px;
+}
+
+.ctrl__tick {
+  display: grid;
+  place-items: center;
+  margin: -1.5px;
   border-radius: 5px;
   background: var(--deep);
   color: #faf7f2;
 }
 
-.ctrl__check svg {
+.ctrl__tick svg {
   width: 0.7rem;
   height: 0.7rem;
+}
+
+/*
+ * Loop (8 s): cada control se marca por turno (12, 28, 44 y 60 %) y con él suben el contador (14 → 18) y la barra
+ * (70 → 90 %). Pausa hasta el 93 %; el reinicio vuelve a 14/20 con los ticks ocultos.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .cap.is-in .ctrl__item--0 .ctrl__tick {
+    animation: ctrl-tick-0 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .ctrl__item--1 .ctrl__tick {
+    animation: ctrl-tick-1 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .ctrl__item--2 .ctrl__tick {
+    animation: ctrl-tick-2 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .ctrl__item--3 .ctrl__tick {
+    animation: ctrl-tick-3 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .ctrl__bar i {
+    animation: ctrl-bar var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .ctrl__strip {
+    animation: ctrl-count var(--loop) ease-in-out infinite both;
+  }
+}
+
+@keyframes ctrl-tick-0 {
+  0%,
+  12% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  18%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes ctrl-tick-1 {
+  0%,
+  28% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  31% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  34%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes ctrl-tick-2 {
+  0%,
+  44% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  47% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  50%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes ctrl-tick-3 {
+  0%,
+  60% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  63% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  66%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes ctrl-bar {
+  0%,
+  13% {
+    transform: scaleX(0.7);
+  }
+  17%,
+  29% {
+    transform: scaleX(0.75);
+  }
+  33%,
+  45% {
+    transform: scaleX(0.8);
+  }
+  49%,
+  61% {
+    transform: scaleX(0.85);
+  }
+  65%,
+  93% {
+    transform: scaleX(0.9);
+  }
+  99%,
+  100% {
+    transform: scaleX(0.7);
+  }
+}
+
+@keyframes ctrl-count {
+  0%,
+  13% {
+    opacity: 1;
+    transform: none;
+  }
+  17%,
+  29% {
+    transform: translateY(-1.2em);
+  }
+  33%,
+  45% {
+    transform: translateY(-2.4em);
+  }
+  49%,
+  61% {
+    transform: translateY(-3.6em);
+  }
+  65%,
+  93% {
+    opacity: 1;
+    transform: translateY(-4.8em);
+  }
+  96% {
+    opacity: 0;
+    transform: translateY(-4.8em);
+  }
+  97% {
+    opacity: 0;
+    transform: none;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
 }

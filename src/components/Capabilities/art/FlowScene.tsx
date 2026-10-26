@@ -19,7 +19,7 @@ export function FlowScene() {
           <i className="flow__pulse" />
         </span>
         {steps.map(({ label, Icon }, index) => (
-          <div className="flow__step" key={label} style={{ ["--s" as string]: index }}>
+          <div className={`flow__step flow__step--${index}`} key={label}>
             <span className="flow__node">
               <Icon strokeWidth={2} />
               <b className="flow__check">

@@ -31,9 +31,11 @@ export function ControlsScene() {
         </span>
         <ul className="ctrl__list">
           {controls.map((name, index) => (
-            <li key={name} style={{ ["--c" as string]: index }}>
+            <li className={`ctrl__item--${index}`} key={name}>
               <b className="ctrl__check">
-                <Check strokeWidth={3.5} />
+                <i className="ctrl__tick">
+                  <Check strokeWidth={3.5} />
+                </i>
               </b>
               {name}
             </li>

@@ -24,17 +24,25 @@
   background: rgba(var(--tint-rgb), 0.55);
 }
 
+/* El pulso es un "carro" del ancho de la línea con el punto en su borde izquierdo: con translateX(0 → 100 %) el
+   punto va del primer nodo al último. */
 .flow__pulse {
   position: absolute;
-  left: 0;
+  inset: 0;
+  opacity: 0;
+}
+
+.flow__pulse::before {
+  content: "";
+  position: absolute;
+  left: -0.35rem;
   top: 50%;
   width: 0.7rem;
   height: 0.7rem;
-  margin: -0.35rem 0 0 -0.35rem;
+  margin-top: -0.35rem;
   border-radius: 50%;
   background: var(--accent-strong);
   box-shadow: 0 0 0 4px rgba(var(--tint-rgb), 0.3);
-  opacity: 0;
 }
 
 .flow__step {
@@ -133,5 +141,156 @@
 
   .flow__count {
     font-size: 0.68rem;
+  }
+}
+
+/*
+ * Loop (8 s): el pulso parte en "Llega factura" (10 %), pasa por "Se registra" (38 %) y llega a "Se notifica"
+ * (64 %). Cada nodo marca su check al recibirlo y el contador sube uno por paso. Pausa hasta el 92 %.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .cap.is-in .flow__pulse {
+    animation: flow-pulse var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .flow__step--0 .flow__check {
+    animation: flow-check-0 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .flow__step--1 .flow__check {
+    animation: flow-check-1 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .flow__step--2 .flow__check {
+    animation: flow-check-2 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .flow__strip {
+    animation: flow-count var(--loop) ease-in-out infinite both;
+  }
+}
+
+@keyframes flow-pulse {
+  0%,
+  6% {
+    opacity: 0;
+    transform: none;
+  }
+  10% {
+    opacity: 1;
+    transform: none;
+  }
+  32%,
+  38% {
+    transform: translateX(50%);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+  66%,
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes flow-check-0 {
+  0%,
+  10% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  14% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  17%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes flow-check-1 {
+  0%,
+  34% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  38% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  41%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes flow-check-2 {
+  0%,
+  60% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  64% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  67%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+/* 125 → 128 al ritmo de los checks; el regreso a 125 ocurre con la tira oculta. */
+@keyframes flow-count {
+  0%,
+  12% {
+    opacity: 1;
+    transform: none;
+  }
+  16%,
+  36% {
+    transform: translateY(-1.2em);
+  }
+  40%,
+  62% {
+    transform: translateY(-2.4em);
+  }
+  66%,
+  93% {
+    opacity: 1;
+    transform: translateY(-3.6em);
+  }
+  96% {
+    opacity: 0;
+    transform: translateY(-3.6em);
+  }
+  97% {
+    opacity: 0;
+    transform: none;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
   }
 }

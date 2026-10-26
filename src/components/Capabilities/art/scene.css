@@ -63,9 +63,16 @@
   color: var(--muted);
 }
 
-/* Especificidad mayor que la de los loops: el shorthand `animation` reinicia animation-play-state. */
-.cap:not(.is-playing) .cap__grid .scene *,
-.cap:not(.is-playing) .cap__grid .scene *::before,
-.cap:not(.is-playing) .cap__grid .scene *::after {
+/*
+ * Especificidad mayor que la de los loops (hasta 4 clases): el shorthand `animation` reinicia animation-play-state.
+ * Este archivo se carga antes que el de cada escena, así que el empate no basta.
+ */
+.cap:not(.is-playing) .cap__grid .cap__card .scene *,
+.cap:not(.is-playing) .cap__grid .cap__card .scene *::before,
+.cap:not(.is-playing) .cap__grid .cap__card .scene *::after {
+  animation-play-state: paused;
+}
+
+.cap:not(.is-playing) .cap__center .cap__eco-lines path {
   animation-play-state: paused;
 }

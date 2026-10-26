@@ -140,3 +140,139 @@
     display: none;
   }
 }
+
+.sync__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent-strong);
+  opacity: 0;
+}
+
+.sync__link {
+  position: relative;
+}
+
+/*
+ * Loop (8 s): el pedido se despacha en el escritorio (22–28 %), la sincronía late y gira (30–46 %) y el celular se
+ * actualiza (50–54 %). Pausa con los dos al día hasta el 92 %; luego vuelven a "Pendiente" para el siguiente ciclo.
+ * Cada cambio de chip es secuencial (sale uno y después entra el otro) para que los textos no se superpongan.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .cap.is-in .sync__desk .sync__before {
+    animation: sync-desk-before var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__desk .sync__after {
+    animation: sync-desk-after var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__phone .sync__before {
+    animation: sync-phone-before var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__phone .sync__after {
+    animation: sync-phone-after var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__link svg {
+    animation: sync-spin var(--loop) ease-in-out infinite both;
+  }
+
+  .cap.is-in .sync__link::after {
+    animation: sync-ping var(--loop) ease-out infinite both;
+  }
+}
+
+@keyframes sync-desk-before {
+  0%,
+  22% {
+    opacity: 1;
+  }
+  24%,
+  97% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes sync-desk-after {
+  0%,
+  24% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  28%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes sync-phone-before {
+  0%,
+  48% {
+    opacity: 1;
+  }
+  50%,
+  97% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes sync-phone-after {
+  0%,
+  50% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  54%,
+  92% {
+    opacity: 1;
+    transform: none;
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes sync-spin {
+  0%,
+  30% {
+    transform: none;
+  }
+  46%,
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes sync-ping {
+  0%,
+  30% {
+    opacity: 0;
+    transform: none;
+  }
+  32% {
+    opacity: 0.9;
+    transform: none;
+  }
+  48%,
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}

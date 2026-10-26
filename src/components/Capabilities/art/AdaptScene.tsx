@@ -25,7 +25,9 @@ export function AdaptScene() {
             {rows.map((row, index) => (
               <div className="adapt__row" key={row.client} style={{ ["--r" as string]: index }}>
                 <span className="adapt__td">{row.client}</span>
-                <span className="adapt__td adapt__new">{row.date}</span>
+                <span className="adapt__td adapt__new">
+                  <b className="adapt__fill">{row.date}</b>
+                </span>
                 <span className="adapt__td adapt__moved">
                   <em className={`scene-chip scene-chip--${row.tone}`}>{row.status}</em>
                 </span>

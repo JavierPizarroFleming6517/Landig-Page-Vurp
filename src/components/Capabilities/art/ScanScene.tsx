@@ -14,7 +14,7 @@ export function ScanScene() {
       <div className="scan__panel scene-panel">
         <ul className="scan__list">
           {assets.map(({ name, Icon, severity, tone }, index) => (
-            <li key={name} style={{ ["--a" as string]: index }}>
+            <li className={`scan__row--${index}`} key={name}>
               <Icon className="scan__icon" strokeWidth={2} />
               <span className="scan__name">{name}</span>
               {severity ? (

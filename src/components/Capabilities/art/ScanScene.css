@@ -53,7 +53,16 @@
   opacity: 0.6;
 }
 
+/* Como el pulso del flujo: un "carro" del alto del panel con la línea en su borde superior. */
 .scan__beam {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scan__beam::before {
+  content: "";
   position: absolute;
   left: 0;
   right: 0;
@@ -61,11 +70,166 @@
   height: 2px;
   background: var(--accent-strong);
   box-shadow: 0 0 12px 2px rgba(var(--tint-rgb), 0.55);
-  opacity: 0;
 }
 
 @container (max-width: 300px) {
   .scan__icon {
     display: none;
+  }
+}
+
+/*
+ * Loop (8 s): la línea barre la lista (4–40 %) y marca los hallazgos al pasar (Alta 12 %, Media 24 %, el tercero
+ * limpio 36 %). Después se corrigen (52 % y 62 %) y el hallazgo queda atenuado. Pausa hasta el 93 %.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .cap.is-in .scan__beam {
+    animation: scan-beam var(--loop) linear infinite both;
+  }
+
+  .cap.is-in .scan__row--0 .scan__severity {
+    animation: scan-severity-0 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .scan__row--1 .scan__severity {
+    animation: scan-severity-1 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .scan__row--0 .scan__fixed {
+    animation: scan-fixed-0 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .scan__row--1 .scan__fixed {
+    animation: scan-fixed-1 var(--loop) ease-out infinite both;
+  }
+
+  .cap.is-in .scan__clean {
+    animation: scan-clean var(--loop) ease-out infinite both;
+  }
+}
+
+@keyframes scan-beam {
+  0%,
+  3% {
+    opacity: 0;
+    transform: none;
+  }
+  6% {
+    opacity: 1;
+    transform: none;
+  }
+  38% {
+    opacity: 1;
+    transform: translateY(100%);
+  }
+  42%,
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes scan-severity-0 {
+  0%,
+  11% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  14% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  17%,
+  52% {
+    opacity: 1;
+    transform: none;
+  }
+  56%,
+  93% {
+    opacity: 0.6;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes scan-severity-1 {
+  0%,
+  23% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  26% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  29%,
+  62% {
+    opacity: 1;
+    transform: none;
+  }
+  66%,
+  93% {
+    opacity: 0.6;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes scan-fixed-0 {
+  0%,
+  51% {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  56%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes scan-fixed-1 {
+  0%,
+  61% {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  66%,
+  93% {
+    opacity: 1;
+    transform: none;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes scan-clean {
+  0%,
+  35% {
+    opacity: 0;
+  }
+  39%,
+  93% {
+    opacity: 1;
+  }
+  97%,
+  100% {
+    opacity: 0;
   }
 }
