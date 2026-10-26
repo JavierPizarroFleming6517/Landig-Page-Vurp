@@ -25,3 +25,9 @@ dist-ssr
 
 # Fuentes de marca (manual PDF, zip y assets originales): no se versionan
 brand-source/
+
+# Variables de entorno
+.env.example
+.env.*
+.env.local
+.env

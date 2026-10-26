@@ -53,6 +53,7 @@ export function structuredData(path: string) {
     logo: `${SITE_URL}/brand/logo-completo.png`,
     email: "contacto@vurp.cl",
     description: "Empresa chilena de desarrollo de software a medida, automatización de procesos y ciberseguridad.",
+    sameAs: ["https://www.linkedin.com/company/vurpspa", "https://www.facebook.com/vurpspa"],
     address: { "@type": "PostalAddress", addressLocality: "Coquimbo", addressCountry: "CL" },
     areaServed: { "@type": "Country", name: "Chile" },
   };

@@ -297,4 +297,7 @@ export const footerColumns = [
   },
 ] as const;
 
-export const footerSocial = [] as const;
+export const footerSocial = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/vurpspa" },
+  { label: "Facebook", href: "https://www.facebook.com/vurpspa" },
+] as const;

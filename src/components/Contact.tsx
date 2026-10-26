@@ -4,9 +4,11 @@ import { contact } from "../data/content";
 import { useWalter } from "./Mascot/useWalter";
 import { Walter } from "./Mascot/Walter";
 
-const FORM_ID = typeof import.meta.env.VITE_FORMSPREE_FORM_ID === "string"
+const FORM_ID_PATTERN = /^[a-z0-9]{8}$/i;
+const configuredFormId = typeof import.meta.env.VITE_FORMSPREE_FORM_ID === "string"
   ? import.meta.env.VITE_FORMSPREE_FORM_ID.trim()
   : "";
+const FORM_ID = FORM_ID_PATTERN.test(configuredFormId) ? configuredFormId : "";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -49,7 +51,7 @@ function ContactUnavailable() {
 
   useEffect(() => {
     if (!import.meta.env.DEV) return;
-    console.warn("Falta VITE_FORMSPREE_FORM_ID. El formulario de contacto no enviará mensajes.");
+    console.warn("VITE_FORMSPREE_FORM_ID falta o no es válido. El formulario de contacto no enviará mensajes.");
   }, []);
 
   return (
@@ -230,7 +232,7 @@ function FormNote({ status }: { status: "unconfigured" | "sending" | "success" |
   if (status === "sending") return <>Enviando tu mensaje…</>;
   if (status === "unconfigured") {
     return import.meta.env.DEV ? (
-      <>Falta VITE_FORMSPREE_FORM_ID. El envío está desactivado en este entorno.</>
+      <>VITE_FORMSPREE_FORM_ID falta o no es válido. El envío está desactivado en este entorno.</>
     ) : (
       <>
         El envío en línea no está disponible. Escríbenos a <a href={`mailto:${contact.email}`}>{contact.email}</a>.
